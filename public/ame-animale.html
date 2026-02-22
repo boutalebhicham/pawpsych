@@ -697,6 +697,34 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .rev{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease;}
 .rev.vis{opacity:1;transform:translateY(0);}
 
+/* ─── CAPTURE SCREEN ─── */
+#capture.active{min-height:100vh;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+.cap-wrap{max-width:460px;width:100%;padding:40px 24px;text-align:center;}
+.cap-logo{font-family:var(--display);font-size:18px;font-weight:900;color:var(--text);margin-bottom:32px;}
+.cap-emoji{font-size:48px;margin-bottom:12px;}
+.cap-title{font-family:var(--display);font-size:clamp(24px,5vw,32px);font-weight:900;color:var(--text);letter-spacing:-1px;margin-bottom:8px;}
+.cap-sub{font-size:15px;color:var(--text3);margin-bottom:32px;line-height:1.6;}
+.cap-form{display:flex;flex-direction:column;gap:14px;margin-bottom:28px;}
+.cap-input{width:100%;padding:15px 18px;border:1.5px solid var(--border);border-radius:14px;font-family:var(--body);font-size:16px;color:var(--text);background:rgba(255,255,255,0.85);outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;}
+.cap-input:focus{border-color:rgba(0,0,0,0.25);box-shadow:0 0 0 3px rgba(0,0,0,0.06);}
+.cap-input::placeholder{color:var(--text3);}
+.cap-input.error{border-color:#e74c3c;box-shadow:0 0 0 3px rgba(231,76,60,0.1);}
+.cap-btn{width:100%;padding:16px;background:var(--text);color:#fff;border:none;border-radius:14px;font-family:var(--display);font-size:16px;font-weight:800;cursor:pointer;letter-spacing:-0.3px;transition:all .2s;}
+.cap-btn:hover{background:#222;transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,0.2);}
+.cap-divider{display:flex;align-items:center;gap:14px;margin:28px 0 20px;color:var(--text3);font-size:12px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;}
+.cap-divider::before,.cap-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.cap-reviews{position:relative;overflow:hidden;height:140px;margin-bottom:24px;}
+.cap-review{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .6s ease,transform .6s ease;transform:translateX(30px);}
+.cap-review.active{opacity:1;transform:translateX(0);}
+.cap-review.exit{opacity:0;transform:translateX(-30px);}
+.cap-review-stars{color:#f59e0b;font-size:14px;letter-spacing:2px;margin-bottom:8px;}
+.cap-review-text{font-size:14px;color:var(--text2);line-height:1.6;font-style:italic;max-width:380px;margin:0 auto 10px;}
+.cap-review-author{font-size:13px;font-weight:700;color:var(--text);}
+.cap-review-pet{font-size:12px;color:var(--text3);margin-top:2px;}
+.cap-stats{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text3);margin-bottom:10px;}
+.cap-stats-count{font-weight:800;color:var(--text);}
+.cap-trust{font-size:12px;color:var(--text3);line-height:1.5;display:flex;align-items:center;justify-content:center;gap:6px;}
+
 /* ─── ANIMATIONS ─── */
 @keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 @keyframes qin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -1522,6 +1550,44 @@ hr.sep{border:none;border-top:1px solid var(--border);}
   <div class="l-title">Analyse en cours…</div>
   <div class="l-status" id="l-status">Traitement des réponses</div>
   <div class="l-track"><div class="l-fill" id="l-fill"></div></div>
+</div>
+
+<!-- ══════════════ CAPTURE ══════════════ -->
+<div id="capture" class="screen">
+  <div class="cap-wrap">
+    <div class="cap-logo">🐾 Âme Animale</div>
+    <div class="cap-emoji">✨</div>
+    <div class="cap-title">Votre analyse est prête !</div>
+    <div class="cap-sub">Entrez vos coordonnées pour découvrir le profil de personnalité de votre compagnon.</div>
+    <div class="cap-form">
+      <input type="text" class="cap-input" id="cap-prenom" placeholder="Votre prénom" required>
+      <input type="email" class="cap-input" id="cap-email" placeholder="Votre adresse email" required>
+      <button class="cap-btn" onclick="submitCapture()">Découvrir mes résultats →</button>
+    </div>
+    <div class="cap-divider">Ils ont déjà testé</div>
+    <div class="cap-reviews" id="cap-reviews">
+      <div class="cap-review active">
+        <div class="cap-review-stars">★★★★★</div>
+        <div class="cap-review-text">"Le test a parfaitement décrit la personnalité de ma chienne Luna. Les conseils m'ont vraiment aidée à mieux la comprendre."</div>
+        <div class="cap-review-author">Sophie M.</div>
+        <div class="cap-review-pet">🐕 Luna, Border Collie, 4 ans</div>
+      </div>
+      <div class="cap-review">
+        <div class="cap-review-stars">★★★★★</div>
+        <div class="cap-review-text">"L'analyse m'a révélé que Mochi est très attaché mais exprime son amour différemment. Je le comprends tellement mieux maintenant."</div>
+        <div class="cap-review-author">Thomas L.</div>
+        <div class="cap-review-pet">🐈 Mochi, British Shorthair, 2 ans</div>
+      </div>
+      <div class="cap-review">
+        <div class="cap-review-stars">★★★★★</div>
+        <div class="cap-review-text">"L'analyse a révélé un fort besoin de structure chez Léo. En adaptant son quotidien, il est méconnaissable. Merci !"</div>
+        <div class="cap-review-author">Julien M.</div>
+        <div class="cap-review-pet">🐕 Léo, Berger Australien, 3 ans</div>
+      </div>
+    </div>
+    <div class="cap-stats"><span class="cap-stats-count">+2 847</span> analyses réalisées ce mois-ci</div>
+    <div class="cap-trust">🔬 Test élaboré avec des comportementalistes et éthologues certifiés</div>
+  </div>
 </div>
 
 <!-- ══════════════ RESULTS ══════════════ -->
@@ -3347,8 +3413,43 @@ function finishQuiz(){
     fill.style.width=pct+'%';
     if(pct%25===0&&mi<msgs.length){status.textContent=msgs[mi++];}
     if(pct%25===0){emojiEl.textContent=emojis[Math.min(Math.floor(pct/25),emojis.length-1)];}
-    if(pct>=100){clearInterval(iv);setTimeout(showResults,400);}
+    if(pct>=100){clearInterval(iv);setTimeout(function(){showScreen('capture');startCaptureReviews();},400);}
   },40);
+}
+
+// ── CAPTURE FORM ──
+var capReviewTimer=null;
+function startCaptureReviews(){
+  var reviews=document.querySelectorAll('#cap-reviews .cap-review');
+  if(reviews.length<2) return;
+  var idx=0;
+  if(capReviewTimer) clearInterval(capReviewTimer);
+  capReviewTimer=setInterval(function(){
+    reviews[idx].classList.remove('active');
+    reviews[idx].classList.add('exit');
+    setTimeout(function(){reviews[idx].classList.remove('exit');},600);
+    idx=(idx+1)%reviews.length;
+    reviews[idx].classList.add('active');
+  },4000);
+}
+
+function submitCapture(){
+  var prenom=document.getElementById('cap-prenom').value.trim();
+  var email=document.getElementById('cap-email').value.trim();
+  var ok=true;
+  document.getElementById('cap-prenom').classList.remove('error');
+  document.getElementById('cap-email').classList.remove('error');
+  if(!prenom){document.getElementById('cap-prenom').classList.add('error');ok=false;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById('cap-email').classList.add('error');ok=false;}
+  if(!ok) return;
+  profile.prenom=prenom;
+  profile.email=email;
+  try{
+    localStorage.setItem('aa_prenom',prenom);
+    localStorage.setItem('aa_email',email);
+  }catch(e){}
+  if(capReviewTimer){clearInterval(capReviewTimer);capReviewTimer=null;}
+  showResults();
 }
 
 // ── ACTIVITY TOGGLE ──
@@ -4019,7 +4120,7 @@ function unlockResults(){
   fetch('/api/create-checkout',{
     method:'POST',
     headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({animalName:profile.nom||''})
+    body:JSON.stringify({animalName:profile.nom||'',email:profile.email||'',prenom:profile.prenom||''})
   })
   .then(function(r){return r.json();})
   .then(function(data){
@@ -4043,6 +4144,10 @@ function unlockResults(){
     var san=localStorage.getItem('aa_animal');
     var sp=localStorage.getItem('aa_profile');
     if(sa&&san){answers=JSON.parse(sa);animal=san;if(sp)profile=JSON.parse(sp);}
+    var spr=localStorage.getItem('aa_prenom');
+    var sem=localStorage.getItem('aa_email');
+    if(spr)profile.prenom=spr;
+    if(sem)profile.email=sem;
   }catch(e){}
   fetch('/api/verify-session?session_id='+encodeURIComponent(sessionId))
   .then(function(r){return r.json();})
@@ -4050,13 +4155,51 @@ function unlockResults(){
     if(data.paid&&answers.length>0&&animal){
       showResults();
       setTimeout(revealReport,200);
+      setTimeout(sendReportEmail,600);
       localStorage.removeItem('aa_answers');
       localStorage.removeItem('aa_animal');
       localStorage.removeItem('aa_profile');
+      localStorage.removeItem('aa_prenom');
+      localStorage.removeItem('aa_email');
     }
   })
   .catch(function(){});
 })();
+
+function sendReportEmail(){
+  if(!profile.email) return;
+  var scores=computeScores();
+  var ns=normalizeScores(scores,animal);
+  var profs=PROFILES[animal];
+  var best=profs[0];
+  profs.forEach(function(p){if(p.score(ns)>best.score(ns)) best=p;});
+  var dims={};
+  ['SOC','ENG','ATT','SEN','INT'].forEach(function(k){
+    dims[k]=Math.min(95,Math.max(5,ns[k]));
+  });
+  var payload={
+    email:profile.email,
+    prenom:profile.prenom||'',
+    animalName:profile.nom||'',
+    animalType:animal,
+    profileType:best.type,
+    profileTitle:best.title,
+    profileEmoji:best.emoji,
+    profileTagline:best.tagline,
+    dimensions:dims,
+    strengths:best.strengths||[],
+    watchPoints:best.watchPoints||[],
+    tips:best.tips||[],
+    desc:best.desc||''
+  };
+  fetch('/api/send-report',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).then(function(r){return r.json();}).then(function(data){
+    if(data.ok) showShareToast('📧 Rapport envoyé par email !');
+  }).catch(function(){});
+}
 
 // ── buildAgeNote ──────────────────────────────────────
 function buildAgeNote(age, animalType, best){

@@ -5,11 +5,13 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
   try {
-    const { animalName } = await req.json();
+    const { animalName, email, prenom } = await req.json();
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
+      ...(email ? { customer_email: email } : {}),
+      metadata: { prenom: prenom || '', animalName: animalName || '' },
       line_items: [
         {
           price_data: {

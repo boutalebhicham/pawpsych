@@ -10,3 +10,5 @@ env:
     secret: NEXT_PUBLIC_BASE_URL
   - variable: STRIPE_SECRET_KEY
     secret: STRIPE_SECRET_KEY
+  - variable: RESEND_API_KEY
+    secret: RESEND_API_KEY

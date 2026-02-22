@@ -3265,17 +3265,21 @@ function generatePDF(){
   var today=new Date();
   var dateStr=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
 
-  // Build dimension bars HTML
+  // Build dimension bars HTML with detailed explanations
   var dimBarsHTML='';
   dimKeys.forEach(function(k){
     var p=pct(scores[k]);
-    dimBarsHTML+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">'
+    var dimInfo=getDimInfo(k,p);
+    dimBarsHTML+='<div style="margin-bottom:18px;">'
+      +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">'
       +'<span style="font-size:20px;width:28px;text-align:center;">'+dimEmojis[k]+'</span>'
       +'<span style="width:100px;font-weight:600;font-size:13px;color:#111;">'+dimNames[k]+'</span>'
       +'<div style="flex:1;height:8px;background:rgba(0,0,0,0.07);border-radius:4px;overflow:hidden;">'
       +'<div style="height:100%;width:'+p+'%;background:#111;border-radius:4px;"></div>'
       +'</div>'
       +'<span style="width:40px;text-align:right;font-weight:700;font-size:13px;color:#111;">'+p+'%</span>'
+      +'</div>'
+      +'<div style="margin-left:42px;padding:10px 14px;background:#f7f6f3;border-radius:10px;font-size:12px;color:#555;line-height:1.65;">'+dimInfo+'</div>'
       +'</div>';
   });
   dimBarsHTML+='<div style="margin-top:18px;padding:16px;background:rgba(0,0,0,0.03);border-radius:12px;font-size:13px;color:#666;line-height:1.7;">'
@@ -3322,8 +3326,21 @@ function generatePDF(){
   var strList=(best.strengths||[]).map(function(s){return'<li style="margin-bottom:6px;">'+s+'</li>';}).join('');
   var wptList=(best.watchPoints||[]).map(function(w){return'<li style="margin-bottom:6px;">'+w+'</li>';}).join('');
 
-  // Advice
-  function adviceList(arr){return(arr||[]).map(function(a){return'<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(0,0,0,0.03);border-radius:10px;margin-bottom:6px;font-size:13px;"><span style="color:#111;font-weight:600;">→</span> '+a+'</div>';}).join('');}
+  // Advice with individual explanations
+  var actWhyList=ACT_WHY[animal+'-'+best.type]||[];
+  var rewWhyList=REW_WHY[animal+'-'+best.type]||[];
+  var errWhyList=ERR_WHY[animal+'-'+best.type]||[];
+  function adviceListWithWhy(arr,whyArr){
+    return(arr||[]).map(function(a,i){
+      var expl=whyArr[i]||'';
+      var h='<div style="padding:12px 14px;background:rgba(0,0,0,0.03);border-radius:10px;margin-bottom:8px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#111;">→ '+a+'</div>';
+      if(expl){
+        h+='<div style="margin-top:6px;font-size:12px;color:#666;line-height:1.65;padding-left:20px;">'+expl+'</div>';
+      }
+      return h+'</div>';
+    }).join('');
+  }
 
   // Compat
   var compatItems=[
@@ -3488,17 +3505,17 @@ function generatePDF(){
     +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Conseils personnalisés</div></div>'
     +'<div style="margin-bottom:28px;">'
     +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🏃 Activités recommandées</div>'
-    +adviceList(best.activities)
+    +adviceListWithWhy(best.activities,actWhyList)
     +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.acts+'</div>'
     +'</div>'
     +'<div style="margin-bottom:28px;">'
     +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🎁 Meilleures récompenses</div>'
-    +adviceList(best.rewards)
+    +adviceListWithWhy(best.rewards,rewWhyList)
     +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.rews+'</div>'
     +'</div>'
     +'<div style="margin-bottom:28px;">'
     +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🚫 Erreurs à éviter</div>'
-    +adviceList(best.mistakes)
+    +adviceListWithWhy(best.mistakes,errWhyList)
     +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.errs+'</div>'
     +'</div>'
     +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
@@ -3711,7 +3728,10 @@ function buildBreedNote(race, best, animalType){
     var kn=normStr(keys[i]);
     if(rn.indexOf(kn)>=0||kn.indexOf(rn)>=0){found=keys[i];break;}
   }
-  if(!found) return null;
+  if(!found){
+    var n=(animalType==='chien')?'chien':'chat';
+    return 'En tant que '+race+', votre '+n+' possède des caractéristiques propres à sa race qui interagissent avec son profil "'+best.type+'". Chaque race apporte un patrimoine génétique qui influence le tempérament, le niveau d\'énergie et les besoins spécifiques. Les conseils de ce rapport tiennent compte de son profil comportemental individuel — observez comment les traits de sa race se manifestent au quotidien pour affiner encore davantage votre compréhension de ses besoins.';
+  }
   return BREED_DATA[found].replace(/\{type\}/g,best.type);
 }
 

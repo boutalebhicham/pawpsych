@@ -3372,54 +3372,95 @@ function generatePDF(){
     +'*{box-sizing:border-box;margin:0;padding:0;}'
     +'body{font-family:"DM Sans",sans-serif;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
     +'h1,h2,h3{font-family:"Outfit",sans-serif;}'
-    +'.page{page-break-after:always;min-height:100vh;padding:60px;position:relative;}'
-    +'.page:last-child{page-break-after:auto;}'
 
-    // Cover page
-    +'.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#f7f6f3;}'
-    +'.cover-logo{font-family:"Outfit",sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#111;margin-bottom:80px;}'
-    +'.cover-emoji{font-size:80px;margin-bottom:24px;}'
-    +'.cover-name{font-family:"Outfit",sans-serif;font-size:18px;font-weight:600;color:#666;margin-bottom:12px;text-transform:uppercase;letter-spacing:2px;}'
-    +'.cover-title{font-family:"Outfit",sans-serif;font-size:42px;font-weight:900;letter-spacing:-2px;line-height:1.1;color:#111;margin-bottom:14px;}'
-    +'.cover-tagline{font-size:16px;color:#666;font-weight:300;max-width:400px;line-height:1.6;}'
-    +'.cover-bottom{position:absolute;bottom:60px;left:0;right:0;text-align:center;}'
-    +'.cover-date{font-size:13px;color:#999;margin-bottom:6px;}'
-    +'.cover-url{font-family:"Outfit",sans-serif;font-size:14px;font-weight:700;color:#111;letter-spacing:-0.3px;}'
-    +'.cover-line{width:60px;height:3px;background:#111;margin:24px auto;border-radius:2px;}'
+    // Page setup — A4 with margins
+    +'@page{size:A4;margin:28mm 20mm 24mm 20mm;}'
+    +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'
 
-    // Table of contents
-    +'.toc{display:flex;flex-direction:column;justify-content:center;}'
-    +'.toc-title{font-family:"Outfit",sans-serif;font-size:32px;font-weight:900;letter-spacing:-1.5px;margin-bottom:48px;color:#111;}'
-    +'.toc-item{display:flex;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid rgba(0,0,0,0.07);}'
-    +'.toc-num{font-family:"Outfit",sans-serif;font-size:14px;font-weight:800;color:#999;width:32px;text-align:center;}'
-    +'.toc-label{font-family:"Outfit",sans-serif;font-size:16px;font-weight:700;color:#111;letter-spacing:-0.3px;flex:1;}'
-    +'.toc-dots{flex:1;border-bottom:1px dotted rgba(0,0,0,0.15);margin:0 8px;}'
+    // Cover — full page, no margin
+    +'.cover-page{page-break-after:always;margin:-28mm -20mm -24mm -20mm;padding:0;height:297mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#f7f6f3;position:relative;}'
+    +'.cover-logo{font-family:"Outfit",sans-serif;font-size:20px;font-weight:900;letter-spacing:-0.5px;color:#111;margin-bottom:60px;}'
+    +'.cover-emoji{font-size:72px;margin-bottom:20px;}'
+    +'.cover-name{font-family:"Outfit",sans-serif;font-size:16px;font-weight:600;color:#888;margin-bottom:10px;text-transform:uppercase;letter-spacing:2px;}'
+    +'.cover-title{font-family:"Outfit",sans-serif;font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1.1;color:#111;margin-bottom:12px;}'
+    +'.cover-line{width:50px;height:3px;background:#111;margin:20px auto;border-radius:2px;}'
+    +'.cover-tagline{font-size:14px;color:#666;font-weight:300;max-width:360px;line-height:1.6;}'
+    +'.cover-bottom{position:absolute;bottom:50px;left:0;right:0;text-align:center;}'
+    +'.cover-date{font-size:12px;color:#999;margin-bottom:4px;}'
+    +'.cover-url{font-family:"Outfit",sans-serif;font-size:13px;font-weight:700;color:#111;}'
 
-    // Section pages
-    +'.section-header{margin-bottom:36px;padding-bottom:20px;border-bottom:2px solid #111;}'
-    +'.section-num{font-family:"Outfit",sans-serif;font-size:11px;font-weight:800;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}'
-    +'.section-title{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px;color:#111;}'
+    // TOC — full page
+    +'.toc-page{page-break-after:always;padding-top:40px;}'
+    +'.toc-title{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;letter-spacing:-1.5px;margin-bottom:40px;color:#111;}'
+    +'.toc-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.07);}'
+    +'.toc-num{font-family:"Outfit",sans-serif;font-size:13px;font-weight:800;color:#999;width:28px;text-align:center;}'
+    +'.toc-label{font-family:"Outfit",sans-serif;font-size:15px;font-weight:700;color:#111;letter-spacing:-0.2px;}'
+
+    // Section headers — always start on new page
+    +'.section{page-break-before:always;}'
+    +'.section:first-of-type{page-break-before:auto;}'
+    +'.section-header{margin-bottom:24px;padding-bottom:14px;border-bottom:2px solid #111;}'
+    +'.section-num{font-family:"Outfit",sans-serif;font-size:10px;font-weight:800;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}'
+    +'.section-title{font-family:"Outfit",sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.8px;color:#111;}'
+
+    // Cards — never break inside
+    +'.card{page-break-inside:avoid;padding:14px;background:#f7f6f3;border-radius:12px;margin-bottom:10px;}'
+    +'.card-row{display:flex;gap:12px;align-items:flex-start;}'
+    +'.card-icon{font-size:20px;flex-shrink:0;}'
+    +'.card-title{font-weight:700;font-size:13px;color:#111;margin-bottom:3px;}'
+    +'.card-text{font-size:12px;color:#555;line-height:1.65;}'
 
     // Radar
-    +'.radar-container{display:flex;align-items:flex-start;gap:40px;margin-bottom:24px;}'
-    +'.radar-svg{width:240px;flex-shrink:0;}'
+    +'.radar-wrap{display:flex;align-items:flex-start;gap:28px;margin-bottom:16px;}'
+    +'.radar-svg{width:200px;flex-shrink:0;}'
+    +'.dim-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px;}'
+    +'.dim-bar-emoji{font-size:16px;width:22px;text-align:center;}'
+    +'.dim-bar-name{width:80px;font-weight:600;font-size:11px;color:#111;}'
+    +'.dim-bar-track{flex:1;height:6px;background:rgba(0,0,0,0.07);border-radius:3px;overflow:hidden;}'
+    +'.dim-bar-fill{height:100%;background:#111;border-radius:3px;}'
+    +'.dim-bar-pct{width:34px;text-align:right;font-weight:700;font-size:11px;color:#111;}'
+    +'.dim-detail{margin-left:32px;padding:8px 12px;background:#f0efec;border-radius:8px;font-size:11px;color:#555;line-height:1.6;margin-bottom:12px;page-break-inside:avoid;}'
+
+    // Grid for strengths
+    +'.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}'
+    +'.sw-card{padding:18px;border-radius:14px;page-break-inside:avoid;}'
+    +'.sw-green{background:#f0fdf4;border:1px solid #bbf7d0;}'
+    +'.sw-amber{background:#fffbeb;border:1px solid #fde68a;}'
+    +'.sw-title{font-weight:800;font-size:13px;margin-bottom:10px;}'
+    +'.sw-green .sw-title{color:#166534;}'
+    +'.sw-amber .sw-title{color:#92400e;}'
+    +'.sw-list{list-style:none;padding:0;font-size:12px;color:#333;line-height:1.65;}'
+    +'.sw-list li{margin-bottom:5px;}'
+
+    // Advice items
+    +'.advice-group{margin-bottom:20px;page-break-inside:avoid;}'
+    +'.advice-title{font-weight:800;font-size:14px;margin-bottom:10px;}'
+    +'.advice-item{padding:10px 12px;background:rgba(0,0,0,0.03);border-radius:8px;margin-bottom:6px;page-break-inside:avoid;}'
+    +'.advice-name{font-size:12px;font-weight:600;color:#111;}'
+    +'.advice-expl{margin-top:4px;font-size:11px;color:#666;line-height:1.6;padding-left:16px;}'
+    +'.advice-why{margin-top:6px;font-size:11px;color:#666;line-height:1.55;padding:10px;background:#f7f6f3;border-radius:8px;}'
+
+    // Compat
+    +'.compat-card{display:flex;gap:12px;align-items:flex-start;padding:14px;background:#f7f6f3;border-radius:12px;margin-bottom:8px;page-break-inside:avoid;}'
+    +'.compat-label{font-size:10px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.5px;}'
+    +'.compat-val{font-weight:700;font-size:13px;color:#111;margin:2px 0;}'
+    +'.compat-sub{font-size:11px;color:#666;line-height:1.55;}'
 
     // Summary page
-    +'.summary-page{background:#111;color:#fff;display:flex;flex-direction:column;justify-content:center;}'
-    +'.summary-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}'
-    +'.summary-quote{font-family:"Outfit",sans-serif;font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:24px;}'
-    +'.summary-text{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;max-width:600px;}'
+    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;padding:60px 50px;height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;justify-content:center;}'
+    +'.summary-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}'
+    +'.summary-quote{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:20px;}'
+    +'.summary-text{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.8;max-width:520px;}'
+    +'.summary-footer{position:absolute;bottom:40px;font-size:11px;color:rgba(255,255,255,0.2);}'
 
-    // Footer
-    +'.page-footer{position:absolute;bottom:30px;left:60px;right:60px;display:flex;justify-content:space-between;font-size:10px;color:#bbb;}'
-    +'.page-footer-logo{font-family:"Outfit",sans-serif;font-weight:800;color:#ccc;}'
+    // Running footer
+    +'.footer{text-align:center;font-size:9px;color:#ccc;margin-top:40px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.06);}'
+    +'.footer-logo{font-family:"Outfit",sans-serif;font-weight:800;}'
 
-    // Print
-    +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}@page{margin:0;size:A4;}}'
     +'</style></head><body>';
 
-  // ── PAGE 1: COVER ──
-  html+='<div class="page cover">'
+  // ── COVER ──
+  html+='<div class="cover-page">'
     +'<div class="cover-logo">🐾 Âme Animale</div>'
     +'<div class="cover-emoji">'+best.emoji+'</div>'
     +'<div class="cover-name">'+nomStr+'</div>'
@@ -3431,111 +3472,86 @@ function generatePDF(){
     +'<div class="cover-url">ameanimale.fr</div>'
     +'</div></div>';
 
-  // ── PAGE 2: TABLE OF CONTENTS ──
-  var tocItems=[
-    'Radar comportemental',
-    'Analyse comportementale détaillée',
-    'Points forts & Points de vigilance',
-    'Conseils personnalisés',
-    'Compatibilité',
-    'Synthèse'
-  ];
+  // ── TABLE OF CONTENTS ──
+  var tocItems=['Radar comportemental','Analyse comportementale détaillée','Points forts & Points de vigilance','Conseils personnalisés','Compatibilité','Synthèse'];
   if(contextHTML) tocItems.splice(1,0,'Contexte de lecture');
-
-  html+='<div class="page toc">'
-    +'<div class="toc-title">Sommaire</div>';
+  html+='<div class="toc-page"><div class="toc-title">Sommaire</div>';
   tocItems.forEach(function(t,i){
-    html+='<div class="toc-item">'
-      +'<div class="toc-num">0'+(i+1)+'</div>'
-      +'<div class="toc-label">'+t+'</div>'
-      +'</div>';
+    html+='<div class="toc-item"><div class="toc-num">0'+(i+1)+'</div><div class="toc-label">'+t+'</div></div>';
   });
-  html+='<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-    +'</div>';
+  html+='</div>';
 
-  // Track section number
   var secN=1;
-
-  // ── PAGE 3: RADAR ──
-  html+='<div class="page">'
-    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Radar comportemental</div></div>'
-    +'<div class="radar-container">'
-    +'<div class="radar-svg">'+radarSVG+'</div>'
-    +'<div style="flex:1;">'+dimBarsHTML+'</div>'
-    +'</div>'
-    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-    +'</div>';
-  secN++;
-
-  // ── PAGE: CONTEXT (optional) ──
-  if(contextHTML){
-    html+='<div class="page">'
-      +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Contexte de lecture</div></div>'
-      +contextHTML
-      +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-      +'</div>';
+  function secHeader(title){
+    var h='<div class="section"><div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">'+title+'</div></div>';
     secN++;
+    return h;
+  }
+  function footer(){return '<div class="footer"><span class="footer-logo">🐾 Âme Animale</span> — Rapport de '+nomStr+'</div></div>';}
+
+  // ── RADAR ──
+  html+=secHeader('Radar comportemental');
+  html+='<div class="radar-wrap"><div class="radar-svg">'+radarSVG+'</div><div style="flex:1;">';
+  dimKeys.forEach(function(k){
+    var p=pct(scores[k]);
+    html+='<div class="dim-bar">'
+      +'<span class="dim-bar-emoji">'+dimEmojis[k]+'</span>'
+      +'<span class="dim-bar-name">'+dimNames[k]+'</span>'
+      +'<div class="dim-bar-track"><div class="dim-bar-fill" style="width:'+p+'%"></div></div>'
+      +'<span class="dim-bar-pct">'+p+'%</span></div>';
+  });
+  html+='</div></div>';
+  // Dimension details
+  dimKeys.forEach(function(k){
+    var p=pct(scores[k]);
+    var info=getDimInfo(k,p);
+    html+='<div class="dim-detail"><strong>'+dimEmojis[k]+' '+dimNames[k]+' — '+p+'%</strong><br>'+info+'</div>';
+  });
+  html+=footer();
+
+  // ── CONTEXT (optional) ──
+  if(contextHTML){
+    html+=secHeader('Contexte de lecture')+contextHTML+footer();
   }
 
-  // ── PAGE: ANALYSIS ──
-  html+='<div class="page">'
-    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Analyse comportementale détaillée</div></div>'
-    +analysisHTML
-    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-    +'</div>';
-  secN++;
+  // ── ANALYSIS ──
+  html+=secHeader('Analyse comportementale détaillée')+analysisHTML+footer();
 
-  // ── PAGE: STRENGTHS & WATCHPOINTS ──
-  html+='<div class="page">'
-    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Points forts & Points de vigilance</div></div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">'
-    +'<div style="padding:24px;background:#f0fdf4;border-radius:16px;border:1px solid #bbf7d0;">'
-    +'<div style="font-weight:800;font-size:15px;margin-bottom:14px;color:#166534;">✅ Ce qui le définit positivement</div>'
-    +'<ul style="list-style:none;padding:0;font-size:13px;color:#333;line-height:1.7;">'+strList+'</ul></div>'
-    +'<div style="padding:24px;background:#fffbeb;border-radius:16px;border:1px solid #fde68a;">'
-    +'<div style="font-weight:800;font-size:15px;margin-bottom:14px;color:#92400e;">⚠️ Ce qui demande votre attention</div>'
-    +'<ul style="list-style:none;padding:0;font-size:13px;color:#333;line-height:1.7;">'+wptList+'</ul></div>'
-    +'</div>'
-    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+  // ── STRENGTHS & WATCHPOINTS ──
+  html+=secHeader('Points forts & Points de vigilance');
+  html+='<div class="sw-grid">'
+    +'<div class="sw-card sw-green"><div class="sw-title">✅ Ce qui le définit positivement</div><ul class="sw-list">'+strList+'</ul></div>'
+    +'<div class="sw-card sw-amber"><div class="sw-title">⚠️ Ce qui demande votre attention</div><ul class="sw-list">'+wptList+'</ul></div>'
     +'</div>';
-  secN++;
+  html+=footer();
 
-  // ── PAGE: ADVICE ──
-  html+='<div class="page">'
-    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Conseils personnalisés</div></div>'
-    +'<div style="margin-bottom:28px;">'
-    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🏃 Activités recommandées</div>'
-    +adviceListWithWhy(best.activities,actWhyList)
-    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.acts+'</div>'
-    +'</div>'
-    +'<div style="margin-bottom:28px;">'
-    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🎁 Meilleures récompenses</div>'
-    +adviceListWithWhy(best.rewards,rewWhyList)
-    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.rews+'</div>'
-    +'</div>'
-    +'<div style="margin-bottom:28px;">'
-    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🚫 Erreurs à éviter</div>'
-    +adviceListWithWhy(best.mistakes,errWhyList)
-    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.errs+'</div>'
-    +'</div>'
-    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-    +'</div>';
-  secN++;
+  // ── ADVICE ──
+  html+=secHeader('Conseils personnalisés');
+  function buildAdviceGroup(emoji,title,items,whyArr,whyPara){
+    var h='<div class="advice-group"><div class="advice-title">'+emoji+' '+title+'</div>';
+    (items||[]).forEach(function(a,i){
+      var expl=whyArr[i]||'';
+      h+='<div class="advice-item"><div class="advice-name">→ '+a+'</div>';
+      if(expl) h+='<div class="advice-expl">'+expl+'</div>';
+      h+='</div>';
+    });
+    h+='<div class="advice-why">'+whyPara+'</div></div>';
+    return h;
+  }
+  html+=buildAdviceGroup('🏃','Activités recommandées',best.activities,actWhyList,why.acts);
+  html+=buildAdviceGroup('🎁','Meilleures récompenses',best.rewards,rewWhyList,why.rews);
+  html+=buildAdviceGroup('🚫','Erreurs à éviter',best.mistakes,errWhyList,why.errs);
+  html+=footer();
 
-  // ── PAGE: COMPATIBILITY ──
-  html+='<div class="page">'
-    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Compatibilité</div></div>'
-    +compatHTML
-    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
-    +'</div>';
-  secN++;
+  // ── COMPATIBILITY ──
+  html+=secHeader('Compatibilité')+compatHTML+footer();
 
-  // ── PAGE: SUMMARY ──
-  html+='<div class="page summary-page">'
+  // ── SUMMARY ──
+  html+='<div class="summary" style="position:relative;">'
     +'<div class="summary-label">Synthèse — '+nomStr+'</div>'
     +'<div class="summary-quote">'+best.emoji+' '+best.title+'</div>'
     +'<div class="summary-text">'+summaryPara+'</div>'
-    +'<div class="page-footer" style="color:rgba(255,255,255,0.25);"><span class="page-footer-logo" style="color:rgba(255,255,255,0.3);">🐾 Âme Animale</span><span>ameanimale.fr</span></div>'
+    +'<div class="summary-footer">🐾 Âme Animale — ameanimale.fr</div>'
     +'</div>';
 
   html+='</body></html>';
@@ -3546,7 +3562,7 @@ function generatePDF(){
   win.document.write(html);
   win.document.close();
   win.onload=function(){
-    setTimeout(function(){win.print();},400);
+    setTimeout(function(){win.print();},500);
   };
 }
 

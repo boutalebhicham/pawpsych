@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Âme Animale — Comprenez vraiment votre animal</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
@@ -933,7 +934,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 
 <!-- NAV -->
 <nav class="nav">
-  <div class="nav-logo">🐾 Âme Animale</div>
+  <div class="nav-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
   <div class="nav-links">
     <a href="#why">Pourquoi</a>
     <a href="#how">Méthode</a>
@@ -1389,7 +1390,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
     <span class="footer-paw" style="--ps:56px;--pr:-5deg;top:20%;right:10%">🐾</span>
     <span class="footer-paw" style="--ps:32px;--pr:30deg;bottom:10%;right:25%">🐾</span>
   </div>
-  <div class="footer-logo">🐾 Âme Animale</div>
+  <div class="footer-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
   <div class="footer-copy">© 2025 Âme Animale · Tous droits réservés</div>
 </footer>
 
@@ -1398,7 +1399,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 <!-- ══════════════ ONBOARDING ══════════════ -->
 <div id="onboarding" class="screen">
   <div class="onav">
-    <div class="onav-logo">🐾 Âme Animale</div>
+    <div class="onav-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
     <button class="onav-back" onclick="showScreen('landing')">✕ Quitter</button>
   </div>
   <div class="obody">
@@ -1524,7 +1525,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 <!-- ══════════════ QUIZ ══════════════ -->
 <div id="quiz" class="screen">
   <div class="qnav">
-    <div class="qnav-logo">🐾 Âme Animale</div>
+    <div class="qnav-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
     <div class="qnav-prog">
       <span class="qnav-lbl" id="q-prog-lbl">Question 1 / 30</span>
       <div class="qnav-bar"><div class="qnav-fill" id="q-prog-bar" style="width:3%"></div></div>
@@ -1555,7 +1556,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 <!-- ══════════════ CAPTURE ══════════════ -->
 <div id="capture" class="screen">
   <div class="cap-wrap">
-    <div class="cap-logo">🐾 Âme Animale</div>
+    <div class="cap-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
     <div class="cap-emoji">✨</div>
     <div class="cap-title">Votre analyse est prête !</div>
     <div class="cap-sub">Entrez vos coordonnées pour découvrir le profil de personnalité de votre compagnon.</div>
@@ -1593,7 +1594,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 <!-- ══════════════ RESULTS ══════════════ -->
 <div id="results" class="screen">
   <div class="rnav">
-    <div class="rnav-logo">🐾 Âme Animale</div>
+    <div class="rnav-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
     <button class="rnav-btn" onclick="showScreen('landing')">← Recommencer</button>
   </div>
   <div class="r-hero">

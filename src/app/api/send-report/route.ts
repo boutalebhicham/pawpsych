@@ -147,7 +147,7 @@ export async function POST(req: NextRequest) {
     const animalName = data.animalName || 'votre animal';
 
     const { error } = await getResend().emails.send({
-      from: 'Âme Animale <rapport@ameanimale.fr>',
+      from: 'Âme Animale <onboarding@resend.dev>',
       to: [email],
       subject: `🐾 Rapport de personnalité de ${animalName} — Âme Animale`,
       html,

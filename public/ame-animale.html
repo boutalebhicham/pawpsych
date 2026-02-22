@@ -3244,6 +3244,295 @@ function shareResult(){
   }
 }
 
+// ── GENERATE PDF ─────────────────────────────────────
+function generatePDF(){
+  var scores=computeScores();
+  var profs=PROFILES[animal];
+  var best=profs[0];
+  profs.forEach(function(p){if(p.score(scores)>best.score(scores)) best=p;});
+  var nomStr=profile.nom?profile.nom:(animal==='chien'?'Votre chien':'Votre chat');
+  var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
+  var an=buildAnalysisText(scores,profile.nom,animal);
+  var why=buildWhyText(scores,best);
+  var co=best.compat||{};
+
+  function pct(v){return Math.min(95,Math.max(5,Math.round((v+30)/60*100)));}
+  var dimKeys=['SOC','ENG','ATT','SEN','INT'];
+  var dimNames={SOC:'Sociabilité',ENG:'Énergie',ATT:'Attachement',SEN:'Sensibilité',INT:'Intelligence'};
+  var dimEmojis={SOC:'🤝',ENG:'⚡',ATT:'💝',SEN:'🌡️',INT:'🧩'};
+  var domDim=dimKeys.reduce(function(a,b){return pct(scores[b])>pct(scores[a])?b:a;});
+
+  var today=new Date();
+  var dateStr=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+
+  // Build dimension bars HTML
+  var dimBarsHTML='';
+  dimKeys.forEach(function(k){
+    var p=pct(scores[k]);
+    dimBarsHTML+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">'
+      +'<span style="font-size:20px;width:28px;text-align:center;">'+dimEmojis[k]+'</span>'
+      +'<span style="width:100px;font-weight:600;font-size:13px;color:#111;">'+dimNames[k]+'</span>'
+      +'<div style="flex:1;height:8px;background:rgba(0,0,0,0.07);border-radius:4px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+p+'%;background:#111;border-radius:4px;"></div>'
+      +'</div>'
+      +'<span style="width:40px;text-align:right;font-weight:700;font-size:13px;color:#111;">'+p+'%</span>'
+      +'</div>';
+  });
+  dimBarsHTML+='<div style="margin-top:18px;padding:16px;background:rgba(0,0,0,0.03);border-radius:12px;font-size:13px;color:#666;line-height:1.7;">'
+    +'Dimension dominante : <strong style="color:#111;">'+dimNames[domDim]+'</strong> ('+pct(scores[domDim])+'%). '
+    +'Cette dimension façonne profondément la façon dont '+nom2+' vit, interagit et ressent le monde.</div>';
+
+  // Radar SVG
+  var radarSVG=buildRadar(scores);
+
+  // Context notes
+  var contextHTML='';
+  var ageNote=buildAgeNote(profile.age,animal,best);
+  var breedNote=buildBreedNote(profile.race,best,animal);
+  if(ageNote){
+    contextHTML+='<div style="display:flex;gap:14px;align-items:flex-start;padding:18px;background:#f7f6f3;border-radius:14px;margin-bottom:12px;">'
+      +'<span style="font-size:24px;">🗓️</span>'
+      +'<div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#111;">Lecture selon l\'âge <span style="background:rgba(0,0,0,0.06);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;margin-left:6px;">'+ageNote.badge+'</span></div>'
+      +'<div style="font-size:13px;color:#666;line-height:1.7;">'+ageNote.text+'</div></div></div>';
+  }
+  if(breedNote){
+    contextHTML+='<div style="display:flex;gap:14px;align-items:flex-start;padding:18px;background:#f7f6f3;border-radius:14px;margin-bottom:12px;">'
+      +'<span style="font-size:24px;">🧬</span>'
+      +'<div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#111;">Contexte de race — <span style="font-weight:400;color:#666;">'+profile.race+'</span></div>'
+      +'<div style="font-size:13px;color:#666;line-height:1.7;">'+breedNote+'</div></div></div>';
+  }
+
+  // Analysis cards
+  var analysisItems=[
+    {icon:'🏠',title:'À la maison',text:an.home},
+    {icon:'👥',title:'Avec les humains',text:an.humans},
+    {icon:'🐾',title:'Avec les autres animaux',text:an.animals},
+    {icon:'🧩',title:'Intelligence & apprentissage',text:an.intel},
+    {icon:'💝',title:'Lien émotionnel',text:an.bond}
+  ];
+  var analysisHTML='';
+  analysisItems.forEach(function(item){
+    analysisHTML+='<div style="display:flex;gap:14px;align-items:flex-start;padding:18px;background:#f7f6f3;border-radius:14px;margin-bottom:10px;">'
+      +'<span style="font-size:22px;">'+item.icon+'</span>'
+      +'<div><div style="font-weight:700;font-size:14px;margin-bottom:4px;color:#111;">'+item.title+'</div>'
+      +'<div style="font-size:13px;color:#555;line-height:1.7;">'+item.text+'</div></div></div>';
+  });
+
+  // Strengths & watchpoints
+  var strList=(best.strengths||[]).map(function(s){return'<li style="margin-bottom:6px;">'+s+'</li>';}).join('');
+  var wptList=(best.watchPoints||[]).map(function(w){return'<li style="margin-bottom:6px;">'+w+'</li>';}).join('');
+
+  // Advice
+  function adviceList(arr){return(arr||[]).map(function(a){return'<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:rgba(0,0,0,0.03);border-radius:10px;margin-bottom:6px;font-size:13px;"><span style="color:#111;font-weight:600;">→</span> '+a+'</div>';}).join('');}
+
+  // Compat
+  var compatItems=[
+    {icon:'🏠',label:'Logement idéal',val:co.home||'—',sub:getCompatSub('home',scores)},
+    {icon:'👶',label:'Avec les enfants',val:co.kids||'—',sub:getCompatSub('kids',scores)},
+    {icon:'🐾',label:'Avec d\'autres animaux',val:co.otherPets||'—',sub:getCompatSub('otherPets',scores)},
+    {icon:'🎯',label:'Niveau propriétaire',val:co.ownerLevel||'—',sub:getCompatSub('ownerLevel',scores)}
+  ];
+  var compatHTML='';
+  compatItems.forEach(function(c){
+    compatHTML+='<div style="display:flex;gap:14px;align-items:flex-start;padding:16px;background:#f7f6f3;border-radius:14px;margin-bottom:8px;">'
+      +'<span style="font-size:22px;">'+c.icon+'</span>'
+      +'<div><div style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.5px;">'+c.label+'</div>'
+      +'<div style="font-weight:700;font-size:15px;color:#111;margin:3px 0;">'+c.val+'</div>'
+      +'<div style="font-size:12px;color:#666;line-height:1.6;">'+c.sub+'</div></div></div>';
+  });
+
+  // Summary
+  var summaryPara=nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
+    +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(scores[domDim])+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
+    +best.desc+' '
+    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
+
+  // ── Build full PDF HTML ──
+  var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">'
+    +'<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500&display=swap" rel="stylesheet">'
+    +'<title>Rapport — '+nomStr+' — Âme Animale</title>'
+    +'<style>'
+    +'*{box-sizing:border-box;margin:0;padding:0;}'
+    +'body{font-family:"DM Sans",sans-serif;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact;}'
+    +'h1,h2,h3{font-family:"Outfit",sans-serif;}'
+    +'.page{page-break-after:always;min-height:100vh;padding:60px;position:relative;}'
+    +'.page:last-child{page-break-after:auto;}'
+
+    // Cover page
+    +'.cover{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#f7f6f3;}'
+    +'.cover-logo{font-family:"Outfit",sans-serif;font-size:22px;font-weight:900;letter-spacing:-0.5px;color:#111;margin-bottom:80px;}'
+    +'.cover-emoji{font-size:80px;margin-bottom:24px;}'
+    +'.cover-name{font-family:"Outfit",sans-serif;font-size:18px;font-weight:600;color:#666;margin-bottom:12px;text-transform:uppercase;letter-spacing:2px;}'
+    +'.cover-title{font-family:"Outfit",sans-serif;font-size:42px;font-weight:900;letter-spacing:-2px;line-height:1.1;color:#111;margin-bottom:14px;}'
+    +'.cover-tagline{font-size:16px;color:#666;font-weight:300;max-width:400px;line-height:1.6;}'
+    +'.cover-bottom{position:absolute;bottom:60px;left:0;right:0;text-align:center;}'
+    +'.cover-date{font-size:13px;color:#999;margin-bottom:6px;}'
+    +'.cover-url{font-family:"Outfit",sans-serif;font-size:14px;font-weight:700;color:#111;letter-spacing:-0.3px;}'
+    +'.cover-line{width:60px;height:3px;background:#111;margin:24px auto;border-radius:2px;}'
+
+    // Table of contents
+    +'.toc{display:flex;flex-direction:column;justify-content:center;}'
+    +'.toc-title{font-family:"Outfit",sans-serif;font-size:32px;font-weight:900;letter-spacing:-1.5px;margin-bottom:48px;color:#111;}'
+    +'.toc-item{display:flex;align-items:center;gap:16px;padding:18px 0;border-bottom:1px solid rgba(0,0,0,0.07);}'
+    +'.toc-num{font-family:"Outfit",sans-serif;font-size:14px;font-weight:800;color:#999;width:32px;text-align:center;}'
+    +'.toc-label{font-family:"Outfit",sans-serif;font-size:16px;font-weight:700;color:#111;letter-spacing:-0.3px;flex:1;}'
+    +'.toc-dots{flex:1;border-bottom:1px dotted rgba(0,0,0,0.15);margin:0 8px;}'
+
+    // Section pages
+    +'.section-header{margin-bottom:36px;padding-bottom:20px;border-bottom:2px solid #111;}'
+    +'.section-num{font-family:"Outfit",sans-serif;font-size:11px;font-weight:800;color:#999;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}'
+    +'.section-title{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px;color:#111;}'
+
+    // Radar
+    +'.radar-container{display:flex;align-items:flex-start;gap:40px;margin-bottom:24px;}'
+    +'.radar-svg{width:240px;flex-shrink:0;}'
+
+    // Summary page
+    +'.summary-page{background:#111;color:#fff;display:flex;flex-direction:column;justify-content:center;}'
+    +'.summary-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:16px;}'
+    +'.summary-quote{font-family:"Outfit",sans-serif;font-size:32px;font-weight:900;letter-spacing:-1px;margin-bottom:24px;}'
+    +'.summary-text{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;max-width:600px;}'
+
+    // Footer
+    +'.page-footer{position:absolute;bottom:30px;left:60px;right:60px;display:flex;justify-content:space-between;font-size:10px;color:#bbb;}'
+    +'.page-footer-logo{font-family:"Outfit",sans-serif;font-weight:800;color:#ccc;}'
+
+    // Print
+    +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}@page{margin:0;size:A4;}}'
+    +'</style></head><body>';
+
+  // ── PAGE 1: COVER ──
+  html+='<div class="page cover">'
+    +'<div class="cover-logo">🐾 Âme Animale</div>'
+    +'<div class="cover-emoji">'+best.emoji+'</div>'
+    +'<div class="cover-name">'+nomStr+'</div>'
+    +'<div class="cover-title">'+best.title+'</div>'
+    +'<div class="cover-line"></div>'
+    +'<div class="cover-tagline">'+best.tagline+'</div>'
+    +'<div class="cover-bottom">'
+    +'<div class="cover-date">Rapport généré le '+dateStr+'</div>'
+    +'<div class="cover-url">ameanimale.fr</div>'
+    +'</div></div>';
+
+  // ── PAGE 2: TABLE OF CONTENTS ──
+  var tocItems=[
+    'Radar comportemental',
+    'Analyse comportementale détaillée',
+    'Points forts & Points de vigilance',
+    'Conseils personnalisés',
+    'Compatibilité',
+    'Synthèse'
+  ];
+  if(contextHTML) tocItems.splice(1,0,'Contexte de lecture');
+
+  html+='<div class="page toc">'
+    +'<div class="toc-title">Sommaire</div>';
+  tocItems.forEach(function(t,i){
+    html+='<div class="toc-item">'
+      +'<div class="toc-num">0'+(i+1)+'</div>'
+      +'<div class="toc-label">'+t+'</div>'
+      +'</div>';
+  });
+  html+='<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+
+  // Track section number
+  var secN=1;
+
+  // ── PAGE 3: RADAR ──
+  html+='<div class="page">'
+    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Radar comportemental</div></div>'
+    +'<div class="radar-container">'
+    +'<div class="radar-svg">'+radarSVG+'</div>'
+    +'<div style="flex:1;">'+dimBarsHTML+'</div>'
+    +'</div>'
+    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+  secN++;
+
+  // ── PAGE: CONTEXT (optional) ──
+  if(contextHTML){
+    html+='<div class="page">'
+      +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Contexte de lecture</div></div>'
+      +contextHTML
+      +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+      +'</div>';
+    secN++;
+  }
+
+  // ── PAGE: ANALYSIS ──
+  html+='<div class="page">'
+    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Analyse comportementale détaillée</div></div>'
+    +analysisHTML
+    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+  secN++;
+
+  // ── PAGE: STRENGTHS & WATCHPOINTS ──
+  html+='<div class="page">'
+    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Points forts & Points de vigilance</div></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">'
+    +'<div style="padding:24px;background:#f0fdf4;border-radius:16px;border:1px solid #bbf7d0;">'
+    +'<div style="font-weight:800;font-size:15px;margin-bottom:14px;color:#166534;">✅ Ce qui le définit positivement</div>'
+    +'<ul style="list-style:none;padding:0;font-size:13px;color:#333;line-height:1.7;">'+strList+'</ul></div>'
+    +'<div style="padding:24px;background:#fffbeb;border-radius:16px;border:1px solid #fde68a;">'
+    +'<div style="font-weight:800;font-size:15px;margin-bottom:14px;color:#92400e;">⚠️ Ce qui demande votre attention</div>'
+    +'<ul style="list-style:none;padding:0;font-size:13px;color:#333;line-height:1.7;">'+wptList+'</ul></div>'
+    +'</div>'
+    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+  secN++;
+
+  // ── PAGE: ADVICE ──
+  html+='<div class="page">'
+    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Conseils personnalisés</div></div>'
+    +'<div style="margin-bottom:28px;">'
+    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🏃 Activités recommandées</div>'
+    +adviceList(best.activities)
+    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.acts+'</div>'
+    +'</div>'
+    +'<div style="margin-bottom:28px;">'
+    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🎁 Meilleures récompenses</div>'
+    +adviceList(best.rewards)
+    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.rews+'</div>'
+    +'</div>'
+    +'<div style="margin-bottom:28px;">'
+    +'<div style="font-weight:800;font-size:16px;margin-bottom:12px;">🚫 Erreurs à éviter</div>'
+    +adviceList(best.mistakes)
+    +'<div style="margin-top:8px;font-size:12px;color:#666;line-height:1.6;padding:12px;background:#f7f6f3;border-radius:10px;">'+why.errs+'</div>'
+    +'</div>'
+    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+  secN++;
+
+  // ── PAGE: COMPATIBILITY ──
+  html+='<div class="page">'
+    +'<div class="section-header"><div class="section-num">Section 0'+secN+'</div><div class="section-title">Compatibilité</div></div>'
+    +compatHTML
+    +'<div class="page-footer"><span class="page-footer-logo">🐾 Âme Animale</span><span>Rapport de '+nomStr+'</span></div>'
+    +'</div>';
+  secN++;
+
+  // ── PAGE: SUMMARY ──
+  html+='<div class="page summary-page">'
+    +'<div class="summary-label">Synthèse — '+nomStr+'</div>'
+    +'<div class="summary-quote">'+best.emoji+' '+best.title+'</div>'
+    +'<div class="summary-text">'+summaryPara+'</div>'
+    +'<div class="page-footer" style="color:rgba(255,255,255,0.25);"><span class="page-footer-logo" style="color:rgba(255,255,255,0.3);">🐾 Âme Animale</span><span>ameanimale.fr</span></div>'
+    +'</div>';
+
+  html+='</body></html>';
+
+  // Open and print
+  var win=window.open('','_blank');
+  if(!win){showShareToast('⚠️ Autorisez les pop-ups pour télécharger le PDF.');return;}
+  win.document.write(html);
+  win.document.close();
+  win.onload=function(){
+    setTimeout(function(){win.print();},400);
+  };
+}
+
 // ══════════════════════════════════════════════════════
 // BREED DATA — notes individuelles par race
 // ══════════════════════════════════════════════════════
@@ -3598,7 +3887,7 @@ function showResults(){
 
     +'<div class="r-actions">'
       +'<button class="r-action-btn secondary" onclick="shareResult()">🔗 Partager le résultat</button>'
-      +'<button class="r-action-btn secondary" onclick="window.print()">📥 Télécharger en PDF</button>'
+      +'<button class="r-action-btn secondary" onclick="generatePDF()">📥 Télécharger en PDF</button>'
       +'<button class="r-action-btn primary" onclick="showScreen(\'landing\')">↺ Recommencer</button>'
     +'</div>'
     +'</div><div class="r-lock-overlay">'+lockCard+'</div></div>'

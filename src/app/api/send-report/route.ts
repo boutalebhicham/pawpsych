@@ -134,13 +134,20 @@ function buildEmailHTML(data: {
 </html>`;
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
-    const { email, prenom } = data;
+    const { email } = data;
 
     if (!email) {
       return NextResponse.json({ error: 'Email requis' }, { status: 400 });
+    }
+
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not configured');
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
     }
 
     const html = buildEmailHTML(data);

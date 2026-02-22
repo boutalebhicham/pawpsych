@@ -2295,7 +2295,7 @@ chien:[
 
   {emoji:'🛡️',type:'Gardien',title:"Le Gardien Fidèle",
    tagline:"Votre protecteur et confident absolu",
-   score:function(s){return s.ATT*3+s.SEN*2-s.SOC;},
+   score:function(s){return s.ATT*2.5+s.SEN*1.5+(100-s.SOC)*1;},
    desc:"D'une loyauté sans faille, votre chien a établi avec vous un lien d'une profondeur rare. Plus réservé avec les inconnus, il compense par une sensibilité émotionnelle remarquable avec sa famille. Il ressent vos humeurs, anticipe vos besoins et se positionne naturellement comme votre soutien émotionnel.",
    tips:["Respectez son besoin de temps pour apprivoiser les nouveaux venus","Travaillez la socialisation en douceur, à son rythme et sans forçage","Évitez les changements brusques de routine qui peuvent le déstabiliser","Valorisez les moments exclusifs et calmes avec lui"],
    strengths:["Loyauté et dévouement absolus envers sa famille","Détection instinctive des émotions de ses proches","Présence rassurante et gardienne au quotidien","Lien affectif d'une profondeur et d'une sincérité rares"],
@@ -2307,7 +2307,7 @@ chien:[
 
   {emoji:'🦉',type:'Sage',title:"Le Sage Contemplatif",
    tagline:"La sérénité comme art de vivre",
-   score:function(s){return s.INT*3-s.ENG*2+s.SEN;},
+   score:function(s){return s.INT*2.5+(100-s.ENG)*1.5+s.SEN*1;},
    desc:"Calme, observateur et profondément intelligent, votre chien est un philosophe à quatre pattes. Il ne cherche pas l'excitation mais apprécie la richesse des stimulations sensorielles et intellectuelles. Son caractère posé en fait un compagnon idéal pour les personnes calmes qui cherchent une présence sereine.",
    tips:["Privilégiez les activités lentes et enrichissantes : olfaction, tracking","Son calme ne signifie pas l'absence de besoin de stimulation mentale","Parfait pour les appartements avec promenades régulières et de qualité","Excellent candidat pour le travail au nez (nosework) ou le pistage"],
    strengths:["Intelligence d'observation et d'analyse exceptionnelle","Calme en toute situation — jamais impulsif","Idéal pour le travail de nez et le pistage","Compagnon parfait pour les personnes sereines"],
@@ -2343,7 +2343,7 @@ chien:[
 
   {emoji:'🌿',type:'Indépendant',title:"L'Esprit Libre",
    tagline:"À sa façon, à son rythme, selon ses règles",
-   score:function(s){return s.INT*2-s.ATT*2+s.ENG;},
+   score:function(s){return s.INT*2+(100-s.ATT)*2+s.ENG*1;},
    desc:"Votre chien possède une personnalité affirmée et autonome. Il n'est pas distant — il est sélectif. Sa relation avec vous est choisie, non subie, ce qui la rend d'autant plus précieuse. Intellectuellement curieux, il a besoin de challenge et respecte les leaders équilibrés qui comprennent sa nature.",
    tips:["Basez l'éducation sur le renforcement positif exclusivement","Respectez sa demande d'espace : ne forcez jamais le contact physique","Challengez son intelligence avec des jeux de réflexion et de recherche","Sa loyauté se gagne — une fois acquise, elle est totale et indéfectible"],
    strengths:["Autonomie et sang-froid remarquables","Adaptabilité aux situations nouvelles et imprévues","Intelligence stratégique et débrouillardise","Aucune dépendance émotionnelle excessive"],
@@ -2355,7 +2355,7 @@ chien:[
 
   {emoji:'☯️',type:'Équilibré',title:"L'Âme Équilibrée",
    tagline:"Harmonie naturelle, adaptabilité sans effort",
-   score:function(s){return (s.SOC+s.ENG+s.ATT+s.SEN+s.INT)*0.6;},
+   score:function(s){return Math.min(s.SOC,s.ENG,s.ATT,s.SEN,s.INT)*5;},
    desc:"Rare et précieux, votre chien est un maestro de l'équilibre. Ni extrême dans un sens ni dans l'autre, il s'adapte avec une fluidité remarquable à toutes les situations. Facile à vivre, il convient à de nombreux contextes et maîtres. Cette harmonie intérieure est un véritable cadeau.",
    tips:["Variez les activités pour entretenir son équilibre naturel","Profitez de sa flexibilité pour explorer différents sports et loisirs canins","Il supporte bien les changements mais apprécie quand même une routine","Compagnon idéal pour les familles et les personnes primo-adoptantes"],
    strengths:["Adaptabilité exceptionnelle à tous les contextes","Facile à éduquer, à lire et à vivre","Convient à toutes les familles et tous les rythmes","Stabilité émotionnelle naturelle et rassurante"],
@@ -2363,12 +2363,108 @@ chien:[
    activities:["Activités variées : agility légère, balades, frisbee","Accompagne volontiers dans de nombreux loisirs","Cours d'éducation polyvalents et enrichissants"],
    rewards:["Très polyvalent : friandises, câlins, jeu, félicitations"],
    mistakes:["Sous-estimer ses besoins sous prétexte qu'il est 'facile'","Négliger sa stimulation mentale et physique","Le sur-protéger — il aime aussi l'aventure"],
-   compat:{home:"Tous types de logement — grande adaptabilité",kids:"Parfait avec les enfants ⭐⭐⭐⭐⭐",otherPets:"Très compatible avec la plupart des animaux",ownerLevel:"Tous niveaux — profil le plus accessible"}}
+   compat:{home:"Tous types de logement — grande adaptabilité",kids:"Parfait avec les enfants ⭐⭐⭐⭐⭐",otherPets:"Très compatible avec la plupart des animaux",ownerLevel:"Tous niveaux — profil le plus accessible"}},
+
+  {emoji:'🎪',type:'Pitre',title:"Le Pitre Adorable",
+   tagline:"La vie est trop courte pour ne pas faire le clown",
+   score:function(s){return s.SOC*2+s.ENG*2+(100-s.INT)*1;},
+   desc:"Votre chien est un concentré de bonne humeur et de maladresse attachante. Toujours prêt à faire le spectacle, il amuse la galerie avec un talent naturel pour les bêtises. Son enthousiasme compense tout — il est la mascotte de tous ceux qui le croisent.",
+   tips:["Gardez les ordres simples et courts — il apprend mieux par la répétition","Les séances de jeu sont le meilleur moment pour renforcer l'apprentissage","Canalisez son énergie avant les moments calmes pour éviter les débordements","Acceptez ses pitreries — elles font partie intégrante de son charme"],
+   strengths:["Humeur communicative qui égaie tout le monde autour de lui","Sociabilité naturelle et spontanée avec humains et animaux","Énergie inépuisable pour les jeux et les activités","Capacité unique à détendre l'atmosphère"],
+   watchPoints:["Apprentissage plus lent qui nécessite patience et constance","Tendance à faire des bêtises pour attirer l'attention","Peut être envahissant avec les personnes ou animaux plus calmes"],
+   activities:["Jeux de balle et de lancer au parc","Cours d'éducation ludiques en groupe","Parcours d'obstacles simplifiés et amusants"],
+   rewards:["Réactions enthousiastes et applaudissements","Jeux physiques intenses et partagés","Friandises données avec énergie et exclamations"],
+   mistakes:["Séances d'entraînement trop longues ou complexes","Ignorer ses tentatives de vous amuser","Environnement trop strict sans place pour la spontanéité"],
+   compat:{home:"Maison avec jardin idéale — espace pour ses pitreries",kids:"Excellent avec les enfants ⭐⭐⭐⭐⭐",otherPets:"Très compatible avec des animaux joueurs",ownerLevel:"Débutant — facile à vivre malgré les bêtises"}},
+
+  {emoji:'🔍',type:'Stratège',title:"Le Stratège Silencieux",
+   tagline:"Observer, analyser, puis agir avec précision",
+   score:function(s){return s.INT*2+s.SEN*2+(100-s.SOC)*1;},
+   desc:"Votre chien est un fin observateur doté d'une intelligence émotionnelle rare. Discret et réservé, il analyse chaque situation avant d'agir. Sa sensibilité aiguisée combinée à sa vivacité d'esprit en fait un compagnon d'une profondeur exceptionnelle — il comprend bien plus qu'il ne laisse paraître.",
+   tips:["Proposez des défis mentaux qui sollicitent intelligence et intuition","Respectez son besoin de retrait — il a besoin de temps pour analyser","Évitez les environnements trop stimulants socialement","Renforcez sa confiance avec des situations progressivement nouvelles"],
+   strengths:["Intelligence d'analyse et d'observation hors du commun","Sensibilité fine qui lui permet de lire les situations","Calme et réflexion avant l'action — jamais impulsif","Fidélité discrète mais profonde envers ses proches"],
+   watchPoints:["Peut devenir anxieux dans les environnements trop sociaux","Sa réserve peut être prise à tort pour de la froideur","Besoin de stimulation intellectuelle souvent sous-estimé"],
+   activities:["Pistage et recherche olfactive avancée","Puzzles à compartiments multiples","Observation en milieu naturel calme"],
+   rewards:["Environnement calme et sécurisant après un effort","Friandises cachées dans des puzzles à résoudre","Moments de complicité tranquilles en tête-à-tête"],
+   mistakes:["Le forcer dans des situations sociales intenses","Ignorer ses signaux de stress subtils","Sous-estimer sa richesse intérieure"],
+   compat:{home:"Intérieur calme avec peu de va-et-vient",kids:"Mieux avec des enfants calmes ⭐⭐",otherPets:"Possible avec un animal discret et posé",ownerLevel:"Intermédiaire — observation et patience requises"}},
+
+  {emoji:'⚔️',type:'Protecteur',title:"Le Protecteur Actif",
+   tagline:"Vigilance permanente, dévouement sans limites",
+   score:function(s){return s.ATT*2+s.ENG*2+(100-s.SOC)*1;},
+   desc:"Votre chien combine un attachement profond avec une énergie de gardien actif. Il patrouille, surveille et se tient toujours prêt à intervenir. Sa méfiance envers les inconnus est compensée par une dévotion totale envers sa famille. Un compagnon qui veille sur vous 24h/24.",
+   tips:["Canalisez son instinct de protection par des activités sportives structurées","Travaillez la socialisation progressive pour réduire la méfiance excessive","Offrez-lui un rôle : portage de sac, pistage — il a besoin d'une mission","Établissez des limites claires pour qu'il ne devienne pas surprotecteur"],
+   strengths:["Dévouement et loyauté actifs — un vrai bouclier vivant","Énergie canalisée au service de la protection de sa famille","Vigilance naturelle qui rassure tout le foyer","Compagnon idéal pour les activités sportives en extérieur"],
+   watchPoints:["Risque de surprotection et d'agressivité envers les inconnus","Besoin de dépense physique élevé pour éviter la frustration","Peut développer du stress s'il n'a pas de mission claire"],
+   activities:["Canicross, randonnée avec sac à dos canin","Exercices de pistage et de recherche de personnes","Parcours d'obstacles orienté endurance"],
+   rewards:["Missions et responsabilités concrètes","Activité physique partagée avec le maître","Compliments calmes et appuyés après un travail bien fait"],
+   mistakes:["Encourager les comportements de garde agressifs","Laisser sans dépense physique suffisante","Le placer dans un environnement avec beaucoup d'inconnus sans préparation"],
+   compat:{home:"Maison avec extérieur — espace pour patrouiller",kids:"Excellent protecteur des enfants de la famille ⭐⭐⭐⭐",otherPets:"Possible si élevé ensemble — protecteur du groupe",ownerLevel:"Intermédiaire à avancé — cohérence et fermeté bienveillante"}},
+
+  {emoji:'🧘',type:'Zen',title:"Le Bouddha à Quatre Pattes",
+   tagline:"Sérénité inébranlable, présence apaisante",
+   score:function(s){return (100-s.SEN)*2.5+(100-s.ENG)*1.5+s.ATT*1;},
+   desc:"Votre chien est un roc émotionnel. Rien ne semble le perturber — ni les orages, ni les changements, ni l'agitation du monde. Cette stabilité naturelle est un cadeau rare. Sa présence calme et constante fait de lui le pilier serein du foyer, un compagnon qui apaise par sa simple existence.",
+   tips:["Même s'il semble ne rien demander, ne négligez pas ses besoins de base","Proposez des activités calmes et enrichissantes à son rythme","Sa tolérance élevée ne doit pas servir d'excuse pour tout lui imposer","Idéal pour les thérapies assistées et les environnements spéciaux"],
+   strengths:["Imperméable au stress — rien ne le déstabilise","Présence naturellement apaisante pour tout le foyer","Adaptabilité exceptionnelle à tous les contextes","Idéal pour les familles avec enfants ou environnements changeants"],
+   watchPoints:["Ses besoins discrets risquent d'être systématiquement ignorés","Peut masquer des problèmes de santé par son calme naturel","Son absence de réaction n'est pas une absence de ressenti"],
+   activities:["Promenades tranquilles et régulières","Massage canin et séances de relaxation","Thérapie assistée par l'animal en milieu hospitalier ou scolaire"],
+   rewards:["Routine stable et prévisible","Caresses lentes et temps calme partagé","Friandises données dans un cadre serein"],
+   mistakes:["Prendre son calme pour de l'indifférence","Négliger les sorties sous prétexte qu'il ne demande rien","Oublier les visites vétérinaires car il ne montre pas de signes"],
+   compat:{home:"Tous types — s'adapte à tout environnement",kids:"Parfait avec les enfants de tous âges ⭐⭐⭐⭐⭐",otherPets:"Très compatible — calme les animaux anxieux",ownerLevel:"Tous niveaux — le profil le plus facile à vivre"}},
+
+  {emoji:'🤝',type:'Complice',title:"Le Complice Intellectuel",
+   tagline:"Votre partenaire de réflexion à quatre pattes",
+   score:function(s){return s.ATT*2+s.INT*2+s.SOC*1;},
+   desc:"Votre chien allie intelligence et attachement profond. Il ne se contente pas d'être à vos côtés — il participe activement à votre quotidien avec une compréhension qui dépasse la simple obéissance. Capable de lire vos intentions et d'anticiper vos actions, il est le partenaire de vie par excellence.",
+   tips:["Impliquez-le dans vos activités quotidiennes — il excelle quand il a un rôle","Apprentissage avancé : tricks, ordres complexes, parcours en duo","Sa sociabilité modérée facilite les sorties en ville et les voyages","Renforcez votre complicité avec des défis intellectuels partagés"],
+   strengths:["Compréhension intuitive de vos intentions et habitudes","Intelligence appliquée au service de votre relation","Polyvalent — excelle dans de nombreuses disciplines","Équilibre rare entre attachement et autonomie de pensée"],
+   watchPoints:["Peut anticiper vos actions à tort et agir prématurément","Besoin constant de participation active dans votre vie","Peut s'ennuyer s'il n'est pas suffisamment impliqué"],
+   activities:["Apprentissage de tricks avancés en duo","Obéissance de compétition (obé-rythmée)","Sorties en ville et voyages partagés"],
+   rewards:["Missions et tâches concrètes (porter, chercher, ranger)","Temps de qualité en tête-à-tête","Félicitations verbales précises après un effort"],
+   mistakes:["Le laisser sans rôle ni responsabilité","Ignorer ses tentatives de communication","Sous-utiliser son intelligence au quotidien"],
+   compat:{home:"Tous types — s'adapte tant qu'il est avec vous",kids:"Très bien avec les enfants ⭐⭐⭐⭐",otherPets:"Compatible avec la plupart des animaux",ownerLevel:"Intermédiaire — investissement en complicité"}},
+
+  {emoji:'🏅',type:'Sportif',title:"Le Sportif d'Élite",
+   tagline:"Né pour la performance, sculpté pour l'effort",
+   score:function(s){return s.ENG*2.5+(100-s.SEN)*1.5+(100-s.ATT)*1;},
+   desc:"Votre chien est une machine athlétique. Robuste, infatigable et émotionnellement solide, il est fait pour l'effort physique intense. Moins dépendant affectivement que d'autres profils, il respecte un maître sportif qui le challenge. Sa relation avec vous se construit dans l'effort partagé.",
+   tips:["Minimum 2h d'activité physique intense quotidienne — non négociable","Sports canins de haut niveau : canicross, bikejoring, dock diving","Sa robustesse émotionnelle ne signifie pas qu'il n'a pas besoin d'affection","Variez les disciplines pour maintenir sa motivation"],
+   strengths:["Endurance et puissance physique exceptionnelles","Robustesse émotionnelle — stress et changements ne l'affectent pas","Motivation naturelle pour toute activité sportive","Partenaire idéal pour les maîtres sportifs et actifs"],
+   watchPoints:["Frustration destructrice si insuffisamment dépensé","Relations affectives plus fonctionnelles qu'émotionnelles","Peut ignorer les signaux de fatigue par excès de motivation"],
+   activities:["Canicross, bikejoring, skijoring — sports tractés","Dock diving et nage sportive","Randonnées longue distance en montagne"],
+   rewards:["L'activité physique elle-même est sa récompense","Nouvelles disciplines et défis sportifs","Liberté de course en espace ouvert et sécurisé"],
+   mistakes:["Mode de vie sédentaire — catastrophique pour ce profil","Confondre son indépendance avec du désintérêt","Négliger les échauffements et la récupération"],
+   compat:{home:"Maison avec jardin ET accès facile à la nature",kids:"Bien avec les enfants actifs ⭐⭐⭐",otherPets:"Compatible avec des animaux aussi actifs",ownerLevel:"Sportif — engagement physique quotidien indispensable"}},
+
+  {emoji:'🕊️',type:'Médiateur',title:"Le Médiateur Bienveillant",
+   tagline:"Un pont entre les cœurs et les êtres",
+   score:function(s){return s.SOC*2+s.SEN*2+s.ATT*1;},
+   desc:"Votre chien possède un don rare : il est à la fois sociable et profondément sensible aux émotions. Ce mélange unique fait de lui un médiateur naturel qui sent les tensions et cherche à les apaiser. Il crée du lien entre les personnes et entre les animaux avec une grâce instinctive.",
+   tips:["Exposez-le régulièrement à des situations sociales variées et positives","Votre propre état émotionnel l'influence profondément — prenez soin de vous","Idéal pour les familles recomposées ou les foyers multigénérationnels","Évitez les conflits ouverts en sa présence — il absorbe les tensions"],
+   strengths:["Capacité naturelle à créer du lien entre les êtres","Sensibilité émotionnelle qui lui permet d'adapter son comportement","Sociabilité empathique — il s'adapte à chaque interlocuteur","Présence réconfortante dans les moments de tension"],
+   watchPoints:["Absorbe le stress de son entourage comme une éponge","Peut s'épuiser émotionnellement dans les environnements conflictuels","Besoin constant de validation sociale positive"],
+   activities:["Séances de médiation animale et visites sociales","Promenades en groupe dans des environnements positifs","Activités douces partagées avec différents membres de la famille"],
+   rewards:["Harmonie et calme dans le foyer","Interactions sociales positives et chaleureuses","Félicitations collectives de plusieurs personnes"],
+   mistakes:["Conflits et disputes en sa présence","Isolement social prolongé","Ignorer ses signaux de fatigue émotionnelle"],
+   compat:{home:"Tous types — s'épanouit là où il y a des interactions",kids:"Excellent avec les enfants ⭐⭐⭐⭐⭐",otherPets:"Excellent — facilite l'intégration de nouveaux animaux",ownerLevel:"Empathique — attention émotionnelle requise"}},
+
+  {emoji:'🔬',type:'Curieux',title:"Le Curieux Universel",
+   tagline:"Le monde est son laboratoire permanent",
+   score:function(s){return s.INT*2+s.SOC*2+s.ENG*1;},
+   desc:"Votre chien combine intelligence et sociabilité dans un cocktail de curiosité insatiable. Il veut tout découvrir, tout comprendre ET tout partager. Contrairement à l'explorateur solitaire, il aime vivre ses aventures intellectuelles entouré d'humains et de congénères. Un scientifique social à quatre pattes.",
+   tips:["Variez constamment les promenades, les jeux et les environnements","Socialisez-le régulièrement — il s'enrichit au contact des autres","Combinez stimulation mentale et interactions sociales","Proposez-lui des activités en groupe qui sollicitent sa réflexion"],
+   strengths:["Curiosité intellectuelle combinée à une sociabilité naturelle","Apprend vite et partage avec enthousiasme","S'adapte facilement à de nouveaux environnements et personnes","Enrichit le quotidien de découvertes et d'interactions"],
+   watchPoints:["Peut être distrait par trop de stimulations simultanées","Besoin constant de nouveauté qui peut épuiser certains maîtres","Tendance à explorer sans mesurer les risques"],
+   activities:["Cours d'éducation en groupe avancés","Nosework en milieu urbain varié","Sorties découverte dans des lieux nouveaux chaque semaine"],
+   rewards:["Découverte de nouveaux endroits et situations","Interactions avec de nouvelles personnes et animaux","Puzzles alimentaires de difficulté croissante"],
+   mistakes:["Routine répétitive et monotone","Isolement social prolongé","Environnement pauvre en stimulations et en nouveauté"],
+   compat:{home:"Appartement ou maison — tant qu'il sort régulièrement",kids:"Très bien avec les enfants curieux ⭐⭐⭐⭐",otherPets:"Très compatible — curieux et amical avec tous",ownerLevel:"Actif intellectuellement — variété et créativité requises"}}
 ],
 chat:[
   {emoji:'🌙',type:'Mystique',title:"Le Mystique Solitaire",
    tagline:"Insaisissable par nature, fascinant par essence",
-   score:function(s){return -s.SOC*2-s.ATT*2+s.INT;},
+   score:function(s){return (100-s.SOC)*2+(100-s.ATT)*2+s.INT*1;},
    desc:"Votre chat est l'incarnation de l'indépendance féline. Loin d'être froid, il a simplement une conception différente de la relation : choisie, mesurée, précieuse. Son monde intérieur est riche et complexe. En apprenant à lire ses signaux discrets, vous découvrirez une âme d'une profondeur inattendue.",
    tips:["Laissez-lui toujours une porte de sortie : il doit choisir le contact","Des cachettes confortables dans toute la maison sont essentielles","Ne forcez jamais les câlins : la confiance se construit dans la durée","Respectez ses signaux de retrait sans insistance"],
    strengths:["Indépendance totale — aucune dépendance contraignante","Observateur discret et intelligence fine du monde","Vie intérieure riche et mystérieuse à découvrir","Présence douce qui n'envahit jamais"],
@@ -2404,7 +2500,7 @@ chat:[
 
   {emoji:'🔭',type:'Philosophe',title:"Le Philosophe Tranquille",
    tagline:"Observer, analyser, comprendre le monde",
-   score:function(s){return s.INT*3-s.ENG+s.SEN*0.5;},
+   score:function(s){return s.INT*2.5+(100-s.ENG)*1.5+s.SEN*1;},
    desc:"Votre chat est un observateur du monde d'une finesse remarquable. Il préfère comprendre avant d'agir, analyser avant de s'engager. Cette intelligence calme se traduit par une capacité d'adaptation et d'apprentissage exceptionnelle. Son apparente réserve cache une curiosité intellectuelle profonde.",
    tips:["Stimulation cognitive quotidienne : puzzles, jouets à compartiments","Des perchoirs face aux fenêtres pour nourrir sa curiosité du monde","L'apprentissage de tours simples renforce votre lien progressivement","Respectez son rythme : il aime observer longuement avant d'agir"],
    strengths:["Intelligence remarquable et capacité d'adaptation","Calme et non destructeur — jamais impulsif","Observe longuement avant d'agir — jamais de réaction excessive","Apprend facilement quand on respecte son rythme"],
@@ -2428,7 +2524,7 @@ chat:[
 
   {emoji:'🎭',type:'Espiègle',title:"L'Espiègle Éternel",
    tagline:"La vie est un jeu, et il remporte toujours",
-   score:function(s){return s.ENG*3+s.SOC*2-s.SEN;},
+   score:function(s){return s.ENG*2.5+s.SOC*1.5+(100-s.SEN)*1;},
    desc:"Pétillant, inventif et sociable, votre chat fait de chaque moment une opportunité de jeu et de connexion. Son énergie communicative égaie l'atmosphère de toute la maison. Jamais ennuyeux, souvent espiègle, parfois épuisant — mais impossible à ne pas aimer.",
    tips:["Enrichissement physique : arbres à chat, tunnels, jouets variés","Jeux interactifs avec vous, indispensables à son bonheur et équilibre","Un compagnon félin de même tempérament serait idéal","Canalyser son énergie le soir évite les bêtises nocturnes"],
    strengths:["Énergie et enthousiasme infiniment communicatifs","Sociable et enjoué avec humains et animaux","Inventif — jamais la même bêtise deux fois","Atmosphère joyeuse et légère garantie dans la maison"],
@@ -2440,7 +2536,7 @@ chat:[
 
   {emoji:'🏡',type:'Loyal',title:"Le Loyal du Foyer",
    tagline:"Fidélité féline, constance absolue",
-   score:function(s){return s.ATT*3-s.SEN+s.SOC;},
+   score:function(s){return s.ATT*2.5+(100-s.SEN)*1.5+s.SOC*1;},
    desc:"Votre chat a choisi sa tribu et s'y consacre entièrement. Équilibré et fiable, il crée des habitudes affectueuses et s'y tient avec une constance réconfortante. Sans être hypersensible, il est parfaitement à l'écoute de vos besoins. Un pilier de stabilité émotionnelle à fourrure.",
    tips:["Établissez des rituels quotidiens : il les appréciera énormément","Présentez tout changement graduellement pour éviter le stress","Un second chat ? Possible — choisissez un profil calme et compatible","Idéal pour ceux qui cherchent un compagnon fiable et peu exigeant"],
    strengths:["Fiabilité et constance émotionnelle exemplaires","Rituels affectifs doux et rassurants au quotidien","Pilier de stabilité dans n'importe quel foyer","Facile à lire, prévisible et toujours sincère"],
@@ -2452,7 +2548,7 @@ chat:[
 
   {emoji:'🌑',type:'Ombre',title:"L'Ombre Délicate",
    tagline:"Présent sans être là, proche sans le montrer",
-   score:function(s){return -s.SOC*2+s.SEN*3-s.ATT;},
+   score:function(s){return (100-s.SOC)*1.5+s.SEN*2.5+(100-s.ATT)*1;},
    desc:"Votre chat est un être de nuances. Hypersensible mais discret, il partage votre espace sur ses propres termes, avec une pudeur qui cache une grande tendresse intérieure. Sa présence silencieuse est sa façon d'exprimer son attachement. Apprendre son langage est l'une des expériences les plus enrichissantes.",
    tips:["Ne forcez jamais le contact : laissez l'initiative lui revenir","Apprenez à lire ses micro-signaux (queue, oreilles, pupilles dilatées)","Évitez les environnements bruyants, les foules et les surprises","Chaque approche spontanée est un cadeau — récompensez-les en douceur"],
    strengths:["Sensibilité intérieure et tendresse cachée profondes","Présence discrète qui n'envahit jamais votre espace","Richesse intérieure à découvrir progressivement — une aventure","Grande intelligence des émotions et des contextes"],
@@ -2460,7 +2556,103 @@ chat:[
    activities:["Présence passive partagée (lire, travailler ensemble)","Jouets autonomes silencieux (circuits à billes, spirales)","Cachettes confortables et multiples dans tout l'espace"],
    rewards:["Laisser venir à soi sans initiative ni regard fixe","Friandise posée doucement au sol, sans geste brusque"],
    mistakes:["Forcer ou quémander la proximité physique","Maison avec flux d'inconnus fréquents","Ignorer les signaux de retrait — risque de traumatisme"],
-   compat:{home:"Intérieur calme et très peu fréquenté",kids:"Déconseillé avec de jeunes enfants ⭐",otherPets:"Très difficile — sélectivité extrême",ownerLevel:"Expérimenté en félin — patience et observation requises"}}
+   compat:{home:"Intérieur calme et très peu fréquenté",kids:"Déconseillé avec de jeunes enfants ⭐",otherPets:"Très difficile — sélectivité extrême",ownerLevel:"Expérimenté en félin — patience et observation requises"}},
+
+  {emoji:'👑',type:'Roi',title:"Sa Majesté Féline",
+   tagline:"Le monde lui appartient, il vous tolère par bonté",
+   score:function(s){return s.INT*2+(100-s.SOC)*2+s.ATT*1;},
+   desc:"Votre chat règne sur son domaine avec une intelligence majestueuse et un dédain calculé pour le commun des mortels. Pourtant, derrière cette façade royale se cache un attachement réel — mais exclusif — envers son humain élu. Il ne daigne accorder son attention qu'à ceux qui le méritent.",
+   tips:["Respectez son rythme — il viendra vers vous quand IL le décidera","Offrez-lui des perchoirs élevés : un roi a besoin de surveiller son royaume","Stimulez son intelligence avec des jeux de réflexion sophistiqués","Ne forcez jamais la rencontre avec des visiteurs — il les juge lui-même"],
+   strengths:["Intelligence stratégique et finesse d'observation","Attachement exclusif et profond envers son élu","Dignité et élégance naturelles en toute circonstance","Autonomie qui ne pèse jamais sur le quotidien"],
+   watchPoints:["Dédain marqué envers les visiteurs et les inconnus","Peut sembler distant même avec ses proches","Jalousie possible si l'attention est partagée"],
+   activities:["Puzzles alimentaires complexes et labyrinthes","Perchoirs fenêtre avec vue dominante sur l'extérieur","Jeux de stratégie avec récompenses à la clé"],
+   rewards:["Être le seul à recevoir son attention exclusive","Friandises de prestige dans un cadre calme","Respect de son espace et de ses décisions"],
+   mistakes:["Forcer le contact avec des inconnus","Traiter ses rituels avec désinvolture","Le mettre en compétition avec un autre animal"],
+   compat:{home:"Appartement calme et spacieux — son palais",kids:"Déconseillé avec de jeunes enfants turbulents ⭐⭐",otherPets:"Difficile — supporte mal un rival sur son territoire",ownerLevel:"Patient et respectueux — il vous choisit, pas l'inverse"}},
+
+  {emoji:'🎪',type:'Acrobate',title:"L'Acrobate Intrépide",
+   tagline:"Défiant la gravité avec grâce et audace",
+   score:function(s){return s.ENG*2.5+(100-s.ATT)*1.5+s.INT*1;},
+   desc:"Votre chat est un athlète né doublé d'un esprit indépendant. Agile, rapide et audacieux, il transforme votre intérieur en parcours d'obstacles permanent. Son intelligence sert sa passion du mouvement — il calcule ses sauts, optimise ses trajectoires et repousse constamment ses limites physiques.",
+   tips:["Investissez dans un arbre à chat XXL avec de multiples niveaux","Étagères murales et passerelles félines sont indispensables","Séances de jeu actives avec baguettes et jouets aériens 2×/jour","Un accès extérieur sécurisé (catio, balcon) serait idéal"],
+   strengths:["Agilité et coordination physique spectaculaires","Intelligence appliquée au mouvement et à l'exploration","Indépendance qui ne pèse pas sur le quotidien","Spectacle permanent de grâce féline"],
+   watchPoints:["Risque de chutes depuis des hauteurs improbables","Peut s'échapper par des ouvertures inattendues","Destructeur s'il manque d'espace vertical et d'activité"],
+   activities:["Parcours d'agilité féline avec obstacles variés","Jeux de poursuite avec jouets aériens rapides","Exploration en hauteur sur étagères et passerelles"],
+   rewards:["Nouveaux espaces verticaux à conquérir","Jouets qui simulent des proies rapides en mouvement","Liberté d'exploration en espace sécurisé"],
+   mistakes:["Espace de vie sans dimension verticale","Environnement fermé sans stimulation physique","Ignorer ses besoins d'activité sous prétexte d'indépendance"],
+   compat:{home:"Maison ou appartement aménagé en vertical",kids:"Bien avec les enfants qui respectent son espace ⭐⭐⭐",otherPets:"Compatible si chacun a son espace d'escalade",ownerLevel:"Actif — aménagement et investissement en jeu requis"}},
+
+  {emoji:'🧘',type:'Zen',title:"Le Maître Zen",
+   tagline:"Sérénité féline à toute épreuve",
+   score:function(s){return (100-s.SEN)*2.5+(100-s.ENG)*1.5+s.SOC*1;},
+   desc:"Votre chat est l'incarnation de la tranquillité absolue. Rien ne le perturbe — ni les bruits forts, ni les changements, ni l'agitation. Cette sérénité naturelle combinée à une sociabilité douce fait de lui le compagnon idéal pour les foyers animés. Sa seule présence calme ceux qui l'entourent.",
+   tips:["Même s'il ne demande rien, maintenez des sessions de jeu régulières","Sa tolérance ne doit pas servir d'excuse pour tout lui imposer","Parfait comme compagnon de méditation ou de travail à domicile","Surveillez sa santé : son calme peut masquer des signes de douleur"],
+   strengths:["Calme absolu dans toutes les situations","Sociabilité douce qui ne s'impose jamais","Adaptabilité exceptionnelle aux changements","Présence apaisante pour tout le foyer"],
+   watchPoints:["Risque d'ignorer ses besoins par excès de discrétion","Peut masquer des problèmes de santé derrière son calme","Stimulation nécessaire malgré l'absence de demandes"],
+   activities:["Présence calme lors de vos activités quotidiennes","Jeux doux à son rythme sans pression","Exploration tranquille de nouveaux espaces"],
+   rewards:["Routine stable et environnement prévisible","Caresses douces et longues sans brusquerie","Moments de calme partagés avec vous"],
+   mistakes:["Oublier ses besoins sous prétexte qu'il ne réclame rien","Environnement trop chaotique même s'il ne le montre pas","Négliger les visites vétérinaires régulières"],
+   compat:{home:"Tous types — s'adapte à tous les environnements",kids:"Excellent avec les enfants de tous âges ⭐⭐⭐⭐⭐",otherPets:"Très compatible — calme les animaux anxieux",ownerLevel:"Tous niveaux — le profil félin le plus accessible"}},
+
+  {emoji:'🧸',type:'Câlin',title:"Le Câlin Perpétuel",
+   tagline:"La tendresse incarnée en boule de poils",
+   score:function(s){return s.ATT*2+s.SEN*2+s.SOC*1;},
+   desc:"Votre chat est un concentré d'amour à fourrure. Profondément attaché, sensible et sociable, il cherche le contact permanent. Il ronronne, se love, se frotte et ne manque jamais une occasion de rappeler à quel point il vous aime — et combien il a besoin de votre présence.",
+   tips:["Répondez à ses demandes de câlins — le rejet le blesse profondément","Préparez-le progressivement aux absences pour éviter l'anxiété","Un second chat câlin peut combler les moments de solitude","Les diffuseurs de phéromones l'aident en période de stress"],
+   strengths:["Tendresse et affection inconditionnelles et permanentes","Sensibilité émotionnelle qui le connecte profondément à vous","Sociabilité chaleureuse avec tous les membres du foyer","Ronronnements thérapeutiques et présence réconfortante"],
+   watchPoints:["Anxiété de séparation marquée si laissé seul","Sensibilité au stress et aux changements de routine","Besoin d'attention qui peut devenir envahissant"],
+   activities:["Séances de câlins ritualisées matin et soir","Jeux doux en interaction directe avec vous","Siestes partagées sur le canapé ou le lit"],
+   rewards:["Contact physique prolongé et caresses","Voix douce et attention exclusive","Couverture chaude et place à côté de vous"],
+   mistakes:["Laisser seul de longues heures sans compagnie","Repousser ses demandes d'affection","Environnement froid et distant émotionnellement"],
+   compat:{home:"Tous types avec présence humaine fréquente",kids:"Excellent avec les enfants doux ⭐⭐⭐⭐⭐",otherPets:"Très compatible avec un animal câlin et sociable",ownerLevel:"Présent — disponibilité affective indispensable"}},
+
+  {emoji:'🦇',type:'Nocturne',title:"Le Nocturne Mystérieux",
+   tagline:"Quand la maison dort, lui s'éveille",
+   score:function(s){return s.INT*2+s.SEN*2+(100-s.SOC)*1;},
+   desc:"Votre chat combine une intelligence vive avec une sensibilité profonde, dans un tempérament réservé. Souvent plus actif la nuit, il développe une vie intérieure riche quand le monde se calme. Ses sens aiguisés lui permettent de percevoir des subtilités qui échappent à tout le monde.",
+   tips:["Aménagez des activités crépusculaires : séance de jeu avant le coucher","Des veilleuses douces et des jouets autonomes pour la nuit","Respectez son rythme inversé — ne le forcez pas à être diurne","Offrez-lui des cachettes confortables pour ses phases de repos diurne"],
+   strengths:["Intelligence fine combinée à des sens hyper-développés","Perception des subtilités invisibles pour les autres","Vie intérieure riche et comportement fascinant","Discrétion et indépendance pendant la journée"],
+   watchPoints:["Activité nocturne qui peut perturber votre sommeil","Réserve sociale qui limite les interactions avec les visiteurs","Sensibilité aux changements d'ambiance et d'éclairage"],
+   activities:["Séances de jeu crépusculaires (baguette, laser)","Circuits à billes et jouets autonomes pour la nuit","Exploration nocturne dans un espace sécurisé"],
+   rewards:["Environnement calme et tamisé le soir","Jouets lumineux ou à mouvement lent pour la nuit","Moments de complicité dans la pénombre"],
+   mistakes:["L'enfermer la nuit dans un espace restreint","Lumières vives et bruit constant le soir","Ignorer ses besoins d'activité crépusculaire"],
+   compat:{home:"Appartement calme avec espace nocturne",kids:"Mieux avec des enfants qui respectent son rythme ⭐⭐",otherPets:"Possible avec un animal au rythme similaire",ownerLevel:"Patient — adaptation au rythme inversé nécessaire"}},
+
+  {emoji:'🗺️',type:'Aventurier',title:"L'Aventurier Indomptable",
+   tagline:"Les quatre murs sont sa seule prison",
+   score:function(s){return s.ENG*2+(100-s.SEN)*2+s.INT*1;},
+   desc:"Votre chat est un explorateur robuste et intrépide. Émotionnellement solide et physiquement actif, il ne craint ni le froid, ni le bruit, ni l'inconnu. Son intelligence pratique lui permet de naviguer dans n'importe quel environnement. Il a besoin d'espace, de liberté et de défis pour s'épanouir.",
+   tips:["Un accès extérieur sécurisé est fortement recommandé (catio, jardin clos)","Enrichissez massivement son environnement intérieur si pas d'accès dehors","Jouets robustes et résistants — il les détruit rapidement","Séances de jeu intensives pour compenser le manque d'exploration"],
+   strengths:["Robustesse physique et émotionnelle exceptionnelle","Intelligence pratique pour résoudre tout obstacle","Courage et audace face à la nouveauté","Autonomie complète et aucune dépendance excessive"],
+   watchPoints:["Tentatives d'évasion si l'environnement est trop restreint","Peut prendre des risques excessifs par excès de confiance","Ennui rapide dans un intérieur peu stimulant"],
+   activities:["Exploration en catio ou jardin sécurisé","Jeux de chasse intensifs avec jouets robustes","Parcours d'obstacles variés et renouvelés"],
+   rewards:["Accès à de nouveaux espaces d'exploration","Jouets neufs et stimulations physiques intenses","Liberté de mouvement dans un espace sécurisé"],
+   mistakes:["Environnement confiné sans stimulation ni espace","Jouets fragiles qu'il détruit en quelques minutes","Sous-estimer son besoin vital d'exploration"],
+   compat:{home:"Maison avec accès extérieur sécurisé idéal",kids:"Bien avec les enfants robustes et actifs ⭐⭐⭐",otherPets:"Compatible avec des animaux aussi aventuriers",ownerLevel:"Actif — investissement en aménagement et en jeu"}},
+
+  {emoji:'🏡',type:'Veilleur',title:"Le Veilleur Silencieux",
+   tagline:"Gardien discret du foyer et de ses habitants",
+   score:function(s){return s.ATT*2+(100-s.SEN)*2+s.INT*1;},
+   desc:"Votre chat est un gardien discret mais attentif. Émotionnellement stable et profondément attaché, il surveille son territoire et ses habitants avec une vigilance tranquille. Son intelligence lui permet de comprendre les routines et de détecter tout changement. Un protecteur silencieux.",
+   tips:["Respectez ses rondes et ses postes d'observation — c'est son rôle","Offrez-lui des perchoirs avec vue sur les entrées et les pièces principales","Sa stabilité émotionnelle en fait un compagnon idéal pour tous les contextes","Valorisez ses rituels de surveillance avec des récompenses discrètes"],
+   strengths:["Attachement stable et fiable sans dépendance excessive","Robustesse émotionnelle face au stress et aux changements","Intelligence pratique pour comprendre et anticiper les routines","Présence protectrice et rassurante au quotidien"],
+   watchPoints:["Peut devenir territorial si un nouvel animal est introduit","Sa vigilance constante peut masquer un besoin de repos","Résistance au changement de ses postes d'observation"],
+   activities:["Postes d'observation stratégiques près des fenêtres et entrées","Jeux de recherche et de pistage dans la maison","Puzzles alimentaires qui stimulent sa vigilance"],
+   rewards:["Reconnaissance calme de sa présence protectrice","Friandises données à ses postes d'observation favoris","Routine stable qui respecte ses habitudes de garde"],
+   mistakes:["Bloquer l'accès à ses postes d'observation","Introduire un animal sans préparation progressive","Perturber ses routines de surveillance établies"],
+   compat:{home:"Tous types — s'adapte tant qu'il peut surveiller",kids:"Très bien avec les enfants ⭐⭐⭐⭐",otherPets:"Possible avec une introduction très progressive",ownerLevel:"Tous niveaux — profil stable et rassurant"}},
+
+  {emoji:'🎨',type:'Bohème',title:"Le Bohème Créatif",
+   tagline:"L'art de vivre en dehors de toutes les cases",
+   score:function(s){return s.SEN*2+(100-s.ATT)*2+s.ENG*1;},
+   desc:"Votre chat est un esprit libre à la sensibilité artistique. Indépendant mais profondément sensible aux ambiances, aux sons et aux textures, il vit selon ses propres règles. Il s'approche quand l'énergie lui convient et disparaît quand il a besoin de solitude créative.",
+   tips:["Créez des espaces sensoriels variés : textures, odeurs, lumières douces","Respectez absolument ses moments de solitude — ils sont essentiels","Musique douce et environnement sensoriel riche nourrissent son bien-être","Ne prenez pas son indépendance pour du rejet — il vous aime à sa façon"],
+   strengths:["Sensibilité esthétique aux ambiances et aux atmosphères","Indépendance qui libère le propriétaire de toute contrainte","Richesse intérieure et comportements fascinants à observer","Capacité unique à créer son propre univers de bien-être"],
+   watchPoints:["Très affecté par les ambiances négatives malgré son indépendance","Peut se replier complètement si l'environnement ne lui convient pas","Communication subtile difficile à décoder pour un novice"],
+   activities:["Exploration sensorielle : herbe à chat, valériane, textures variées","Observation depuis des cachettes confortables et variées","Jeux autonomes avec circuits à billes et jouets à mouvement"],
+   rewards:["Environnement sensoriel riche et apaisant","Liberté totale de mouvement et de choix","Nouveaux stimuli olfactifs et tactiles à découvrir"],
+   mistakes:["Environnement sensoriel pauvre et monotone","Forcer le contact physique non désiré","Ambiance stressante, bruyante ou conflictuelle"],
+   compat:{home:"Intérieur calme avec richesse sensorielle",kids:"Mieux avec des enfants calmes et respectueux ⭐⭐",otherPets:"Possible avec un animal indépendant et non intrusif",ownerLevel:"Sensible — compréhension et respect de son rythme"}}
 ]};
 
 // ══════════════════════════════════════════════════════
@@ -2546,6 +2738,86 @@ var ACT_WHY={
   "L'Ombre Délicate apprécie votre présence mais à distance sécurisante. Être dans la même pièce sans interaction directe lui permet de moduler lui-même le niveau de proximité. C'est son mode de lien préféré — ne le forcez jamais vers quelque chose de plus intense, au risque de détruire la confiance construite.",
   "Les jouets à fonctionnement autonome et silencieux lui permettent de jouer sans votre implication directe, dans un environnement à basse stimulation. Il peut s'y adonner la nuit ou quand vous n'êtes pas disponible. Le silence et l'autonomie sont ses deux environnements optimaux.",
   "Pour l'Ombre Délicate, avoir plusieurs refuges dans la maison est crucial. Se savoir capable de disparaître à tout moment réduit son anxiété ambiante et paradoxalement l'incite à rester davantage visible. La sécurité crée la confiance — c'est le paradoxe central de ce profil."
+],
+'chien-Pitre':[
+  "Le jeu de balle est LE langage du Pitre. Simple, physique et partagé, il correspond parfaitement à son besoin de mouvement et d'interaction joyeuse. Chaque lancer est une opportunité de faire le spectacle — et chaque retour, une demande de bis.",
+  "En groupe, le Pitre rayonne. Les cours collectifs canalisent son énergie sociale et physique dans un cadre structuré. Il apprend mieux en voyant les autres et en s'amusant — la rigueur seule ne fonctionne pas avec ce profil.",
+  "Les parcours d'obstacles simplifiés stimulent son corps sans surcharger son cerveau. Le Pitre n'a pas besoin de complexité — il a besoin de mouvement, de variété et de plaisir. Gardez les exercices ludiques et courts pour maximiser sa motivation."
+],
+'chien-Stratège':[
+  "Le pistage olfactif est l'activité rêvée du Stratège. Elle combine sa passion pour l'analyse avec un environnement calme et peu social. Chaque piste est un problème à résoudre — et son cerveau analytique excelle dans ce type de défi solitaire.",
+  "Les puzzles à compartiments nourrissent son besoin de résolution de problèmes. Contrairement à d'autres profils, le Stratège prend son temps, observe, teste des hypothèses. C'est un exercice intellectuel autant que physique.",
+  "L'observation en milieu naturel calme satisfait sa curiosité sans le confronter au stress social. Les promenades en forêt ou dans des espaces peu fréquentés sont son terrain de prédilection pour analyser le monde."
+],
+'chien-Protecteur':[
+  "Le canicross et la randonnée avec portage canalisent son énergie de gardien dans un effort physique productif. Porter un sac à dos lui donne une mission concrète et renforce son sentiment d'utilité — essentiel pour ce profil.",
+  "Le pistage de personnes active son instinct de protection de façon positive. Chercher et retrouver un membre de la famille est l'activité la plus gratifiante pour un chien qui vit pour protéger les siens.",
+  "Les parcours d'endurance renforcent sa résistance physique et mentale. Un Protecteur fatigué est un Protecteur équilibré — la dépense est la clé de son calme au quotidien."
+],
+'chien-Zen':[
+  "Les promenades tranquilles correspondent parfaitement à son rythme naturel. Pas besoin de courir — le Zen apprécie la régularité et la qualité plutôt que l'intensité. Une marche quotidienne maintient son équilibre sans le sur-stimuler.",
+  "Le massage canin est une activité qui résonne avec sa nature calme. Il apprécie le contact physique doux et les moments de détente partagés. C'est aussi une façon de vérifier régulièrement son état de santé.",
+  "La thérapie assistée par l'animal est la vocation naturelle du Zen. Son calme imperturbable apaise les personnes anxieuses et sa présence régulière dans les hôpitaux ou écoles enrichit son quotidien sans le stresser."
+],
+'chien-Complice':[
+  "L'apprentissage de tricks avancés nourrit simultanément son intelligence et son lien avec vous. Chaque nouveau tour est une conversation entre vous deux — un langage exclusif qui renforce votre complicité unique.",
+  "L'obé-rythmée est l'expression parfaite de la relation Complice-maître. Chorégraphier des mouvements ensemble crée une synchronisation physique et mentale qui transcende la simple obéissance.",
+  "Les sorties en ville et les voyages nourrissent son besoin de partager des expériences avec vous. Le Complice ne veut pas simplement vous accompagner — il veut VIVRE avec vous, dans tous les sens du terme."
+],
+'chien-Sportif':[
+  "Les sports tractés (canicross, bikejoring) correspondent à sa nature athlétique. La traction est un effort complet qui sollicite tout son corps et satisfait son besoin de performance. C'est son élément naturel.",
+  "Le dock diving et la nage exploitent sa puissance physique dans un élément différent. La variété des disciplines maintient sa motivation et développe des compétences complémentaires.",
+  "Les randonnées longue distance testent son endurance — sa qualité première. C'est dans la durée et l'effort soutenu que le Sportif révèle sa vraie nature et construit sa relation avec vous."
+],
+'chien-Médiateur':[
+  "La médiation animale est la vocation naturelle du Médiateur. Sa double capacité à être sociable ET sensible le rend idéal pour les interactions thérapeutiques ou les visites en maison de retraite.",
+  "Les promenades en groupe lui permettent d'exercer son rôle de pont social. Il facilite naturellement les interactions entre chiens et entre propriétaires — c'est son talent inné.",
+  "Les activités partagées en famille renforcent les liens qu'il crée entre chaque membre. Le Médiateur est plus heureux quand tout le monde participe — l'harmonie du groupe est sa récompense."
+],
+'chien-Curieux':[
+  "Les cours en groupe avancés combinent ses deux passions : apprendre et socialiser. Il progresse plus vite entouré d'autres chiens et maîtres — la stimulation sociale amplifie sa curiosité intellectuelle.",
+  "Le nosework en milieu urbain nourrit sa curiosité avec la complexité infinie des odeurs de la ville. Chaque sortie est une enquête olfactive dans un environnement toujours renouvelé.",
+  "Découvrir un nouveau lieu chaque semaine est essentiel. Le Curieux a besoin de nouveauté pour maintenir son enthousiasme — la routine est son ennemi, la découverte son carburant."
+],
+'chat-Roi':[
+  "Les puzzles complexes satisfont son intelligence supérieure sans exiger d'interaction sociale. Le Roi résout les problèmes seul et à son rythme — avec la dignité que son statut exige.",
+  "Un perchoir élevé avec vue dominante lui permet de surveiller son royaume. C'est à la fois une activité d'observation et une position de pouvoir qui structure son territoire intérieur.",
+  "Les jeux de stratégie avec récompense activent son intelligence compétitive. Il apprécie les défis qui ont un enjeu — la simple distraction est indigne de son rang."
+],
+'chat-Acrobate':[
+  "Les parcours d'agilité féline sont son terrain de jeu naturel. Sauter, grimper, se faufiler — chaque obstacle est une occasion de démontrer sa grâce et sa puissance physique.",
+  "Les jouets aériens rapides activent son instinct de poursuite combiné à son agilité exceptionnelle. La vitesse et la précision de ses bonds sont spectaculaires quand il est bien stimulé.",
+  "L'exploration verticale sur étagères et passerelles satisfait son besoin de conquête spatiale. Chaque nouvelle hauteur atteinte est une victoire qui nourrit sa confiance et son plaisir."
+],
+'chat-Zen':[
+  "Votre présence calme pendant vos activités est la compagnie idéale pour le Zen. Pas besoin d'interaction active — être dans la même pièce, dans une ambiance sereine, suffit à son bonheur.",
+  "Les jeux doux sans pression respectent son rythme naturel. Le Zen ne veut pas être sur-stimulé — il apprécie la modération en toute chose et préfère la qualité à la quantité.",
+  "L'exploration tranquille de nouveaux espaces satisfait sa curiosité sans stress. Le Zen découvre le monde à son rythme — lentement, calmement, mais sûrement."
+],
+'chat-Câlin':[
+  "Les séances de câlins ritualisées sont le pilier de son bien-être. Le Câlin a besoin de moments de tendresse prévisibles et réguliers — c'est sa façon de se sentir aimé et en sécurité.",
+  "Les jeux doux en interaction directe renforcent votre lien sans le sur-stimuler. Le Câlin préfère les activités partagées et calmes aux jeux intenses et solitaires.",
+  "Les siestes partagées sont sa récompense ultime. Dormir contre vous est l'expression la plus pure de sa confiance et de son amour — ne sous-estimez jamais ce moment."
+],
+'chat-Nocturne':[
+  "Les séances de jeu crépusculaires exploitent son pic d'activité naturel. En jouant avec lui au coucher du soleil, vous canalisez son énergie nocturne et prévenez les courses folles à 3h du matin.",
+  "Les jouets autonomes pour la nuit lui permettent de s'occuper sans vous réveiller. Circuits à billes silencieux et jouets à mouvement lent sont ses compagnons nocturnes idéaux.",
+  "L'exploration nocturne dans un espace sécurisé respecte son rythme biologique inversé. La nuit est son moment — lui donner accès à un territoire sûr la nuit est essentiel."
+],
+'chat-Aventurier':[
+  "Le catio ou le jardin sécurisé est son terrain de jeu indispensable. L'Aventurier a besoin de sentir le vent, les odeurs et les textures de l'extérieur pour être pleinement épanoui.",
+  "Les jeux de chasse intensifs avec jouets robustes canalisent son énergie débordante. Friable et fragile ne font pas partie de son vocabulaire — il lui faut du solide et du rapide.",
+  "Les parcours d'obstacles renouvelés maintiennent son intérêt. L'Aventurier s'ennuie vite de ce qu'il connaît — la nouveauté est le moteur de sa motivation."
+],
+'chat-Veilleur':[
+  "Les postes d'observation stratégiques sont son activité principale. Le Veilleur a besoin de voir les entrées, les fenêtres et les mouvements pour exercer son rôle de gardien.",
+  "Les jeux de recherche dans la maison activent son intelligence vigilante. Cacher des friandises dans différentes pièces transforme son territoire en terrain de patrouille enrichi.",
+  "Les puzzles alimentaires stimulent sa vigilance intellectuelle. Le Veilleur apprécie les défis qui récompensent son attention et sa persévérance."
+],
+'chat-Bohème':[
+  "L'exploration sensorielle avec herbe à chat et textures variées nourrit sa sensibilité artistique. Le Bohème vit à travers ses sens — chaque nouvelle odeur ou texture est une expérience à savourer.",
+  "Les cachettes confortables et variées sont son atelier personnel. Le Bohème crée son propre univers dans chaque recoin — respectez ces espaces comme ses œuvres d'art.",
+  "Les jouets autonomes à mouvement lui permettent de jouer selon ses propres règles. Le Bohème refuse les horaires imposés — il s'active quand l'inspiration le frappe."
 ]
 };
 
@@ -2627,7 +2899,23 @@ var REW_WHY={
 'chat-Ombre':[
   "La récompense la plus puissante pour l'Ombre est votre passivité accueillante. S'asseoir calmement sans le regarder ni le solliciter lui offre un sentiment de contrôle total sur la situation. Chaque approche spontanée de sa part est le fruit direct de cette sécurité — ne l'interrompez jamais, laissez-le dicter.",
   "Déposer doucement une friandise à terre puis reculer légèrement et détourner le regard est la technique idéale. Aucune interaction directe, aucune pression — il peut s'approcher à son rythme. Chaque friandise acceptée de cette façon renforce sa confiance et crée une association positive avec votre présence non-invasive."
-]
+],
+'chien-Pitre':["Ses réactions enthousiastes sont le carburant du Pitre. Un applaudissement ou un rire sincère après un bon comportement crée un ancrage positif immédiat.","Les jeux physiques partagés sont sa monnaie d'échange favorite. Une partie de tir à la corde vaut mille friandises pour ce profil orienté vers l'action.","Les friandises données avec énergie et exclamations amplifient leur valeur récompensante. Pour le Pitre, la façon dont on donne compte autant que ce qu'on donne."],
+'chien-Stratège':["Le calme après l'effort est sa récompense préférée. Après un défi intellectuel, un moment de tranquillité lui permet d'intégrer l'expérience sans pression sociale.","Les puzzles-récompenses combinent défi et friandise — exactement ce que son cerveau analytique recherche. Chaque solution trouvée renforce sa confiance.","Les moments de complicité silencieuse en tête-à-tête nourrissent son attachement discret. C'est dans ces instants calmes que le lien se construit réellement."],
+'chien-Protecteur':["Lui donner des missions concrètes (porter un sac, surveiller un objet) active son instinct de gardien de façon positive. La responsabilité EST sa récompense.","L'activité physique partagée renforce le lien maître-protecteur. Courir ensemble crée une complicité de terrain qui nourrit sa dévotion.","Les félicitations calmes et appuyées après un travail bien fait correspondent à sa nature sérieuse. Il ne cherche pas l'euphorie mais la reconnaissance."],
+'chien-Zen':["La routine stable et prévisible est la plus grande récompense du Zen. Savoir que demain sera comme aujourd'hui lui procure un sentiment de sécurité profond.","Les caresses lentes et le temps calme partagé correspondent parfaitement à son rythme naturel. Il n'a pas besoin d'excitation — il a besoin de présence.","Les friandises dans un cadre serein sont plus appréciées que dans l'agitation. Le contexte compte autant que la récompense elle-même."],
+'chien-Complice':["Les missions et tâches concrètes nourrissent son besoin de participation active. Porter, chercher, ranger — chaque action partagée renforce votre lien unique.","Le temps de qualité en tête-à-tête est irremplaçable pour le Complice. C'est dans ces moments exclusifs que la complicité atteint son apogée.","Les félicitations verbales précises lui montrent que vous avez vu et compris son effort. Un 'bravo' générique pèse moins qu'un compliment spécifique."],
+'chien-Sportif':["L'activité physique elle-même est la récompense ultime du Sportif. Le mouvement, l'effort, le dépassement — il n'a pas besoin d'autre motivation.","Les nouvelles disciplines sportives maintiennent sa motivation à son maximum. La variété est le sel de sa vie athlétique.","La liberté de course en espace ouvert est sa récompense existentielle. Pouvoir courir à fond, sans contrainte, est ce qui le rend le plus heureux."],
+'chien-Médiateur':["L'harmonie dans le foyer est sa plus grande récompense. Quand tout le monde est calme et heureux, le Médiateur rayonne littéralement de satisfaction.","Les interactions sociales positives nourrissent sa double nature sociale et empathique. Chaque rencontre harmonieuse est une victoire pour lui.","Les félicitations de plusieurs personnes simultanément sont son summum. Être reconnu par le groupe entier confirme son rôle de lien."],
+'chien-Curieux':["Découvrir un nouvel endroit active son système de récompense plus que n'importe quelle friandise. La nouveauté est son moteur principal.","Les interactions avec de nouvelles personnes et animaux combinent ses deux passions : apprendre et socialiser. Chaque rencontre est une leçon.","Les puzzles de difficulté croissante entretiennent son enthousiasme intellectuel. Trop facile l'ennuie, trop dur le frustre — la progression est la clé."],
+'chat-Roi':["L'attention exclusive de son humain élu est la seule récompense digne de Sa Majesté. Pas de partage, pas de compromis — il veut tout votre focus.","Les friandises de prestige dans un cadre calme correspondent à son standing. Le Roi ne mange pas sur un coin de table — il déguste.","Le respect de ses décisions est la reconnaissance ultime. Quand vous attendez qu'il vienne vers vous au lieu de le chercher, il sait que vous avez compris."],
+'chat-Acrobate':["De nouveaux espaces verticaux à conquérir sont sa récompense favorite. Chaque nouvelle étagère ou passerelle est un territoire à explorer.","Les jouets rapides en mouvement activent son agilité à pleine puissance. La vitesse et la précision sont ses deux langages préférés.","La liberté d'exploration satisfait son besoin fondamental de mouvement et de conquête spatiale."],
+'chat-Zen':["La routine stable est sa plus grande source de confort. Le Zen n'a pas besoin de surprises — il a besoin de constance et de prévisibilité.","Les caresses douces et longues sont parfaitement calibrées sur son rythme naturel. Pas de gestes brusques — tout en douceur et en lenteur.","Les moments de calme partagés avec vous sont la forme la plus pure de connexion qu'il recherche. Être ensemble en silence suffit."],
+'chat-Câlin':["Le contact physique prolongé est son besoin primaire. Chaque câlin renforce son sentiment de sécurité et nourrit son attachement profond.","Votre voix douce et votre attention exclusive activent directement son système de bien-être. Il a besoin de sentir qu'il compte pour vous.","Une place à côté de vous — sur le canapé, sur le lit — est sa récompense spatiale. La proximité physique EST son langage d'amour."],
+'chat-Nocturne':["L'ambiance calme et tamisée du soir est son environnement optimal. Le Nocturne s'éveille quand le monde se calme — c'est son moment de grâce.","Les jouets nocturnes lui permettent de canaliser son énergie sans perturber votre sommeil. C'est un compromis gagnant-gagnant.","Les moments de complicité dans la pénombre sont ses préférés. Le Nocturne vous révèle son vrai visage quand les lumières baissent."],
+'chat-Aventurier':["L'accès à de nouveaux espaces d'exploration est sa récompense absolue. Chaque territoire nouveau conquis renforce sa confiance et sa vitalité.","Les jouets neufs et les stimulations intenses correspondent à son énergie débordante. Il a besoin de résistance et de défi physique.","La liberté de mouvement est son besoin existentiel. Un Aventurier contraint est un Aventurier frustré — la liberté est sa récompense."],
+'chat-Veilleur':["La reconnaissance calme de sa présence protectrice lui montre que son rôle est apprécié. Il ne cherche pas l'euphorie mais la validation.","Les friandises à ses postes favoris renforcent l'association positive entre vigilance et récompense. Son travail mérite salaire.","La routine stable qui respecte ses habitudes de garde est sa plus grande source de satisfaction. La prévisibilité est son confort."],
+'chat-Bohème':["Un environnement sensoriel riche est sa récompense première. Nouvelles odeurs, textures, lumières douces — chaque stimulus est une expérience à savourer.","La liberté totale de choix est fondamentale. Le Bohème refuse les contraintes — lui donner le contrôle de ses mouvements EST la récompense.","Les nouveaux stimuli olfactifs et tactiles nourrissent sa sensibilité artistique. Chaque découverte sensorielle enrichit sa vie intérieure."]
 };
 
 // ══════════════════════════════════════════════════════
@@ -2711,7 +2999,23 @@ var ERR_WHY={
   "L'Ombre perçoit toute tentative d'initiation de contact de votre part comme une intrusion dans son espace de sécurité. Quémander sa présence — l'appeler, aller vers lui, le forcer à rester — déclenche son système d'évitement et confirme que vous êtes imprévisible. Ce comportement bien intentionné retarde la confiance de semaines. La règle absolue : laissez-le toujours initier. Chaque approche spontanée de sa part est une victoire construite sur votre patience.",
   "Ce profil a besoin d'un espace stable et prévisible pour commencer à se sentir en sécurité. Des inconnus fréquents — livraisons, visiteurs, travaux — maintiennent son système d'alerte en éveil et l'empêchent de se poser. Limitez les flux extérieurs autant que possible et informez les visiteurs de son besoin absolu d'invisibilité — une pièce refuge accessible en permanence est non négociable.",
   "Le retrait, la fuite et la posture basse sont la façon dont l'Ombre dit 'j'ai besoin de distance'. Ignorer ces signaux et insister — même avec des intentions bienveillantes — peut créer une réponse de défense (griffure, morsure) ou un traumatisme relationnel difficile à réparer. Respecter chaque signal de retrait est la base absolue de la relation avec ce profil. C'est un investissement à long terme qui finit toujours par porter ses fruits."
-]
+],
+'chien-Pitre':["Les séances longues et complexes dépassent sa capacité de concentration. Le Pitre décroche rapidement — gardez les exercices à 5 minutes maximum pour des résultats optimaux.","Ignorer ses tentatives de vous amuser lui envoie un signal de rejet. Son humour est sa façon de se connecter — le rabrouer, c'est couper le lien.","Un environnement trop strict étouffe sa nature joyeuse. Sans espace pour la spontanéité, il développe de l'anxiété ou des comportements de compensation."],
+'chien-Stratège':["Les situations sociales intenses submergent son système d'analyse. Il ne peut pas traiter toutes les informations simultanément — le stress monte et la confiance s'effondre.","Ses signaux de stress sont subtils (détournement de regard, léchage de babines, bâillements). Les ignorer, c'est l'abandonner à son malaise intérieur.","Sous-estimer sa richesse intérieure mène à une sous-stimulation chronique. Son cerveau a besoin de défis — sans eux, l'ennui se transforme en anxiété."],
+'chien-Protecteur':["Encourager l'agressivité de garde transforme la protection en menace. La ligne est fine — sans cadre clair, le Protecteur devient un risque pour les visiteurs.","L'absence de dépense physique canalise son énergie de gardien en frustration et réactivité. Un Protecteur sous-exercé est un Protecteur imprévisible.","Un environnement social non préparé active son mode défensif en permanence. Le stress chronique de la vigilance sans repos épuise son système nerveux."],
+'chien-Zen':["Prendre son calme pour de l'indifférence mène à négliger ses besoins réels. Le Zen souffre en silence — ses demandes sont discrètes mais tout aussi légitimes.","Négliger les sorties sous prétexte qu'il ne réclame rien crée un déficit de stimulation invisible. Son calme masque un besoin de mouvement et de découverte.","Son absence de signes de douleur ne signifie pas absence de douleur. Le Zen peut masquer des problèmes de santé graves — les bilans réguliers sont essentiels."],
+'chien-Complice':["Sans rôle ni responsabilité, le Complice se sent inutile. Son besoin de participation est existentiel — l'exclure de votre quotidien le blesse profondément.","Ignorer ses tentatives de communication rompt le dialogue qu'il cherche à construire. Chaque signal ignoré est une porte qui se ferme progressivement.","Sous-utiliser son intelligence crée un ennui profond qui peut se manifester par des comportements destructeurs ou un repli émotionnel."],
+'chien-Sportif':["Un mode de vie sédentaire est la pire chose pour ce profil. L'énergie non dépensée se transforme en destructions, aboiements compulsifs et frustration intense.","Confondre son indépendance avec du désintérêt mène à ignorer ses besoins affectifs. Sous l'athlète se cache un cœur qui a aussi besoin de reconnaissance.","Négliger la récupération après l'effort expose le Sportif aux blessures et à l'usure prématurée. L'intensité doit s'accompagner de repos."],
+'chien-Médiateur':["Les conflits et disputes en sa présence le blessent directement. Il absorbe les tensions comme une éponge et peut développer des troubles psychosomatiques.","L'isolement social prolongé prive le Médiateur de sa raison d'être. Sans interactions à faciliter, il perd son équilibre et sa joie de vivre.","Ignorer sa fatigue émotionnelle peut mener à l'épuisement. Le Médiateur donne sans compter — c'est à vous de lui imposer des pauses."],
+'chien-Curieux':["La routine monotone tue sa motivation. Sans nouveauté, le Curieux se déconnecte progressivement et perd l'étincelle qui le rend unique.","L'isolement social prive son intelligence de son catalyseur principal. Le Curieux apprend et découvre MIEUX en compagnie — la solitude l'éteint.","Un environnement pauvre en stimulations provoque un ennui intellectuel qui peut mener à des comportements exploratoires destructeurs."],
+'chat-Roi':["Forcer le contact avec des inconnus est une insulte à sa dignité. Le Roi décide seul qui mérite son attention — outrepasser cette règle détruit sa confiance.","Traiter ses rituels avec désinvolture revient à ignorer son identité. Le Roi structure son monde autour de ces rituels — les perturber, c'est le déstabiliser.","La compétition avec un autre animal menace sa souveraineté. Le Roi ne partage pas son trône — un rival dans la maison crée un stress territorial intense."],
+'chat-Acrobate':["Un espace sans dimension verticale est une prison pour l'Acrobate. Sans hauteur à conquérir, son énergie physique se retourne contre votre mobilier.","L'absence de stimulation physique crée une frustration qui se manifeste par des courses folles, des griffades et des tentatives d'évasion.","Ignorer ses besoins d'activité sous prétexte d'indépendance est une erreur grave. L'Acrobate est indépendant dans ses relations, pas dans ses besoins physiques."],
+'chat-Zen':["Oublier ses besoins parce qu'il ne réclame rien est le piège classique du Zen. Son silence n'est pas de l'indifférence — c'est de la discrétion.","Un environnement chaotique ne le fera pas réagir visiblement, mais l'impact sur son bien-être est réel et cumulatif. Le calme apparent cache un stress latent.","Les visites vétérinaires négligées sont particulièrement dangereuses pour ce profil qui masque naturellement ses signes de douleur ou de maladie."],
+'chat-Câlin':["La solitude prolongée déclenche une anxiété de séparation réelle. Le Câlin a un besoin vital de compagnie — l'isolement le fait souffrir profondément.","Repousser ses demandes d'affection le blesse au plus profond. Chaque rejet, même involontaire, fragilise sa confiance et renforce son anxiété.","Un environnement émotionnellement froid prive le Câlin de ce qui le maintient en vie : le lien affectif. Sans chaleur humaine, il dépérit."],
+'chat-Nocturne':["L'enfermer la nuit dans un espace restreint va à l'encontre de son rythme biologique. La frustration nocturne crée des vocalisations et un stress intense.","Les lumières vives et le bruit constant le soir perturbent sa transition vers son mode actif. Il a besoin de pénombre pour s'éveiller progressivement.","Ignorer ses besoins d'activité crépusculaire concentre toute son énergie sur les heures les plus inopportunes pour vous — les courses nocturnes s'intensifient."],
+'chat-Aventurier':["Un environnement confiné est la pire torture pour ce profil. Sans espace d'exploration, sa frustration se manifeste par des destructions et des tentatives d'évasion.","Les jouets fragiles ne durent pas cinq minutes — c'est une source de frustration plutôt que de stimulation. Il lui faut du robuste et du résistant.","Sous-estimer son besoin d'exploration mène à un chat physiquement et psychologiquement mal en point. L'aventure est son besoin vital."],
+'chat-Veilleur':["Bloquer l'accès à ses postes d'observation le prive de son rôle de gardien. C'est comme retirer son uniforme à un soldat — son identité en souffre.","Introduire un animal sans préparation bouleverse son territoire surveillé. Le Veilleur a besoin de temps pour intégrer tout changement dans son périmètre.","Perturber ses routines de surveillance crée un sentiment d'insécurité. Sa vigilance est structurée — la déstructurer, c'est le déstabiliser."],
+'chat-Bohème':["Un environnement sensoriel pauvre prive le Bohème de ce qui nourrit sa vie intérieure. Sans stimuli variés, il se replie dans un ennui profond.","Forcer le contact physique viole son besoin fondamental de liberté. Le Bohème choisit quand et comment il se connecte — forcer détruit la confiance.","L'ambiance stressante est toxique pour sa sensibilité. Le Bohème absorbe les émotions de son environnement — le chaos le fait fuir ou se fermer."]
 };
 
 // ══════════════════════════════════════════════════════
@@ -2985,6 +3289,50 @@ function computeScores(){
   return dims;
 }
 
+// Calcul des plages min/max théoriques par dimension
+function getDimRange(animalType){
+  var qs=QUESTIONS[animalType];
+  var lo={SOC:0,ENG:0,ATT:0,SEN:0,INT:0};
+  var hi={SOC:0,ENG:0,ATT:0,SEN:0,INT:0};
+  var ds=['SOC','ENG','ATT','SEN','INT'];
+  qs.forEach(function(q){
+    if(q.type==='radio'){
+      ds.forEach(function(d){
+        var vals=q.opts.map(function(o){return(o.v&&o.v[d])||0;});
+        lo[d]+=Math.min.apply(null,vals);
+        hi[d]+=Math.max.apply(null,vals);
+      });
+    }else if(q.type==='multi'){
+      ds.forEach(function(d){
+        var neg=0,pos=0;
+        q.opts.forEach(function(o){
+          var v=(o.v&&o.v[d])||0;
+          if(v<0)neg+=v; if(v>0)pos+=v;
+        });
+        lo[d]+=neg; hi[d]+=pos;
+      });
+    }else if(q.type==='slider'||q.type==='likert'){
+      ds.forEach(function(d){
+        var a=(q.vMin&&q.vMin[d])||0,b=(q.vMax&&q.vMax[d])||0;
+        lo[d]+=Math.min(a,b); hi[d]+=Math.max(a,b);
+      });
+    }
+  });
+  return{lo:lo,hi:hi};
+}
+
+// Normalise les scores bruts en 0-100 par dimension
+function normalizeScores(dims,animalType){
+  var r=getDimRange(animalType);
+  var n={};
+  ['SOC','ENG','ATT','SEN','INT'].forEach(function(d){
+    var span=r.hi[d]-r.lo[d];
+    n[d]=span>0?Math.round((dims[d]-r.lo[d])/span*100):50;
+    n[d]=Math.max(0,Math.min(100,n[d]));
+  });
+  return n;
+}
+
 function finishQuiz(){
   showScreen('loading');
   var msgs=['Analyse des réponses…','Identification du profil…','Calcul des dimensions…','Préparation des résultats…'];
@@ -3123,7 +3471,7 @@ function getCompatSub(key,scores){
 function buildRadar(scores){
   var cx=130,cy=130,r=88;
   var keys=['SOC','ENG','ATT','SEN','INT'];
-  function norm(v){return Math.min(0.93,Math.max(0.07,(v+30)/60));}
+  function norm(v){return Math.min(0.93,Math.max(0.07,v/100));}
   function pt(idx,frac){
     var a=(idx*2*Math.PI/5)-Math.PI/2;
     return{x:cx+r*frac*Math.cos(a),y:cy+r*frac*Math.sin(a)};
@@ -3225,9 +3573,10 @@ function showShareToast(msg){
 
 function shareResult(){
   var sc=computeScores();
+  var nsc=normalizeScores(sc,animal);
   var profs=PROFILES[animal];
   var best=profs[0];
-  profs.forEach(function(p){if(p.score(sc)>best.score(sc)) best=p;});
+  profs.forEach(function(p){if(p.score(nsc)>best.score(nsc)) best=p;});
   var nom=profile.nom||(animal==='chien'?'Mon chien':'Mon chat');
   var txt=nom+' est "'+best.title+'" — '+best.tagline+'. Découvrez le profil de votre compagnon sur Âme Animale !';
   var url=window.location.href;
@@ -3247,20 +3596,21 @@ function shareResult(){
 // ── GENERATE PDF ─────────────────────────────────────
 function generatePDF(){
   var scores=computeScores();
+  var ns=normalizeScores(scores,animal);
   var profs=PROFILES[animal];
   var best=profs[0];
-  profs.forEach(function(p){if(p.score(scores)>best.score(scores)) best=p;});
+  profs.forEach(function(p){if(p.score(ns)>best.score(ns)) best=p;});
   var nomStr=profile.nom?profile.nom:(animal==='chien'?'Votre chien':'Votre chat');
   var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
   var an=buildAnalysisText(scores,profile.nom,animal);
   var why=buildWhyText(scores,best);
   var co=best.compat||{};
 
-  function pct(v){return Math.min(95,Math.max(5,Math.round((v+30)/60*100)));}
+  function pct(k){return Math.min(95,Math.max(5,ns[k]));}
   var dimKeys=['SOC','ENG','ATT','SEN','INT'];
   var dimNames={SOC:'Sociabilité',ENG:'Énergie',ATT:'Attachement',SEN:'Sensibilité',INT:'Intelligence'};
   var dimEmojis={SOC:'🤝',ENG:'⚡',ATT:'💝',SEN:'🌡️',INT:'🧩'};
-  var domDim=dimKeys.reduce(function(a,b){return pct(scores[b])>pct(scores[a])?b:a;});
+  var domDim=dimKeys.reduce(function(a,b){return pct(b)>pct(a)?b:a;});
 
   var today=new Date();
   var dateStr=today.toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
@@ -3268,7 +3618,7 @@ function generatePDF(){
   // Build dimension bars HTML with detailed explanations
   var dimBarsHTML='';
   dimKeys.forEach(function(k){
-    var p=pct(scores[k]);
+    var p=pct(k);
     var dimInfo=getDimInfo(k,p);
     dimBarsHTML+='<div style="margin-bottom:18px;">'
       +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:6px;">'
@@ -3283,11 +3633,11 @@ function generatePDF(){
       +'</div>';
   });
   dimBarsHTML+='<div style="margin-top:18px;padding:16px;background:rgba(0,0,0,0.03);border-radius:12px;font-size:13px;color:#666;line-height:1.7;">'
-    +'Dimension dominante : <strong style="color:#111;">'+dimNames[domDim]+'</strong> ('+pct(scores[domDim])+'%). '
+    +'Dimension dominante : <strong style="color:#111;">'+dimNames[domDim]+'</strong> ('+pct(domDim)+'%). '
     +'Cette dimension façonne profondément la façon dont '+nom2+' vit, interagit et ressent le monde.</div>';
 
   // Radar SVG
-  var radarSVG=buildRadar(scores);
+  var radarSVG=buildRadar(ns);
 
   // Context notes
   var contextHTML='';
@@ -3360,7 +3710,7 @@ function generatePDF(){
 
   // Summary
   var summaryPara=nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
-    +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(scores[domDim])+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
+    +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(domDim)+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
     +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
 
@@ -3447,7 +3797,7 @@ function generatePDF(){
     +'.compat-sub{font-size:11px;color:#666;line-height:1.55;}'
 
     // Summary page — single A4 page, everything centered
-    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;width:210mm;min-height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;}'
+    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;padding:28mm 20mm 24mm 20mm;box-sizing:border-box;width:210mm;height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;}'
     +'.summary-inner{padding:0 40px;max-width:500px;}'
     +'.summary-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}'
     +'.summary-quote{font-family:"Outfit",sans-serif;font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:18px;}'
@@ -3494,7 +3844,7 @@ function generatePDF(){
   html+=secHeader('Radar comportemental');
   html+='<div class="radar-wrap"><div class="radar-svg">'+radarSVG+'</div><div style="flex:1;">';
   dimKeys.forEach(function(k){
-    var p=pct(scores[k]);
+    var p=pct(k);
     html+='<div class="dim-bar">'
       +'<span class="dim-bar-emoji">'+dimEmojis[k]+'</span>'
       +'<span class="dim-bar-name">'+dimNames[k]+'</span>'
@@ -3504,7 +3854,7 @@ function generatePDF(){
   html+='</div></div>';
   // Dimension details
   dimKeys.forEach(function(k){
-    var p=pct(scores[k]);
+    var p=pct(k);
     var info=getDimInfo(k,p);
     html+='<div class="dim-detail"><strong>'+dimEmojis[k]+' '+dimNames[k]+' — '+p+'%</strong><br>'+info+'</div>';
   });
@@ -3756,9 +4106,10 @@ function buildBreedNote(race, best, animalType){
 
 function showResults(){
   var scores=computeScores();
+  var ns=normalizeScores(scores,animal);
   var profs=PROFILES[animal];
   var best=profs[0];
-  profs.forEach(function(p){if(p.score(scores)>best.score(scores)) best=p;});
+  profs.forEach(function(p){if(p.score(ns)>best.score(ns)) best=p;});
 
   // Hero
   document.getElementById('r-emoji').textContent=best.emoji;
@@ -3766,7 +4117,7 @@ function showResults(){
   document.getElementById('r-title').textContent=best.title;
   document.getElementById('r-tagline').textContent=best.tagline;
 
-  function pct(v){return Math.min(95,Math.max(5,Math.round((v+30)/60*100)));}
+  function pct(k){return Math.min(95,Math.max(5,ns[k]));}
   var dimKeys=['SOC','ENG','ATT','SEN','INT'];
   var dimNames={SOC:'Sociabilité',ENG:'Énergie',ATT:'Attachement',SEN:'Sensibilité',INT:'Intelligence'};
   var dimEmojis={SOC:'🤝',ENG:'⚡',ATT:'💝',SEN:'🌡️',INT:'🧩'};
@@ -3774,7 +4125,7 @@ function showResults(){
   // Radar legend — clickable, with hidden explanation panels
   var legendHTML='';
   dimKeys.forEach(function(k){
-    var p=pct(scores[k]);
+    var p=pct(k);
     legendHTML+=
       '<div class="r-radar-item" id="dim-row-'+k+'" onclick="toggleDimInfo(\''+k+'\')" role="button">'
       +'<span class="r-radar-em">'+dimEmojis[k]+'</span>'
@@ -3840,10 +4191,10 @@ function showResults(){
   // Summary — full paragraph
   var nomStr=profile.nom?profile.nom:(animal==='chien'?'Votre chien':'Votre chat');
   var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
-  var domDim=dimKeys.reduce(function(a,b){return pct(scores[b])>pct(scores[a])?b:a;});
+  var domDim=dimKeys.reduce(function(a,b){return pct(b)>pct(a)?b:a;});
   var summaryPara=
     nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
-    +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(scores[domDim])+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
+    +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(domDim)+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
     +'Pour lui offrir le meilleur, '+(an.home.split('.')[0].toLowerCase()+'. ')
     +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
@@ -3871,7 +4222,7 @@ function showResults(){
 
     +'<div class="r-section-title">Les 5 dimensions comportementales <span style="font-weight:400;font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — cliquez sur une dimension pour l\'expliquer</span></div>'
     +'<div class="r-radar-wrap">'
-      +'<div class="r-radar-svg">'+buildRadar(scores)+'</div>'
+      +'<div class="r-radar-svg">'+buildRadar(ns)+'</div>'
       +'<div class="r-radar-legend">'+legendHTML+'</div>'
     +'</div>'
 

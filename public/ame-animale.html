@@ -3378,7 +3378,7 @@ function generatePDF(){
     +'@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}'
 
     // Cover — full page, no margin
-    +'.cover-page{page-break-after:always;margin:-28mm -20mm -24mm -20mm;padding:0;height:297mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#f7f6f3;position:relative;}'
+    +'.cover-page{page-break-after:always;margin:-28mm -20mm -24mm -20mm;width:210mm;height:297mm;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#f7f6f3;position:relative;}'
     +'.cover-logo{font-family:"Outfit",sans-serif;font-size:20px;font-weight:900;letter-spacing:-0.5px;color:#111;margin-bottom:60px;}'
     +'.cover-emoji{font-size:72px;margin-bottom:20px;}'
     +'.cover-name{font-family:"Outfit",sans-serif;font-size:16px;font-weight:600;color:#888;margin-bottom:10px;text-transform:uppercase;letter-spacing:2px;}'
@@ -3447,10 +3447,12 @@ function generatePDF(){
     +'.compat-sub{font-size:11px;color:#666;line-height:1.55;}'
 
     // Summary page
-    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;padding:60px 50px;height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;justify-content:center;}'
+    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;width:210mm;height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;}'
+    +'.summary-inner{padding:0 50px;max-width:560px;}'
     +'.summary-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}'
     +'.summary-quote{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;letter-spacing:-1px;margin-bottom:20px;}'
-    +'.summary-text{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.8;max-width:520px;}'
+    +'.summary-text{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.8;text-align:left;}'
+    +'.summary-footer{position:absolute;bottom:40px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,0.2);}'
     +'.summary-footer{position:absolute;bottom:40px;font-size:11px;color:rgba(255,255,255,0.2);}'
 
     // Running footer
@@ -3547,10 +3549,12 @@ function generatePDF(){
   html+=secHeader('Compatibilité')+compatHTML+footer();
 
   // ── SUMMARY ──
-  html+='<div class="summary" style="position:relative;">'
+  html+='<div class="summary">'
+    +'<div class="summary-inner">'
     +'<div class="summary-label">Synthèse — '+nomStr+'</div>'
     +'<div class="summary-quote">'+best.emoji+' '+best.title+'</div>'
     +'<div class="summary-text">'+summaryPara+'</div>'
+    +'</div>'
     +'<div class="summary-footer">🐾 Âme Animale — ameanimale.fr</div>'
     +'</div>';
 

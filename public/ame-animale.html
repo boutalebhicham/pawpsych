@@ -99,7 +99,7 @@ img{display:block;max-width:100%;}
 .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;animation:up .6s ease .24s both;}
 .hero-social{display:flex;align-items:center;gap:12px;margin-top:24px;animation:up .6s ease .32s both;}
 .hero-avatars{display:flex;}
-.ha{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,0.75);border:2px solid var(--bg);margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:14px;backdrop-filter:blur(8px);}
+.ha{width:30px;height:30px;border-radius:50%;border:2px solid var(--bg);margin-left:-8px;overflow:hidden;object-fit:cover;}
 .ha:first-child{margin-left:0;}
 .hero-social-text{font-size:13.5px;color:var(--text2);font-weight:400;}
 .hero-count{font-family:var(--display);font-weight:800;color:var(--text);font-size:14.5px;}
@@ -328,7 +328,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .tstars{font-size:13px;color:var(--text);letter-spacing:3px;margin-bottom:16px;}
 .ttext{font-size:15px;font-weight:300;line-height:1.75;color:var(--text);margin-bottom:24px;font-style:italic;}
 .tauthor{display:flex;align-items:center;gap:12px;}
-.tavatar{width:40px;height:40px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.tavatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;}.tavatar img{width:100%;height:100%;object-fit:cover;}
 .tname{font-family:var(--display);font-size:14px;font-weight:800;letter-spacing:-.2px;}
 .tpet{font-size:12px;color:var(--text3);margin-top:2px;}
 
@@ -720,6 +720,8 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .cap-review.exit{opacity:0;transform:translateX(-30px);}
 .cap-review-stars{color:#f59e0b;font-size:14px;letter-spacing:2px;margin-bottom:8px;}
 .cap-review-text{font-size:14px;color:var(--text2);line-height:1.6;font-style:italic;max-width:380px;margin:0 auto 10px;}
+.cap-review-footer{display:flex;align-items:center;justify-content:center;gap:10px;}
+.cap-review-avatar{width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;}.cap-review-avatar img{width:100%;height:100%;object-fit:cover;}
 .cap-review-author{font-size:13px;font-weight:700;color:var(--text);}
 .cap-review-pet{font-size:12px;color:var(--text3);margin-top:2px;}
 .cap-stats{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text3);margin-bottom:10px;}
@@ -937,7 +939,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .r-sell-stat-label{font-size:12px;color:var(--text3);margin-top:2px;}
 .r-sell-reviews{display:flex;flex-direction:column;gap:16px;margin-bottom:36px;}
 .r-sell-review{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start;}
-.r-sell-review-avatar{font-size:28px;flex-shrink:0;}
+.r-sell-review-avatar{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;}.r-sell-review-avatar img{width:100%;height:100%;object-fit:cover;}
 .r-sell-review-body{flex:1;}
 .r-sell-review-stars{color:#f59e0b;font-size:13px;letter-spacing:1px;margin-bottom:6px;}
 .r-sell-review-text{font-size:14px;color:var(--text2);line-height:1.6;font-style:italic;margin-bottom:8px;}
@@ -1011,7 +1013,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
     </div>
     <div class="hero-social">
       <div class="hero-avatars">
-        <span class="ha">🧑</span><span class="ha">👩</span><span class="ha">👨</span><span class="ha">👩</span><span class="ha">🧑</span>
+        <img class="ha" src="/img/sophie.jpg" alt=""><img class="ha" src="/img/thomas.jpg" alt=""><img class="ha" src="/img/julien.jpg" alt=""><img class="ha" src="/img/camille.jpg" alt=""><img class="ha" src="/img/marc.jpg" alt="">
       </div>
       <div class="hero-social-text">
         <span class="hero-count">+170 000</span> propriétaires ont déjà analysé leur animal
@@ -1220,17 +1222,17 @@ hr.sep{border:none;border-top:1px solid var(--border);}
       <div class="tcard">
         <div class="tstars">★★★★★</div>
         <p class="ttext">"Le test a parfaitement décrit la personnalité de ma chienne Luna. J'ai enfin compris pourquoi elle panique dans certaines situations. Les conseils m'ont vraiment aidée."</p>
-        <div class="tauthor"><div class="tavatar">👩</div><div><div class="tname">Sophie M.</div><div class="tpet">🐕 Luna, Border Collie, 4 ans</div></div></div>
+        <div class="tauthor"><div class="tavatar"><img src="/img/sophie.jpg" alt="Sophie"></div><div><div class="tname">Sophie M.</div><div class="tpet">🐕 Luna, Border Collie, 4 ans</div></div></div>
       </div>
       <div class="tcard">
         <div class="tstars">★★★★★</div>
         <p class="ttext">"Mon chat Mochi a toujours été mystérieux. L'analyse m'a révélé qu'il est très attaché mais qu'il exprime son amour différemment. Je le comprends tellement mieux."</p>
-        <div class="tauthor"><div class="tavatar">👨</div><div><div class="tname">Thomas L.</div><div class="tpet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>
+        <div class="tauthor"><div class="tavatar"><img src="/img/thomas.jpg" alt="Thomas"></div><div><div class="tname">Thomas L.</div><div class="tpet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>
       </div>
       <div class="tcard">
         <div class="tstars">★★★★★</div>
         <p class="ttext">"Mon chien Léo semblait toujours anxieux sans raison. L'analyse a révélé un fort besoin de structure et de routine. En adaptant son quotidien, il est méconnaissable."</p>
-        <div class="tauthor"><div class="tavatar">👨</div><div><div class="tname">Julien M.</div><div class="tpet">🐕 Léo, Berger Australien, 3 ans</div></div></div>
+        <div class="tauthor"><div class="tavatar"><img src="/img/julien.jpg" alt="Julien"></div><div><div class="tname">Julien M.</div><div class="tpet">🐕 Léo, Berger Australien, 3 ans</div></div></div>
       </div>
     </div>
   </div>
@@ -1612,20 +1614,17 @@ hr.sep{border:none;border-top:1px solid var(--border);}
       <div class="cap-review active">
         <div class="cap-review-stars">★★★★★</div>
         <div class="cap-review-text">"Le test a parfaitement décrit la personnalité de ma chienne Luna. Les conseils m'ont vraiment aidée à mieux la comprendre."</div>
-        <div class="cap-review-author">Sophie M.</div>
-        <div class="cap-review-pet">🐕 Luna, Border Collie, 4 ans</div>
+        <div class="cap-review-footer"><div class="cap-review-avatar"><img src="/img/sophie.jpg" alt="Sophie"></div><div><div class="cap-review-author">Sophie M.</div><div class="cap-review-pet">🐕 Luna, Border Collie, 4 ans</div></div></div>
       </div>
       <div class="cap-review">
         <div class="cap-review-stars">★★★★★</div>
         <div class="cap-review-text">"L'analyse m'a révélé que Mochi est très attaché mais exprime son amour différemment. Je le comprends tellement mieux maintenant."</div>
-        <div class="cap-review-author">Thomas L.</div>
-        <div class="cap-review-pet">🐈 Mochi, British Shorthair, 2 ans</div>
+        <div class="cap-review-footer"><div class="cap-review-avatar"><img src="/img/thomas.jpg" alt="Thomas"></div><div><div class="cap-review-author">Thomas L.</div><div class="cap-review-pet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>
       </div>
       <div class="cap-review">
         <div class="cap-review-stars">★★★★★</div>
         <div class="cap-review-text">"L'analyse a révélé un fort besoin de structure chez Léo. En adaptant son quotidien, il est méconnaissable. Merci !"</div>
-        <div class="cap-review-author">Julien M.</div>
-        <div class="cap-review-pet">🐕 Léo, Berger Australien, 3 ans</div>
+        <div class="cap-review-footer"><div class="cap-review-avatar"><img src="/img/julien.jpg" alt="Julien"></div><div><div class="cap-review-author">Julien M.</div><div class="cap-review-pet">🐕 Léo, Berger Australien, 3 ans</div></div></div>
       </div>
     </div>
     <div class="cap-stats"><span class="cap-stats-count">+2 847</span> analyses réalisées ce mois-ci</div>
@@ -4556,9 +4555,9 @@ function showResults(){
     +'<div class="r-sell-title">Ce qu\'ils en disent</div>'
     +'<div class="r-sell-sub">Des propriétaires comme vous qui ont transformé leur quotidien.</div>'
     +'<div class="r-sell-reviews">'
-      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👩</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"J\'ai enfin compris pourquoi Luna panique lors des promenades. Le rapport m\'a donné des exercices concrets et en 2 semaines, les balades sont devenues un plaisir."</div><div class="r-sell-review-author">Sophie M.</div><div class="r-sell-review-pet">🐕 Luna, Border Collie, 4 ans</div></div></div>'
-      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👨</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mochi griffait les meubles sans arrêt. Le rapport a révélé un besoin de stimulation que je ne soupçonnais pas. Depuis que j\'ai suivi les conseils, plus un seul meuble abîmé."</div><div class="r-sell-review-author">Thomas L.</div><div class="r-sell-review-pet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>'
-      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👩</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mon vétérinaire m\'a dit que c\'était l\'analyse la plus complète qu\'il ait vue en dehors d\'une consultation comportementale. Et c\'est 10x moins cher."</div><div class="r-sell-review-author">Marie D.</div><div class="r-sell-review-pet">🐕 Oscar, Labrador, 6 ans</div></div></div>'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar"><img src="/img/sophie.jpg" alt="Sophie"></div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"J\'ai enfin compris pourquoi Luna panique lors des promenades. Le rapport m\'a donné des exercices concrets et en 2 semaines, les balades sont devenues un plaisir."</div><div class="r-sell-review-author">Sophie M.</div><div class="r-sell-review-pet">🐕 Luna, Border Collie, 4 ans</div></div></div>'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar"><img src="/img/thomas.jpg" alt="Thomas"></div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mochi griffait les meubles sans arrêt. Le rapport a révélé un besoin de stimulation que je ne soupçonnais pas. Depuis que j\'ai suivi les conseils, plus un seul meuble abîmé."</div><div class="r-sell-review-author">Thomas L.</div><div class="r-sell-review-pet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar"><img src="/img/marie.jpg" alt="Marie"></div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mon vétérinaire m\'a dit que c\'était l\'analyse la plus complète qu\'il ait vue en dehors d\'une consultation comportementale. Et c\'est 10x moins cher."</div><div class="r-sell-review-author">Marie D.</div><div class="r-sell-review-pet">🐕 Oscar, Labrador, 6 ans</div></div></div>'
     +'</div>'
     +'</div>'
 

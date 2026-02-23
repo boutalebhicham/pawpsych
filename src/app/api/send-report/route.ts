@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import PDFDocument from 'pdfkit';
 
 function getResend() {
   return new Resend(process.env.RESEND_API_KEY || '');
@@ -136,6 +137,79 @@ function buildEmailHTML(data: {
 
 export const dynamic = 'force-dynamic';
 
+
+// Generate PDF buffer from report data
+async function generatePdfBuffer(data: {
+  animalName: string;
+  animalType: string;
+  scores: Record<string, number>;
+  profile: string;
+  recommendations: string[];
+}): Promise<Buffer> {
+  return new Promise((resolve, reject) => {
+    const doc = new PDFDocument({ margin: 50, size: 'A4' });
+    const chunks: Buffer[] = [];
+    doc.on('data', (chunk: Buffer) => chunks.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('error', reject);
+
+    // Header
+    doc.fontSize(24).font('Helvetica-Bold').fillColor('#4a6741')
+       .text('Rapport de personnalité', { align: 'center' });
+    doc.fontSize(18).fillColor('#333')
+       .text(`${data.animalName} — Âme Animale`, { align: 'center' });
+    doc.moveDown(1);
+
+    // Separator
+    doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#4a6741').lineWidth(2).stroke();
+    doc.moveDown(1);
+
+    // Animal type
+    doc.fontSize(13).font('Helvetica').fillColor('#555')
+       .text(`Type d'animal : ${data.animalType}`, { align: 'left' });
+    doc.moveDown(0.5);
+
+    // Profile
+    doc.fontSize(14).font('Helvetica-Bold').fillColor('#333')
+       .text('Profil de personnalité :', { underline: false });
+    doc.fontSize(12).font('Helvetica').fillColor('#444')
+       .text(data.profile);
+    doc.moveDown(1);
+
+    // Scores
+    doc.fontSize(14).font('Helvetica-Bold').fillColor('#333')
+       .text('Scores par dimension :');
+    doc.moveDown(0.3);
+    const dimLabels: Record<string, string> = {
+      SOC: 'Sociabilité', ENG: 'Énergie', ATT: 'Attachement',
+      SEN: 'Sensibilité', CUR: 'Curiosité', ADP: 'Adaptabilité'
+    };
+    for (const [key, value] of Object.entries(data.scores)) {
+      const label = dimLabels[key] || key;
+      const pct = Math.round(value * 100);
+      doc.fontSize(11).font('Helvetica').fillColor('#555')
+         .text(`  • ${label} : ${pct}%`);
+    }
+    doc.moveDown(1);
+
+    // Recommendations
+    if (data.recommendations && data.recommendations.length > 0) {
+      doc.fontSize(14).font('Helvetica-Bold').fillColor('#333')
+         .text('Recommandations :');
+      doc.moveDown(0.3);
+      for (const rec of data.recommendations) {
+        doc.fontSize(11).font('Helvetica').fillColor('#444')
+           .text(`  → ${rec}`);
+      }
+    }
+
+    doc.moveDown(2);
+    doc.fontSize(9).fillColor('#999').text('© Âme Animale — ameanimale.fr', { align: 'center' });
+
+    doc.end();
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
@@ -153,8 +227,26 @@ export async function POST(req: NextRequest) {
     const html = buildEmailHTML(data);
     const animalName = data.animalName || 'votre animal';
 
+    // Generate PDF attachment
+    let pdfBuffer: Buffer | null = null;
+    try {
+      pdfBuffer = await generatePdfBuffer({
+        animalName,
+        animalType: data.animalType || '',
+        scores: (data.scores || {}) as Record<string, number>,
+        profile: data.profileDescription || data.profile || '',
+        recommendations: data.recommendations || [],
+      });
+    } catch (pdfErr) {
+      console.error('PDF generation error:', pdfErr);
+    }
+
     const { error } = await getResend().emails.send({
-            from: 'Âme Animale <contact@ameanimale.fr>',
+      from: 'Âme Animale <contact@ameanimale.fr>',
+      headers: {
+        'X-Mailer': 'Âme Animale v1.0',
+        'List-Unsubscribe': '<mailto:contact@ameanimale.fr?subject=unsubscribe>',
+      },
       to: [email],
       subject: `🐾 Rapport de personnalité de ${animalName} — Âme Animale`,
       html,

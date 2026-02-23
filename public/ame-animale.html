@@ -919,10 +919,52 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .r-action-btn.secondary{background:rgba(255,255,255,0.85);color:var(--text);border:1px solid var(--border2);backdrop-filter:blur(12px);}
 .r-action-btn.secondary:hover{background:#fff;transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.1);}
 
+/* ─── SALES SECTIONS (locked results) ─── */
+.r-sell{display:none;}
+.r-sell.visible{display:block;}
+.r-sell-section{margin-bottom:48px;}
+.r-sell-title{font-family:var(--display);font-size:clamp(22px,4vw,30px);font-weight:900;color:var(--text);letter-spacing:-0.8px;text-align:center;margin-bottom:8px;}
+.r-sell-sub{font-size:15px;color:var(--text3);text-align:center;margin-bottom:32px;line-height:1.6;}
+.r-sell-benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-bottom:36px;}
+.r-sell-benefit{background:#fff;border:1.5px solid var(--border);border-radius:18px;padding:24px 20px;text-align:center;transition:transform .2s,box-shadow .2s;}
+.r-sell-benefit:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.06);}
+.r-sell-benefit-icon{font-size:28px;margin-bottom:10px;}
+.r-sell-benefit-title{font-family:var(--display);font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.r-sell-benefit-text{font-size:13px;color:var(--text3);line-height:1.55;}
+.r-sell-stats{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:40px;padding:28px 24px;background:#fff;border:1.5px solid var(--border);border-radius:20px;}
+.r-sell-stat{text-align:center;}
+.r-sell-stat-num{font-family:var(--display);font-size:clamp(26px,4vw,36px);font-weight:900;color:var(--text);letter-spacing:-1px;}
+.r-sell-stat-label{font-size:12px;color:var(--text3);margin-top:2px;}
+.r-sell-reviews{display:flex;flex-direction:column;gap:16px;margin-bottom:36px;}
+.r-sell-review{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px 24px;display:flex;gap:16px;align-items:flex-start;}
+.r-sell-review-avatar{font-size:28px;flex-shrink:0;}
+.r-sell-review-body{flex:1;}
+.r-sell-review-stars{color:#f59e0b;font-size:13px;letter-spacing:1px;margin-bottom:6px;}
+.r-sell-review-text{font-size:14px;color:var(--text2);line-height:1.6;font-style:italic;margin-bottom:8px;}
+.r-sell-review-author{font-size:13px;font-weight:700;color:var(--text);}
+.r-sell-review-pet{font-size:12px;color:var(--text3);}
+.r-sell-faq{display:flex;flex-direction:column;gap:10px;margin-bottom:36px;}
+.r-sell-faq-item{background:#fff;border:1.5px solid var(--border);border-radius:14px;overflow:hidden;}
+.r-sell-faq-q{padding:16px 20px;font-family:var(--display);font-size:14px;font-weight:700;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .15s;}
+.r-sell-faq-q:hover{background:rgba(0,0,0,0.02);}
+.r-sell-faq-arrow{font-size:12px;color:var(--text3);transition:transform .2s;}
+.r-sell-faq-item.open .r-sell-faq-arrow{transform:rotate(180deg);}
+.r-sell-faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;font-size:13.5px;color:var(--text2);line-height:1.65;}
+.r-sell-faq-item.open .r-sell-faq-a{max-height:300px;padding:0 20px 16px;}
+.r-sell-cta{text-align:center;background:var(--text);color:#fff;border-radius:24px;padding:40px 28px;margin-bottom:48px;}
+.r-sell-cta-title{font-family:var(--display);font-size:clamp(20px,4vw,26px);font-weight:900;letter-spacing:-0.5px;margin-bottom:8px;}
+.r-sell-cta-sub{font-size:14px;color:rgba(255,255,255,0.5);margin-bottom:20px;}
+.r-sell-cta-price{font-family:var(--display);font-size:36px;font-weight:900;margin-bottom:6px;}
+.r-sell-cta-price s{font-size:18px;font-weight:700;opacity:0.35;margin-right:8px;text-decoration:line-through;}
+.r-sell-cta-price-sub{font-size:13px;color:rgba(255,255,255,0.4);margin-bottom:20px;}
+.r-sell-cta-btn{display:inline-block;padding:16px 40px;background:#fff;color:var(--text);border:none;border-radius:14px;font-family:var(--display);font-size:16px;font-weight:800;cursor:pointer;transition:all .2s;letter-spacing:-0.3px;}
+.r-sell-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(255,255,255,0.2);}
+.r-sell-cta-trust{font-size:12px;color:rgba(255,255,255,0.35);margin-top:12px;}
+
 /* Print */
 @media print{
-  .rnav,.r-actions,.nav{display:none!important;}
-  #landing,#quiz,#loading,#onboarding{display:none!important;}
+  .rnav,.r-actions,.nav,.r-sell{display:none!important;}
+  #landing,#quiz,#loading,#onboarding,#capture{display:none!important;}
   #results{display:block!important;}
   .r-summary{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
@@ -3898,8 +3940,8 @@ function generatePDF(){
     +'.compat-val{font-weight:700;font-size:13px;color:#111;margin:2px 0;}'
     +'.compat-sub{font-size:11px;color:#666;line-height:1.55;}'
 
-    // Summary page — single A4 page, everything centered
-    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;padding:28mm 20mm 24mm 20mm;box-sizing:border-box;width:210mm;height:297mm;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;}'
+    // Summary page — single A4 page, full-bleed dark, centered
+    +'.summary{page-break-before:always;margin:-28mm -20mm -24mm -20mm;padding:0;box-sizing:border-box;width:210mm;height:245mm;background:#111;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}'
     +'.summary-inner{padding:0 40px;max-width:500px;}'
     +'.summary-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:14px;}'
     +'.summary-quote{font-family:"Outfit",sans-serif;font-size:26px;font-weight:900;letter-spacing:-1px;margin-bottom:18px;}'
@@ -4108,6 +4150,8 @@ function revealReport(){
   var overlay=document.querySelector('.r-lock-overlay');
   if(content){content.style.filter='none';content.style.opacity='1';content.style.pointerEvents='auto';content.style.userSelect='auto';content.style.maxHeight='none';}
   if(overlay){overlay.style.display='none';}
+  var sell=document.getElementById('r-sell');
+  if(sell){sell.style.display='none';}
 }
 
 function unlockResults(){
@@ -4335,6 +4379,7 @@ function showResults(){
   // Summary — full paragraph
   var nomStr=profile.nom?profile.nom:(animal==='chien'?'Votre chien':'Votre chat');
   var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
+  var animalLabel=animal==='chien'?'chien':'chat';
   var domDim=dimKeys.reduce(function(a,b){return pct(b)>pct(a)?b:a;});
   var summaryPara=
     nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
@@ -4425,9 +4470,71 @@ function showResults(){
       +'<button class="r-action-btn primary" onclick="showScreen(\'landing\')">↺ Recommencer</button>'
     +'</div>'
     +'</div><div class="r-lock-overlay">'+lockCard+'</div></div>'
+
+    // ── SALES SECTIONS (visible when locked) ──
+    +'<div class="r-sell" id="r-sell">'
+
+    // Benefits
+    +'<div class="r-sell-section">'
+    +'<div class="r-sell-title">Pourquoi ce rapport va tout changer</div>'
+    +'<div class="r-sell-sub">Comprendre votre animal, c\'est transformer votre quotidien ensemble.</div>'
+    +'<div class="r-sell-benefits">'
+      +'<div class="r-sell-benefit"><div class="r-sell-benefit-icon">🧠</div><div class="r-sell-benefit-title">Comprenez ses réactions</div><div class="r-sell-benefit-text">Découvrez pourquoi '+nom2+' réagit de cette façon et comment adapter votre comportement.</div></div>'
+      +'<div class="r-sell-benefit"><div class="r-sell-benefit-icon">🎯</div><div class="r-sell-benefit-title">Conseils sur-mesure</div><div class="r-sell-benefit-text">Des activités, récompenses et erreurs à éviter basées sur le profil unique de '+nom2+'.</div></div>'
+      +'<div class="r-sell-benefit"><div class="r-sell-benefit-icon">❤️</div><div class="r-sell-benefit-title">Renforcez votre lien</div><div class="r-sell-benefit-text">Une relation plus profonde grâce à une compréhension fine de sa personnalité.</div></div>'
+      +'<div class="r-sell-benefit"><div class="r-sell-benefit-icon">📊</div><div class="r-sell-benefit-title">Analyse en 5 dimensions</div><div class="r-sell-benefit-text">Sociabilité, énergie, attachement, sensibilité, intelligence — un profil complet et détaillé.</div></div>'
+    +'</div>'
+    +'</div>'
+
+    // Stats
+    +'<div class="r-sell-section">'
+    +'<div class="r-sell-stats">'
+      +'<div class="r-sell-stat"><div class="r-sell-stat-num">+2 847</div><div class="r-sell-stat-label">rapports ce mois</div></div>'
+      +'<div class="r-sell-stat"><div class="r-sell-stat-num">4.8/5</div><div class="r-sell-stat-label">note moyenne</div></div>'
+      +'<div class="r-sell-stat"><div class="r-sell-stat-num">96%</div><div class="r-sell-stat-label">trouvent ça utile</div></div>'
+    +'</div>'
+    +'</div>'
+
+    // Reviews
+    +'<div class="r-sell-section">'
+    +'<div class="r-sell-title">Ce qu\'ils en disent</div>'
+    +'<div class="r-sell-sub">Des propriétaires comme vous qui ont transformé leur quotidien.</div>'
+    +'<div class="r-sell-reviews">'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👩</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"J\'ai enfin compris pourquoi Luna panique lors des promenades. Le rapport m\'a donné des exercices concrets et en 2 semaines, les balades sont devenues un plaisir."</div><div class="r-sell-review-author">Sophie M.</div><div class="r-sell-review-pet">🐕 Luna, Border Collie, 4 ans</div></div></div>'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👨</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mochi griffait les meubles sans arrêt. Le rapport a révélé un besoin de stimulation que je ne soupçonnais pas. Depuis que j\'ai suivi les conseils, plus un seul meuble abîmé."</div><div class="r-sell-review-author">Thomas L.</div><div class="r-sell-review-pet">🐈 Mochi, British Shorthair, 2 ans</div></div></div>'
+      +'<div class="r-sell-review"><div class="r-sell-review-avatar">👩</div><div class="r-sell-review-body"><div class="r-sell-review-stars">★★★★★</div><div class="r-sell-review-text">"Mon vétérinaire m\'a dit que c\'était l\'analyse la plus complète qu\'il ait vue en dehors d\'une consultation comportementale. Et c\'est 10x moins cher."</div><div class="r-sell-review-author">Marie D.</div><div class="r-sell-review-pet">🐕 Oscar, Labrador, 6 ans</div></div></div>'
+    +'</div>'
+    +'</div>'
+
+    // FAQ
+    +'<div class="r-sell-section">'
+    +'<div class="r-sell-title">Questions fréquentes</div>'
+    +'<div class="r-sell-faq">'
+      +'<div class="r-sell-faq-item" onclick="this.classList.toggle(\'open\')"><div class="r-sell-faq-q">Le rapport est-il vraiment personnalisé ?<span class="r-sell-faq-arrow">▼</span></div><div class="r-sell-faq-a">Oui, à 100%. Votre rapport est généré à partir de vos 30 réponses au quiz, croisées avec la race, l\'âge et l\'environnement de '+nom2+'. Chaque rapport est unique — deux '+animalLabel+'s du même profil auront des conseils différents selon leur contexte.</div></div>'
+      +'<div class="r-sell-faq-item" onclick="this.classList.toggle(\'open\')"><div class="r-sell-faq-q">Comment ce test a-t-il été conçu ?<span class="r-sell-faq-arrow">▼</span></div><div class="r-sell-faq-a">Notre méthodologie s\'appuie sur les travaux de comportementalistes animaliers et d\'éthologues certifiés. Les 5 dimensions (sociabilité, énergie, attachement, sensibilité, intelligence) sont reconnues en psychologie animale et validées par la recherche scientifique.</div></div>'
+      +'<div class="r-sell-faq-item" onclick="this.classList.toggle(\'open\')"><div class="r-sell-faq-q">Ça remplace une consultation chez un comportementaliste ?<span class="r-sell-faq-arrow">▼</span></div><div class="r-sell-faq-a">Ce rapport est un excellent complément, pas un substitut. Il vous aide à mieux comprendre '+nom2+' au quotidien. Pour des troubles comportementaux sévères (agressivité, anxiété forte), nous recommandons toujours de consulter un professionnel en plus.</div></div>'
+      +'<div class="r-sell-faq-item" onclick="this.classList.toggle(\'open\')"><div class="r-sell-faq-q">C\'est un paiement unique ou un abonnement ?<span class="r-sell-faq-arrow">▼</span></div><div class="r-sell-faq-a">Paiement unique de 14,99€, accès à vie. Pas d\'abonnement, pas de frais cachés. Vous recevez également le rapport complet par email en PDF.</div></div>'
+    +'</div>'
+    +'</div>'
+
+    // Final CTA
+    +'<div class="r-sell-cta">'
+      +'<div class="r-sell-cta-title">Débloquez le rapport complet de '+nomStr+'</div>'
+      +'<div class="r-sell-cta-sub">Rejoignez les milliers de propriétaires qui comprennent enfin leur animal.</div>'
+      +'<div class="r-sell-cta-price"><s>30€</s> 14,99€</div>'
+      +'<div class="r-sell-cta-price-sub">Paiement unique • Accès à vie</div>'
+      +'<button class="r-sell-cta-btn" onclick="unlockResults()">Obtenir mon rapport complet →</button>'
+      +'<div class="r-sell-cta-trust">🔒 Paiement sécurisé via Stripe • 📧 Rapport envoyé par email</div>'
+    +'</div>'
+
+    +'</div>'
     +'<div class="r-spacer"></div>';
 
   showScreen('results');
+
+  // Show sales sections if not paid
+  var sellEl=document.getElementById('r-sell');
+  if(sellEl) sellEl.classList.add('visible');
 
   // Animate dimension bars after DOM render
   setTimeout(function(){

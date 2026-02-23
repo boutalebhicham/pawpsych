@@ -37,95 +37,90 @@ function generatePdfBuffer(data: {
   desc: string;
 }): Promise<Buffer> {
   return new Promise((resolve, reject) => {
-    try {
-      const doc = new PDFDocument({ size: 'A4', margin: 50, bufferPages: true });
-      const chunks: Buffer[] = [];
-      doc.on('data', (chunk: Buffer) => chunks.push(chunk));
-      doc.on('end', () => resolve(Buffer.concat(chunks)));
-      doc.on('error', reject);
+    const chunks: Uint8Array[] = [];
+    const doc = new PDFDocument({ size: 'A4', margin: 50 });
+    doc.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+    doc.on('end', () => resolve(Buffer.concat(chunks)));
+    doc.on('error', reject);
 
-      const name = data.animalName || (data.animalType === 'chien' ? 'Votre chien' : 'Votre chat');
-      const pageW = 595.28 - 100; // A4 width minus margins
+    const name = data.animalName || (data.animalType === 'chien' ? 'Votre chien' : 'Votre chat');
+    const W = 595.28;
+    const M = 50;
+    const pageW = W - M * 2;
 
-      // ── COVER PAGE ──
-      doc.rect(0, 0, 595.28, 841.89).fill('#111111');
-      doc.fontSize(14).fillColor('#666666').text('Ame Animale', 0, 280, { align: 'center' });
-      doc.fontSize(36).fillColor('#ffffff').text(data.profileTitle, 0, 320, { align: 'center' });
-      doc.fontSize(14).fillColor('#999999').text(data.profileTagline, 0, 370, { align: 'center' });
-      doc.moveDown(2);
-      doc.fontSize(16).fillColor('#ffffff').text(name, 0, 430, { align: 'center' });
-      doc.fontSize(10).fillColor('#555555').text('Rapport de personnalite - ameanimale.fr', 0, 780, { align: 'center' });
+    // ── COVER PAGE ──
+    doc.rect(0, 0, W, 841.89).fill('#111111');
+    doc.font('Helvetica').fontSize(14).fillColor('#666666').text('Ame Animale', M, 280, { width: pageW, align: 'center' });
+    doc.font('Helvetica-Bold').fontSize(32).fillColor('#ffffff').text(data.profileTitle, M, 320, { width: pageW, align: 'center' });
+    doc.font('Helvetica').fontSize(14).fillColor('#999999').text(data.profileTagline, M, 380, { width: pageW, align: 'center' });
+    doc.font('Helvetica-Bold').fontSize(16).fillColor('#ffffff').text(name, M, 440, { width: pageW, align: 'center' });
+    doc.font('Helvetica').fontSize(10).fillColor('#555555').text('Rapport de personnalite - ameanimale.fr', M, 780, { width: pageW, align: 'center' });
 
-      // ── PAGE 2: ANALYSE ──
-      doc.addPage();
-      doc.fontSize(22).fillColor('#111111').text('Analyse', 50, 50);
-      doc.moveDown(0.5);
-      doc.fontSize(11).fillColor('#444444').text(data.desc, 50, undefined, { width: pageW, lineGap: 4 });
+    // ── PAGE 2: ANALYSE ──
+    doc.addPage();
+    doc.font('Helvetica-Bold').fontSize(20).fillColor('#111111').text('Analyse', M, M);
+    doc.moveDown(0.5);
+    doc.font('Helvetica').fontSize(11).fillColor('#444444').text(data.desc, { width: pageW, lineGap: 4 });
 
-      // ── DIMENSIONS ──
-      doc.moveDown(1.5);
-      doc.fontSize(18).fillColor('#111111').text('Dimensions comportementales');
-      doc.moveDown(0.8);
+    // ── DIMENSIONS ──
+    doc.moveDown(1.5);
+    doc.font('Helvetica-Bold').fontSize(16).fillColor('#111111').text('Dimensions comportementales');
+    doc.moveDown(0.8);
 
-      const dims = ['SOC', 'ENG', 'ATT', 'SEN', 'INT'];
-      dims.forEach((k) => {
-        const pct = data.dimensions[k] || 50;
-        const y = doc.y;
-        const barX = 170;
-        const barW = 300;
-        const barH = 14;
-
-        doc.fontSize(11).fillColor('#555555').text(DIM_LABELS[k], 50, y + 1, { width: 110 });
-        // Background bar
-        doc.roundedRect(barX, y, barW, barH, 7).fill('#eeeeee');
-        // Fill bar
-        const fillW = Math.max(10, (pct / 100) * barW);
-        doc.roundedRect(barX, y, fillW, barH, 7).fill(DIM_COLORS[k]);
-        // Percentage
-        doc.fontSize(11).fillColor('#333333').text(pct + '%', barX + barW + 10, y + 1, { width: 40 });
-
-        doc.y = y + 28;
-      });
-
-      // ── POINTS FORTS ──
-      if (data.strengths.length > 0) {
-        doc.moveDown(1);
-        doc.fontSize(18).fillColor('#111111').text('Points forts');
-        doc.moveDown(0.5);
-        data.strengths.forEach((s) => {
-          doc.fontSize(11).fillColor('#444444').text('  +  ' + s, { indent: 10, lineGap: 3 });
-        });
-      }
-
-      // ── POINTS DE VIGILANCE ──
-      if (data.watchPoints.length > 0) {
-        doc.moveDown(1);
-        doc.fontSize(18).fillColor('#111111').text('Points de vigilance');
-        doc.moveDown(0.5);
-        data.watchPoints.forEach((w) => {
-          doc.fontSize(11).fillColor('#444444').text('  !  ' + w, { indent: 10, lineGap: 3 });
-        });
-      }
-
-      // ── CONSEILS ──
-      if (data.tips.length > 0) {
-        if (doc.y > 650) doc.addPage();
-        doc.moveDown(1);
-        doc.fontSize(18).fillColor('#111111').text('Conseils personnalises');
-        doc.moveDown(0.5);
-        data.tips.forEach((t) => {
-          doc.fontSize(11).fillColor('#444444').text('  >  ' + t, { indent: 10, lineGap: 3 });
-        });
-      }
-
-      // ── FOOTER on last page ──
-      doc.moveDown(3);
-      doc.fontSize(9).fillColor('#999999').text('Ame Animale - ameanimale.fr - Rapport genere automatiquement', 50, undefined, { align: 'center', width: pageW });
-
-      doc.end();
-    } catch (err) {
-      reject(err);
+    const dims = ['SOC', 'ENG', 'ATT', 'SEN', 'INT'];
+    for (const k of dims) {
+      const pct = data.dimensions[k] || 50;
+      const y = doc.y;
+      doc.font('Helvetica').fontSize(11).fillColor('#555555').text(DIM_LABELS[k] + ':', M, y, { continued: false });
+      // Bar background
+      const barX = M + 120;
+      const barW = 280;
+      const barH = 12;
+      doc.save();
+      doc.roundedRect(barX, y + 2, barW, barH, 6).fill('#eeeeee');
+      doc.roundedRect(barX, y + 2, Math.max(8, (pct / 100) * barW), barH, 6).fill(DIM_COLORS[k]);
+      doc.restore();
+      doc.font('Helvetica-Bold').fontSize(11).fillColor('#333333').text(pct + '%', barX + barW + 12, y);
+      doc.x = M;
+      doc.y = y + 26;
     }
+
+    // ── POINTS FORTS ──
+    if (data.strengths && data.strengths.length > 0) {
+      doc.moveDown(1);
+      doc.font('Helvetica-Bold').fontSize(16).fillColor('#111111').text('Points forts');
+      doc.moveDown(0.3);
+      for (const s of data.strengths) {
+        doc.font('Helvetica').fontSize(11).fillColor('#444444').text('  +  ' + s, { width: pageW, lineGap: 2 });
+      }
+    }
+
+    // ── POINTS DE VIGILANCE ──
+    if (data.watchPoints && data.watchPoints.length > 0) {
+      doc.moveDown(1);
+      doc.font('Helvetica-Bold').fontSize(16).fillColor('#111111').text('Points de vigilance');
+      doc.moveDown(0.3);
+      for (const w of data.watchPoints) {
+        doc.font('Helvetica').fontSize(11).fillColor('#444444').text('  !  ' + w, { width: pageW, lineGap: 2 });
+      }
+    }
+
+    // ── CONSEILS ──
+    if (data.tips && data.tips.length > 0) {
+      if (doc.y > 650) doc.addPage();
+      doc.moveDown(1);
+      doc.font('Helvetica-Bold').fontSize(16).fillColor('#111111').text('Conseils personnalises');
+      doc.moveDown(0.3);
+      for (const t of data.tips) {
+        doc.font('Helvetica').fontSize(11).fillColor('#444444').text('  >  ' + t, { width: pageW, lineGap: 2 });
+      }
+    }
+
+    // ── FOOTER ──
+    doc.moveDown(3);
+    doc.font('Helvetica').fontSize(9).fillColor('#999999').text('Ame Animale - ameanimale.fr', M, undefined, { width: pageW, align: 'center' });
+
+    doc.end();
   });
 }
 
@@ -262,12 +257,16 @@ export async function POST(req: NextRequest) {
     const animalName = data.animalName || 'votre animal';
 
     // Generate PDF attachment
-    let pdfBuffer: Buffer | null = null;
+    let pdfBase64: string | null = null;
     try {
-      pdfBuffer = await generatePdfBuffer(data);
+      const buf = await generatePdfBuffer(data);
+      pdfBase64 = buf.toString('base64');
+      console.log('PDF generated successfully, size:', buf.length, 'bytes');
     } catch (pdfErr) {
       console.error('PDF generation error:', pdfErr);
     }
+
+    const safeName = (animalName || 'animal').replace(/[^a-zA-Z0-9àâäéèêëïîôùûüÿçœæ\s-]/g, '').replace(/\s+/g, '-');
 
     const { error } = await getResend().emails.send({
       from: 'Âme Animale <contact@ameanimale.fr>',
@@ -278,8 +277,8 @@ export async function POST(req: NextRequest) {
         'X-Entity-Ref-ID': `rapport-${Date.now()}`,
         'List-Unsubscribe': '<mailto:contact@ameanimale.fr?subject=unsubscribe>',
       },
-      attachments: pdfBuffer
-        ? [{ filename: `rapport-${(animalName || 'animal').replace(/\s+/g, '-')}.pdf`, content: pdfBuffer }]
+      attachments: pdfBase64
+        ? [{ filename: `rapport-${safeName}.pdf`, content: Buffer.from(pdfBase64, 'base64') }]
         : undefined,
     });
 

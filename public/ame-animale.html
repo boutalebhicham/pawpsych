@@ -1783,7 +1783,7 @@ var RACES_CHAT=[
 /* A */ 'Abyssin','American Curl','American Shorthair',
 /* B */ 'Balinais','Bengal','Birman (Sacré de Birmanie)','British Longhair','British Shorthair',
         'Burmese','Burmilla',
-/* C */ 'Chartreux','Chausie','Cornish Rex',
+/* C */ 'Chartreux','Chat domestique (chat de gouttière)','Chausie','Cornish Rex',
 /* D */ 'Devon Rex','Donskoy (Sphynx Russe)',
 /* E */ 'Egyptian Mau','Exotic Shorthair',
 /* F */ 'Forêt de Norvège',
@@ -4188,8 +4188,10 @@ var BREED_DATA={
 'berner':"Doux, loyal et excellent avec les enfants, le Bouvier Bernois a une durée de vie courte (7-9 ans) et un risque élevé de cancer. Avec un profil {type}, sa nature familiale profonde est son identité. Des bilans vétérinaires réguliers sont non négociables pour ce profil de santé.",
 'vizsla':"Le Vizsla hongrois est un chien de chasse surnommé 'velcro dog' pour son besoin constant de contact humain. Avec un profil {type}, ses hautes sociabilités et forts attachements sont souvent très marqués. Il supporte très mal la solitude — ne le laissez seul que de courtes durées avec un enrichissement adapté.",
 'whippet':"Plus petit que le Greyhound mais partageant le même profil, le Whippet est explosif en outdoor et calme à la maison. Avec un profil {type}, son double nature est le contexte clé. Sensible au froid et à la douleur physique, excellent chien d'appartement si ses sorties quotidiennes sont assurées.",
-'croisé':"Les chiens croisés bénéficient souvent d'une vigueur hybride qui rend leur tempérament plus stable que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
-'métis':"Les chiens croisés bénéficient souvent d'une vigueur hybride qui rend leur tempérament plus stable que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
+'croisé-chien':"Les chiens croisés bénéficient souvent d'une vigueur hybride qui rend leur tempérament plus stable que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
+'métis-chien':"Les chiens croisés bénéficient souvent d'une vigueur hybride qui rend leur tempérament plus stable que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
+'croisé-chat':"Les chats croisés bénéficient souvent d'une diversité génétique qui les rend plus robustes et adaptables que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
+'métis-chat':"Les chats croisés bénéficient souvent d'une diversité génétique qui les rend plus robustes et adaptables que les races pures. Avec un profil {type}, les dimensions comportementales mesurées transcendent les origines génétiques et reflètent fidèlement la personnalité réelle de votre compagnon.",
 // ── CHATS ────────────────────────────────────────────
 'maine coon':"Le 'chien des chats', le Maine Coon est social, joueur et suit ses maîtres partout dans la maison. Avec un profil {type}, sa richesse sociale et cognitive est son identité. Sa grande taille exige des perchoirs adaptés et une litière de grande dimension — des détails qui affectent réellement son bien-être au quotidien.",
 'persan':"Chat de contemplation calme et peu actif, le Persan préfère observer. Avec un profil {type}, son expression est dans le registre de la discrétion et de la sérénité. Sa face aplatie (brachycéphalie féline) provoque des problèmes respiratoires et oculaires — nettoyage quotidien des yeux et suivi vétérinaire régulier.",
@@ -4209,7 +4211,8 @@ var BREED_DATA={
 'russe bleu':"Timide avec les inconnus mais profondément attaché à sa famille de cœur, le Russe Bleu est hypersensible aux changements. Avec un profil {type}, sa richesse émotionnelle cachée derrière une apparente réserve est le fil conducteur. Sa sensibilité aux modifications de routine est à prendre très au sérieux.",
 'sibérien':"Chat nordique robuste et moins allergisant, le Sibérien est joueur et apprécie le contact sans en être dépendant. Avec un profil {type}, son équilibre précieux entre autonomie et affection est son identité. Ses origines forestières lui donnent un besoin accru d'espace et de structures de grimpe élevées.",
 'européen':"Les chats européens (gouttières) bénéficient d'une diversité génétique qui les rend généralement plus robustes et adaptables que les races pures. Avec un profil {type}, leur personnalité s'étant développée sans contraintes de sélection, ce résultat représente une lecture particulièrement fiable et authentique.",
-'gouttière':"Les chats européens (gouttières) bénéficient d'une diversité génétique qui les rend généralement plus robustes et adaptables que les races pures. Avec un profil {type}, leur personnalité s'étant développée sans contraintes de sélection, ce résultat représente une lecture particulièrement fiable et authentique."
+'gouttière':"Les chats européens (gouttières) bénéficient d'une diversité génétique qui les rend généralement plus robustes et adaptables que les races pures. Avec un profil {type}, leur personnalité s'étant développée sans contraintes de sélection, ce résultat représente une lecture particulièrement fiable et authentique.",
+'chat domestique':"Les chats domestiques bénéficient d'une diversité génétique qui les rend généralement plus robustes et adaptables que les races pures. Avec un profil {type}, leur personnalité s'étant développée sans contraintes de sélection, ce résultat représente une lecture particulièrement fiable et authentique."
 };
 
 // ── UNLOCK ───────────────────────────────────────────
@@ -4392,16 +4395,18 @@ function buildBreedNote(race, best, animalType){
       .replace(/[ôö]/g,'o').replace(/ç/g,'c');
   }
   var rn=normStr(race);
-  if(rn==='inconnu'||rn==='croise'||rn==='non connu') return BREED_DATA['croisé']?BREED_DATA['croisé'].replace(/\{type\}/g,best.type):null;
+  if(rn==='inconnu'||rn==='non connu'||rn==='je ne sais pas'||rn==='ne sait pas'||rn==='nsp') return null;
+  var sp=animalType==='chien'?'chien':'chat';
+  if(rn==='croise'||rn==='metis'){var k=rn.replace('croise','croisé').replace('metis','métis')+'-'+sp;return BREED_DATA[k]?BREED_DATA[k].replace(/\{type\}/g,best.type):null;}
   var keys=Object.keys(BREED_DATA);
   var found=null;
   for(var i=0;i<keys.length;i++){
+    if(keys[i].indexOf('-chien')>=0||keys[i].indexOf('-chat')>=0) continue;
     var kn=normStr(keys[i]);
     if(rn.indexOf(kn)>=0||kn.indexOf(rn)>=0){found=keys[i];break;}
   }
   if(!found){
-    var n=(animalType==='chien')?'chien':'chat';
-    return 'En tant que '+race+', votre '+n+' possède des caractéristiques propres à sa race qui interagissent avec son profil "'+best.type+'". Chaque race apporte un patrimoine génétique qui influence le tempérament, le niveau d\'énergie et les besoins spécifiques. Les conseils de ce rapport tiennent compte de son profil comportemental individuel — observez comment les traits de sa race se manifestent au quotidien pour affiner encore davantage votre compréhension de ses besoins.';
+    return 'En tant que '+race+', votre '+sp+' possède des caractéristiques propres à sa race qui interagissent avec son profil "'+best.type+'". Chaque race apporte un patrimoine génétique qui influence le tempérament, le niveau d\'énergie et les besoins spécifiques. Les conseils de ce rapport tiennent compte de son profil comportemental individuel — observez comment les traits de sa race se manifestent au quotidien pour affiner encore davantage votre compréhension de ses besoins.';
   }
   return BREED_DATA[found].replace(/\{type\}/g,best.type);
 }

@@ -6,7 +6,7 @@ function getResend() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  RAW PDF GENERATOR — zero deps, pro multi-page report
+//  RAW PDF GENERATOR — zero deps, modern multi-page report
 // ═══════════════════════════════════════════════════════════════════
 
 // Helvetica character widths (per 1000 em units)
@@ -27,7 +27,6 @@ const HW: Record<string, number> = {
 function tw(str: string, size: number, bold = false): number {
   let w = 0;
   for (const ch of str) {
-    // Strip combining accents to get base char width
     const base = ch.normalize('NFD').charAt(0);
     const cw = HW[base] ?? 556;
     w += cw;
@@ -68,6 +67,10 @@ function wrap(text: string, maxPt: number, fontSize: number, bold = false): stri
   return lines;
 }
 
+// ── Design tokens ──
+const ACCENT = { r: 0.231, g: 0.510, b: 0.965 };
+const ACC_RG = `${ACCENT.r} ${ACCENT.g} ${ACCENT.b} rg`;
+
 const DIM_COLORS: Record<string, string> = {
   SOC: '0.231 0.510 0.965 rg', ENG: '0.961 0.620 0.043 rg',
   ATT: '0.937 0.267 0.267 rg', SEN: '0.545 0.361 0.965 rg',
@@ -78,6 +81,7 @@ const DIM_LABELS: Record<string, string> = {
 };
 
 interface ReportData {
+  email?: string;
   prenom: string; animalName: string; animalType: string; race?: string;
   profileType: string; profileTitle: string; profileTagline: string; profileEmoji: string;
   dimensions: Record<string, number>;
@@ -122,30 +126,48 @@ class P {
   page(sn?: number, st?: string) {
     if (this.c.length) this.pgs.push(this.c);
     this.c = []; this.pN++; this.y = this.H - this.MT;
-    // Header bar
-    this.c.push('0.965 0.961 0.953 rg');
-    this.c.push(`0 ${this.H - 44} ${this.W} 44 re f`);
-    this._t('Ame Animale', this.ML, this.H - 28, 'F2', 8, '0.45 0.45 0.45');
-    this._tR(String(this.pN), this.r, this.H - 28, 'F1', 8, '0.45 0.45 0.45');
+
+    // Accent stripe at top
+    this.R(0, this.H - 3, this.W, 3, ACC_RG);
+
+    // Brand + page number
+    this._t('Ame Animale', this.ML, this.H - 22, 'F2', 8, '0.40 0.40 0.40');
+    this._tR(String(this.pN), this.r, this.H - 22, 'F1', 8, '0.40 0.40 0.40');
+
+    // Thin separator
+    this.R(this.ML, this.H - 30, this.CW, 0.5, '0.90 0.90 0.88 rg');
+
     this.y = this.H - this.MT - 10;
 
     if (sn !== undefined && st) {
-      this._t(`SECTION 0${sn}`, this.l, this.y + 2, 'F1', 7, '0.50 0.50 0.50');
-      this.y -= 22;
-      this._t(st.toUpperCase(), this.l, this.y, 'F2', 17, '0.067 0.067 0.067');
-      this.y -= 8;
-      this.R(this.l, this.y, this.w, 1.5, '0.067 0.067 0.067 rg');
-      this.y -= 25;
+      // Section badge (rounded pill)
+      this.rr(this.l, this.y - 3, 60, 18, 9, ACC_RG);
+      this._t(`SECTION ${String(sn).padStart(2,'0')}`, this.l + 8, this.y, 'F2', 7.5, '1 1 1');
+      this.y -= 32;
+
+      // Section title
+      this._t(st.toUpperCase(), this.l, this.y, 'F2', 18, '0.067 0.067 0.067');
+      this.y -= 10;
+
+      // Accent underline
+      this.rr(this.l, this.y, 50, 3, 1.5, ACC_RG);
+      this.y -= 28;
     }
   }
 
   cont() {
     if (this.c.length) this.pgs.push(this.c);
     this.c = []; this.pN++;
-    this.c.push('0.965 0.961 0.953 rg');
-    this.c.push(`0 ${this.H - 44} ${this.W} 44 re f`);
-    this._t('Ame Animale', this.ML, this.H - 28, 'F2', 8, '0.45 0.45 0.45');
-    this._tR(String(this.pN), this.r, this.H - 28, 'F1', 8, '0.45 0.45 0.45');
+
+    // Accent stripe at top
+    this.R(0, this.H - 3, this.W, 3, ACC_RG);
+
+    // Brand + page number
+    this._t('Ame Animale', this.ML, this.H - 22, 'F2', 8, '0.40 0.40 0.40');
+    this._tR(String(this.pN), this.r, this.H - 22, 'F1', 8, '0.40 0.40 0.40');
+
+    this.R(this.ML, this.H - 30, this.CW, 0.5, '0.90 0.90 0.88 rg');
+
     this.y = this.H - this.MT - 10;
   }
 
@@ -154,6 +176,39 @@ class P {
   // ── Primitives ──
   R(x: number, y: number, w: number, h: number, col: string) {
     this.c.push(col); this.c.push(`${x} ${y} ${w} ${h} re f`);
+  }
+
+  /** Rounded rectangle (filled) */
+  rr(x: number, y: number, w: number, h: number, r: number, col: string) {
+    r = Math.min(r, w / 2, h / 2);
+    const k = 0.552;
+    this.c.push(col);
+    this.c.push(
+      `${x + r} ${y} m ` +
+      `${x + w - r} ${y} l ` +
+      `${x + w - r + r * k} ${y} ${x + w} ${y + r - r * k} ${x + w} ${y + r} c ` +
+      `${x + w} ${y + h - r} l ` +
+      `${x + w} ${y + h - r + r * k} ${x + w - r + r * k} ${y + h} ${x + w - r} ${y + h} c ` +
+      `${x + r} ${y + h} l ` +
+      `${x + r - r * k} ${y + h} ${x} ${y + h - r + r * k} ${x} ${y + h - r} c ` +
+      `${x} ${y + r} l ` +
+      `${x} ${y + r - r * k} ${x + r - r * k} ${y} ${x + r} ${y} c ` +
+      'h f'
+    );
+  }
+
+  /** Filled circle */
+  circ(cx: number, cy: number, r: number, col: string) {
+    const k = 0.552;
+    this.c.push(col);
+    this.c.push(
+      `${cx} ${cy + r} m ` +
+      `${cx + r * k} ${cy + r} ${cx + r} ${cy + r * k} ${cx + r} ${cy} c ` +
+      `${cx + r} ${cy - r * k} ${cx + r * k} ${cy - r} ${cx} ${cy - r} c ` +
+      `${cx - r * k} ${cy - r} ${cx - r} ${cy - r * k} ${cx - r} ${cy} c ` +
+      `${cx - r} ${cy + r * k} ${cx - r * k} ${cy + r} ${cx} ${cy + r} c ` +
+      'f'
+    );
   }
 
   _t(s: string, x: number, y: number, f: string, sz: number, col: string) {
@@ -170,10 +225,14 @@ class P {
 
   // ── Components ──
   sub(title: string) {
-    this.need(30);
-    this.R(this.l, this.y - 3, this.w, 22, '0.965 0.961 0.953 rg');
-    this._t(title, this.l + 10, this.y + 1, 'F2', 10.5, '0.13 0.13 0.13');
-    this.y -= 30;
+    this.need(34);
+    // Rounded card background
+    this.rr(this.l, this.y - 5, this.w, 26, 5, '0.965 0.961 0.953 rg');
+    // Left accent bar
+    this.rr(this.l, this.y - 5, 4, 26, 2, ACC_RG);
+    // Title text
+    this._t(title, this.l + 16, this.y + 1, 'F2', 10.5, '0.13 0.13 0.13');
+    this.y -= 34;
   }
 
   par(text: string, indent = 0, sz = 9.5, col = '0.27 0.27 0.27', font = 'F1') {
@@ -195,28 +254,33 @@ class P {
   }
 
   bul(label: string, text: string, lCol = '0.27 0.27 0.27') {
-    const lines = wrap(text, this.w - 22, 9.5);
+    const lines = wrap(text, this.w - 26, 9.5);
     for (let i = 0; i < lines.length; i++) {
       this.need(15);
-      if (i === 0) this._t(label, this.l + 4, this.y, 'F2', 10, lCol);
-      this._t(lines[i], this.l + 22, this.y, 'F1', 9.5, '0.27 0.27 0.27');
+      if (i === 0) {
+        // Colored circle bullet
+        this.circ(this.l + 6, this.y + 3, 5, lCol);
+        // White symbol
+        this._t(label, this.l + 3.2, this.y - 0.5, 'F2', 7, '1 1 1');
+      }
+      this._t(lines[i], this.l + 26, this.y, 'F1', 9.5, '0.27 0.27 0.27');
       this.y -= 15;
     }
   }
 
   advice(name: string, why: string, accent: string) {
-    this.need(22);
-    // Accent bar + name
-    this.R(this.l, this.y - 1, 3, 13, accent);
-    const nLines = wrap(name, this.w - 16, 10, true);
+    this.need(28);
+    // Rounded accent bar
+    this.rr(this.l, this.y - 3, 4, 16, 2, accent);
+    const nLines = wrap(name, this.w - 20, 10, true);
     for (const ln of nLines) {
       this.need(14);
-      this._t(ln, this.l + 14, this.y, 'F2', 10, '0.13 0.13 0.13');
+      this._t(ln, this.l + 16, this.y, 'F2', 10, '0.13 0.13 0.13');
       this.y -= 14;
     }
     if (why) {
       this.y -= 2;
-      this.parI(why, 14, 8.2, '0.45 0.45 0.45');
+      this.parI(why, 16, 8.2, '0.45 0.45 0.45');
     }
     this.y -= 10;
   }
@@ -224,8 +288,9 @@ class P {
   sp(h: number) { this.y -= h; }
 
   foot() {
-    this.R(this.l, this.MB - 8, this.w, 0.5, '0.90 0.90 0.88 rg');
-    this._tC('Ame Animale  -  ameanimale.fr', this.MB - 20, 'F1', 7, '0.55 0.55 0.55');
+    // Accent colored footer line
+    this.R(this.l, this.MB - 8, this.w, 0.75, ACC_RG);
+    this._tC('Ame Animale  -  ameanimale.fr', this.MB - 20, 'F1', 7, '0.50 0.50 0.50');
   }
 
   // ── Build PDF binary ──
@@ -275,18 +340,22 @@ function generatePdfBuffer(d: ReportData): Buffer {
   // ──────────────────────────────────────────────────
   p.dark();
 
-  // Subtle top line
-  p.R(60, 800, 475, 1, '0.18 0.18 0.18 rg');
+  // Accent stripe at top
+  p.R(0, 839, 595, 3, ACC_RG);
+
+  // Decorative circles (faint accent in upper right)
+  p.circ(510, 730, 60, '0.10 0.10 0.10 rg');
+  p.circ(480, 680, 25, '0.09 0.09 0.09 rg');
 
   // Brand — centered
-  p._tC('AME ANIMALE', 720, 'F2', 11, '0.42 0.42 0.42');
-  p._tC('Rapport de personnalite', 704, 'F3', 9, '0.35 0.35 0.35');
+  p._tC('AME ANIMALE', 720, 'F2', 12, '0.50 0.50 0.50');
+  p._tC('Rapport de personnalite', 704, 'F3', 9, '0.38 0.38 0.38');
 
-  // Small separator
-  p.R(277, 690, 40, 0.5, '0.28 0.28 0.28 rg');
+  // Small accent line
+  p.rr(277, 690, 40, 2.5, 1.25, ACC_RG);
 
   // Profile type
-  p._tC((d.profileType||'').toUpperCase(), 660, 'F2', 9, '0.48 0.48 0.48');
+  p._tC((d.profileType||'').toUpperCase(), 658, 'F2', 9, '0.52 0.52 0.52');
 
   // Title lines
   const tLines = wrap(d.profileTitle||'Profil', 380, 30, true);
@@ -296,25 +365,39 @@ function generatePdfBuffer(d: ReportData): Buffer {
   // Tagline
   const tagLines = wrap(d.profileTagline||'', 400, 11);
   ty -= 8;
-  for (const ln of tagLines) { p._tC(ln, ty, 'F3', 11, '0.55 0.55 0.55'); ty -= 16; }
+  for (const ln of tagLines) { p._tC(ln, ty, 'F3', 11, '0.58 0.58 0.58'); ty -= 16; }
 
   // Separator
   ty -= 20;
-  p.R(277, ty, 40, 0.5, '0.22 0.22 0.22 rg');
+  p.rr(277, ty, 40, 2, 1, '0.22 0.22 0.22 rg');
   ty -= 35;
 
   // Animal info
-  p._tC(`Rapport de ${name}`, ty, 'F1', 12, '0.60 0.60 0.60');
+  p._tC(`Rapport de ${name}`, ty, 'F1', 12, '0.62 0.62 0.62');
   ty -= 22;
   if (d.prenom) {
-    p._tC(`Prepare pour ${d.prenom}`, ty, 'F3', 10, '0.42 0.42 0.42');
+    p._tC(`Prepare pour ${d.prenom}`, ty, 'F3', 10, '0.45 0.45 0.45');
     ty -= 22;
   }
-  p._tC(date, ty, 'F1', 9, '0.35 0.35 0.35');
+  p._tC(date, ty, 'F1', 9, '0.38 0.38 0.38');
+
+  // Mini dimension bars preview
+  ty -= 50;
+  const barPreviewW = 200;
+  const barPreviewX = (595 - barPreviewW) / 2;
+  for (const k of dims) {
+    const pct = d.dimensions?.[k] || 50;
+    // Track
+    p.rr(barPreviewX, ty, barPreviewW, 4, 2, '0.14 0.14 0.14 rg');
+    // Fill
+    const fw = Math.max(4, (pct / 100) * barPreviewW);
+    p.rr(barPreviewX, ty, fw, 4, 2, DIM_COLORS[k]||'0.5 0.5 0.5 rg');
+    ty -= 10;
+  }
 
   // Bottom
-  p.R(60, 65, 475, 1, '0.18 0.18 0.18 rg');
-  p._tC('ameanimale.fr', 48, 'F2', 9, '0.30 0.30 0.30');
+  p.R(60, 65, 475, 0.75, ACC_RG);
+  p._tC('ameanimale.fr', 48, 'F2', 9, '0.35 0.35 0.35');
 
   // ──────────────────────────────────────────────────
   //  PAGE 2 — SOMMAIRE
@@ -323,7 +406,7 @@ function generatePdfBuffer(d: ReportData): Buffer {
 
   p._t('SOMMAIRE', p.l, p.y, 'F2', 22, '0.067 0.067 0.067');
   p.y -= 10;
-  p.R(p.l, p.y, 50, 2.5, '0.067 0.067 0.067 rg');
+  p.rr(p.l, p.y, 50, 3, 1.5, ACC_RG);
   p.y -= 40;
 
   const toc = [
@@ -338,13 +421,17 @@ function generatePdfBuffer(d: ReportData): Buffer {
 
   for (let i = 0; i < toc.length; i++) {
     const num = String(i + 1).padStart(2, '0');
-    // Number in large light gray
-    p._t(num, p.l, p.y, 'F2', 16, '0.82 0.82 0.80');
+    // Colored number circle
+    p.circ(p.l + 14, p.y + 4, 14, '0.96 0.955 0.945 rg');
+    p._tC(num, p.y - 1, 'F2', 10, '0.35 0.35 0.35');
+    // Repositioned: number is centered, but we need it at the circle pos
+    // Let's use _t instead for proper positioning
+    p._t(num, p.l + 14 - tw(num, 10, true) / 2, p.y - 1, 'F2', 10, `${ACCENT.r} ${ACCENT.g} ${ACCENT.b}`);
     // Label
     p._t(toc[i], p.l + 42, p.y + 1, 'F2', 12, '0.13 0.13 0.13');
     p.y -= 14;
     // Thin line
-    p.R(p.l, p.y, p.w, 0.5, '0.92 0.92 0.90 rg');
+    p.R(p.l + 42, p.y, p.w - 42, 0.5, '0.92 0.92 0.90 rg');
     p.y -= 24;
   }
 
@@ -355,12 +442,14 @@ function generatePdfBuffer(d: ReportData): Buffer {
   // ──────────────────────────────────────────────────
   p.page(1, 'Dimensions comportementales');
 
-  // Profile summary box
-  p.R(p.l, p.y - 48, p.w, 58, '0.965 0.961 0.953 rg');
-  p._t((d.profileType||'').toUpperCase(), p.l + 14, p.y - 4, 'F1', 7.5, '0.50 0.50 0.50');
-  p._t(d.profileTitle||'', p.l + 14, p.y - 20, 'F2', 15, '0.067 0.067 0.067');
-  p._t(d.profileTagline||'', p.l + 14, p.y - 38, 'F3', 9.5, '0.40 0.40 0.40');
-  p.y -= 68;
+  // Profile summary card (rounded)
+  p.rr(p.l, p.y - 50, p.w, 60, 8, '0.965 0.961 0.953 rg');
+  // Left accent on card
+  p.rr(p.l, p.y - 50, 5, 60, 2.5, ACC_RG);
+  p._t((d.profileType||'').toUpperCase(), p.l + 18, p.y - 4, 'F1', 7.5, '0.50 0.50 0.50');
+  p._t(d.profileTitle||'', p.l + 18, p.y - 20, 'F2', 15, '0.067 0.067 0.067');
+  p._t(d.profileTagline||'', p.l + 18, p.y - 38, 'F3', 9.5, '0.40 0.40 0.40');
+  p.y -= 70;
 
   // Description
   p.sp(5);
@@ -378,12 +467,16 @@ function generatePdfBuffer(d: ReportData): Buffer {
     // Label + percentage
     p._t(label, p.l, p.y, 'F2', 11, '0.13 0.13 0.13');
     p._tR(`${pct}%`, p.r, p.y, 'F2', 11, '0.13 0.13 0.13');
-    p.y -= 15;
-
-    // Bar
-    p.R(p.l, p.y, p.w, 8, '0.93 0.93 0.93 rg');
-    p.R(p.l, p.y, Math.max(4, (pct/100)*p.w), 8, DIM_COLORS[k]||'0.5 0.5 0.5 rg');
     p.y -= 16;
+
+    // Rounded bar track
+    const barH = 10;
+    const barR = 5;
+    p.rr(p.l, p.y, p.w, barH, barR, '0.93 0.93 0.93 rg');
+    // Rounded bar fill
+    const fillW = Math.max(barR * 2, (pct / 100) * p.w);
+    p.rr(p.l, p.y, fillW, barH, barR, DIM_COLORS[k]||'0.5 0.5 0.5 rg');
+    p.y -= 18;
 
     // Explanation
     if (expl) { p.parI(expl, 0, 8.2, '0.45 0.45 0.45'); }
@@ -447,14 +540,14 @@ function generatePdfBuffer(d: ReportData): Buffer {
   if (d.strengths?.length) {
     p.sub('Ce qui le definit positivement');
     p.sp(4);
-    for (const s of d.strengths) p.bul('+', s, '0.063 0.725 0.506');
+    for (const s of d.strengths) p.bul('+', s, '0.063 0.725 0.506 rg');
     p.sp(18);
   }
 
   if (d.watchPoints?.length) {
     p.sub('Ce qui demande votre attention');
     p.sp(4);
-    for (const w of d.watchPoints) p.bul('!', w, '0.937 0.267 0.267');
+    for (const w of d.watchPoints) p.bul('!', w, '0.937 0.267 0.267 rg');
   }
 
   p.foot();
@@ -495,6 +588,13 @@ function generatePdfBuffer(d: ReportData): Buffer {
   if (d.compat) {
     p.page(5 + secOffset, 'Compatibilite');
 
+    const compColors = [
+      '0.231 0.510 0.965 rg',  // blue
+      '0.063 0.725 0.506 rg',  // teal
+      '0.545 0.361 0.965 rg',  // purple
+      '0.961 0.620 0.043 rg',  // orange
+    ];
+
     const items: {l:string;v:string;s:string}[] = [
       {l:'Logement ideal', v:d.compat.home, s:d.compatSubs?.home||''},
       {l:'Avec les enfants', v:d.compat.kids, s:d.compatSubs?.kids||''},
@@ -502,20 +602,24 @@ function generatePdfBuffer(d: ReportData): Buffer {
       {l:'Niveau proprietaire', v:d.compat.ownerLevel, s:d.compatSubs?.ownerLevel||''},
     ];
 
-    for (const it of items) {
+    for (let idx = 0; idx < items.length; idx++) {
+      const it = items[idx];
       if (!it.v) continue;
       p.need(60);
 
-      // Card
-      p.R(p.l, p.y - 30, p.w, 40, '0.965 0.961 0.953 rg');
-      p._t(it.l.toUpperCase(), p.l + 14, p.y - 4, 'F1', 7.5, '0.48 0.48 0.48');
-      p._t(it.v, p.l + 14, p.y - 20, 'F2', 12, '0.067 0.067 0.067');
-      p.y -= 38;
+      // Rounded card
+      p.rr(p.l, p.y - 32, p.w, 42, 6, '0.965 0.961 0.953 rg');
+      // Left accent bar (different color per card)
+      p.rr(p.l, p.y - 32, 5, 42, 2.5, compColors[idx] || ACC_RG);
+
+      p._t(it.l.toUpperCase(), p.l + 18, p.y - 4, 'F1', 7.5, '0.48 0.48 0.48');
+      p._t(it.v, p.l + 18, p.y - 22, 'F2', 12, '0.067 0.067 0.067');
+      p.y -= 40;
 
       // Sub-explanation
       if (it.s) {
         p.sp(4);
-        p.parI(it.s, 14, 8.2, '0.45 0.45 0.45');
+        p.parI(it.s, 18, 8.2, '0.45 0.45 0.45');
       }
       p.sp(16);
     }
@@ -529,25 +633,30 @@ function generatePdfBuffer(d: ReportData): Buffer {
   if (d.summary) {
     p.dark();
 
-    p.R(60, 800, 475, 1, '0.18 0.18 0.18 rg');
+    // Accent stripe at top
+    p.R(0, 839, 595, 3, ACC_RG);
 
-    p._tC(`SECTION 0${6 + secOffset}`, 740, 'F1', 7.5, '0.35 0.35 0.35');
-    p._tC('SYNTHESE', 715, 'F2', 18, '0.50 0.50 0.50');
-    p.R(277, 703, 40, 0.5, '0.28 0.28 0.28 rg');
+    // Decorative circles
+    p.circ(100, 200, 40, '0.09 0.09 0.09 rg');
+    p.circ(500, 760, 30, '0.09 0.09 0.09 rg');
+
+    p._tC(`SECTION 0${6 + secOffset}`, 740, 'F1', 7.5, '0.38 0.38 0.38');
+    p._tC('SYNTHESE', 715, 'F2', 18, '0.55 0.55 0.55');
+    p.rr(277, 703, 40, 2.5, 1.25, ACC_RG);
 
     // Title
-    p._tC(d.profileTitle||'', 670, 'F2', 20, '1 1 1');
+    p._tC(d.profileTitle||'', 668, 'F2', 22, '1 1 1');
 
     // Summary text
-    const sLines = wrap(d.summary, 400, 10);
-    let sy = 635;
+    const sLines = wrap(d.summary, 400, 10.5);
+    let sy = 632;
     for (const ln of sLines) {
-      p._tC(ln, sy, 'F1', 10, '0.68 0.68 0.68');
+      p._tC(ln, sy, 'F1', 10.5, '0.68 0.68 0.68');
       sy -= 16;
     }
 
-    p.R(60, 65, 475, 1, '0.18 0.18 0.18 rg');
-    p._tC('Ame Animale  -  ameanimale.fr', 48, 'F1', 8, '0.28 0.28 0.28');
+    p.R(60, 65, 475, 0.75, ACC_RG);
+    p._tC('Ame Animale  -  ameanimale.fr', 48, 'F1', 8, '0.32 0.32 0.32');
   }
 
   return p.build();

@@ -777,10 +777,10 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .q-sub{font-size:14px;color:var(--text3);margin-bottom:28px;line-height:1.6;margin-top:-28px;}
 
 /* ─── PAYWALL ─── */
-.r-lock-gate{position:relative;}
-.r-lock-content{filter:blur(7px);opacity:0.28;pointer-events:none;user-select:none;max-height:320px;overflow:hidden;}
-.r-lock-overlay{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px;background:linear-gradient(to bottom,rgba(248,247,243,0) 0%,rgba(248,247,243,0.9) 28%,rgba(248,247,243,1) 55%);}
-.r-lock-card{background:#fff;border:1.5px solid var(--border);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 48px rgba(0,0,0,0.1);margin-top:60px;}
+.r-lock-gate{position:relative;overflow:hidden;}
+.r-lock-content{filter:blur(7px);opacity:0.28;pointer-events:none;user-select:none;max-height:200px;overflow:hidden;}
+.r-lock-overlay{position:relative;z-index:2;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px;margin-top:-80px;padding-top:40px;background:linear-gradient(to bottom,rgba(248,247,243,0) 0%,rgba(248,247,243,1) 40%);}
+.r-lock-card{background:#fff;border:1.5px solid var(--border);border-radius:24px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 8px 48px rgba(0,0,0,0.1);}
 .r-lock-icon{font-size:30px;margin-bottom:8px;}
 .r-lock-name{font-size:13px;color:var(--text3);margin-bottom:4px;}
 .r-lock-title{font-family:var(--display);font-size:21px;font-weight:800;color:var(--text);margin-bottom:20px;letter-spacing:-0.5px;}
@@ -1647,6 +1647,16 @@ hr.sep{border:none;border-top:1px solid var(--border);}
     <div class="r-tagline" id="r-tagline">Tagline du profil</div>
   </div>
   <div class="rbody" id="rbody"></div>
+  <footer class="footer" style="margin-top:0;">
+    <div class="footer-paws">
+      <span class="footer-paw" style="--ps:64px;--pr:-15deg;top:10%;left:5%">🐾</span>
+      <span class="footer-paw" style="--ps:40px;--pr:20deg;top:50%;left:20%">🐾</span>
+      <span class="footer-paw" style="--ps:56px;--pr:-5deg;top:20%;right:10%">🐾</span>
+      <span class="footer-paw" style="--ps:32px;--pr:30deg;bottom:10%;right:25%">🐾</span>
+    </div>
+    <div class="footer-logo" onclick="showScreen('landing')" style="cursor:pointer;">🐾 Âme Animale</div>
+    <div class="footer-copy">© 2025 Âme Animale · Tous droits réservés</div>
+  </footer>
 </div>
 
 <script>
@@ -4146,8 +4156,10 @@ var BREED_DATA={
 
 // ── UNLOCK ───────────────────────────────────────────
 function revealReport(){
+  var gate=document.querySelector('.r-lock-gate');
   var content=document.querySelector('.r-lock-content');
   var overlay=document.querySelector('.r-lock-overlay');
+  if(gate){gate.style.overflow='visible';}
   if(content){content.style.filter='none';content.style.opacity='1';content.style.pointerEvents='auto';content.style.userSelect='auto';content.style.maxHeight='none';}
   if(overlay){overlay.style.display='none';}
   var sell=document.getElementById('r-sell');

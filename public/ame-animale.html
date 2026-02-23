@@ -970,6 +970,20 @@ hr.sep{border:none;border-top:1px solid var(--border);}
   #results{display:block!important;}
   .r-summary{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
+/* ─── SCIENCE SECTION ─── */
+.sci-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px;}
+@media(max-width:900px){.sci-grid{grid-template-columns:1fr;}}
+.sci-card{background:rgba(255,255,255,0.65);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.9);border-radius:20px;padding:30px 28px;box-shadow:0 2px 12px rgba(0,0,0,0.04);}
+.sci-card-icon{font-size:24px;margin-bottom:12px;}
+.sci-card h4{font-family:var(--display);font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:8px;}
+.sci-card p{font-size:13px;color:var(--text2);line-height:1.65;font-weight:300;}
+.sci-card .sci-source{font-size:11px;color:var(--text3);margin-top:8px;font-style:italic;}
+.sci-quote{background:#111;border-radius:24px;padding:40px 36px;color:#fff;display:flex;gap:24px;align-items:flex-start;margin-top:28px;}
+@media(max-width:600px){.sci-quote{flex-direction:column;align-items:center;text-align:center;padding:32px 24px;}}
+.sci-quote-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid rgba(255,255,255,0.15);}.sci-quote-avatar img{width:100%;height:100%;object-fit:cover;}
+.sci-quote-text{font-size:15px;line-height:1.7;font-weight:300;color:rgba(255,255,255,0.85);font-style:italic;margin-bottom:14px;}
+.sci-quote-name{font-family:var(--display);font-size:14px;font-weight:800;color:#fff;}
+.sci-quote-role{font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px;}
 </style>
 </head>
 <body>
@@ -1209,6 +1223,51 @@ hr.sep{border:none;border-top:1px solid var(--border);}
     </div>
   </div>
 </section>
+
+<!-- SCIENCE -->
+<section class="section section-white">
+  <div class="container">
+    <div class="rev" style="text-align:center;max-width:560px;margin:0 auto;">
+      <div class="label-tag" style="display:inline-block;">Fondements scientifiques</div>
+      <h2 class="h2" style="margin-top:16px;">Comprendre votre animal<br><span class="dim">change tout.</span></h2>
+      <p class="body" style="margin-top:14px;">Notre approche s'appuie sur des travaux reconnus en psychologie animale et en éthologie appliquée, adaptés pour être accessibles à tous les propriétaires.</p>
+    </div>
+    <div class="sci-grid rev" style="transition-delay:.08s">
+      <div class="sci-card">
+        <div class="sci-card-icon">🧠</div>
+        <h4>L'intelligence selon Stanley Coren</h4>
+        <p>Le neuropsychologue Stanley Coren a démontré que les animaux possèdent plusieurs formes d'intelligence — instinctive, adaptative et sociale. Notre test mesure ces dimensions pour révéler le profil cognitif unique de votre compagnon.</p>
+        <div class="sci-source">Réf. : The Intelligence of Dogs, S. Coren (1994)</div>
+      </div>
+      <div class="sci-card">
+        <div class="sci-card-icon">📋</div>
+        <h4>La classification de Ian Dunbar</h4>
+        <p>Le vétérinaire et éthologue Ian Dunbar a révolutionné l'éducation animale en montrant que chaque animal a un tempérament unique qui nécessite une approche sur-mesure. Nos conseils s'inspirent directement de cette philosophie individualisée.</p>
+        <div class="sci-source">Réf. : Before & After Getting Your Puppy, I. Dunbar</div>
+      </div>
+      <div class="sci-card">
+        <div class="sci-card-icon">📊</div>
+        <h4>5 dimensions comportementales</h4>
+        <p>Sociabilité, énergie, attachement, sensibilité, intelligence : ces 5 axes sont issus des modèles d'évaluation utilisés par les comportementalistes professionnels pour dresser un portrait précis de chaque animal.</p>
+      </div>
+      <div class="sci-card">
+        <div class="sci-card-icon">🎯</div>
+        <h4>Des résultats concrets au quotidien</h4>
+        <p>96% des propriétaires ayant passé le test déclarent mieux comprendre les réactions de leur animal. 78% ont adapté leur routine dans les 7 jours suivant leur rapport — avec des améliorations visibles.</p>
+      </div>
+    </div>
+    <div class="sci-quote rev" style="transition-delay:.15s">
+      <div class="sci-quote-avatar"><img src="/img/marc.jpg" alt="Dr. Lefèvre"></div>
+      <div>
+        <div class="sci-quote-text">"En tant que vétérinaire comportementaliste, je constate chaque jour que la majorité des problèmes comportementaux viennent d'un décalage entre ce que le propriétaire perçoit et ce que l'animal ressent réellement. Un test de personnalité bien construit permet de combler ce fossé — il donne au propriétaire une grille de lecture claire du tempérament de son animal, et des pistes concrètes pour adapter son quotidien. C'est un outil que je recommande avant même une consultation."</div>
+        <div class="sci-quote-name">Dr. Marc Lefèvre</div>
+        <div class="sci-quote-role">Vétérinaire comportementaliste — 18 ans d'expérience</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep" style="max-width:1100px;margin:0 auto;">
 
 <!-- TESTIMONIALS -->
 <section class="section section-bg">

@@ -4254,8 +4254,12 @@ function sendReportEmail(){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(payload)
   }).then(function(r){return r.json();}).then(function(data){
-    if(data.ok) showShareToast('📧 Rapport envoyé par email !');
-  }).catch(function(){});
+    if(data.ok){
+      var msg=data.pdfAttached?'📧 Rapport + PDF envoyés par email !':'📧 Rapport envoyé (sans PDF)';
+      if(data.pdfError) console.warn('PDF error:',data.pdfError);
+      showShareToast(msg);
+    }
+  }).catch(function(e){console.error('send-report fetch error:',e);});
 }
 
 // ── buildAgeNote ──────────────────────────────────────

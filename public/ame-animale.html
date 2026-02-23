@@ -4244,6 +4244,20 @@ function sendReportEmail(){
     +'Sa dimension dominante est la '+(({SOC:'sociabilité',ENG:'énergie',ATT:'attachement',SEN:'sensibilité',INT:'intelligence'})[domDim]||'')+' ('+dims[domDim]+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
     +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
+  var dimExpls={};
+  dimKeys.forEach(function(k){
+    var raw=getDimInfo(k,dims[k]);
+    dimExpls[k]=raw.replace(/<[^>]+>/g,'');
+  });
+  var actWhys=ACT_WHY[animal+'-'+best.type]||[];
+  var rewWhys=REW_WHY[animal+'-'+best.type]||[];
+  var errWhys=ERR_WHY[animal+'-'+best.type]||[];
+  var compatSubs={
+    home:getCompatSub('home',scores),
+    kids:getCompatSub('kids',scores),
+    otherPets:getCompatSub('otherPets',scores),
+    ownerLevel:getCompatSub('ownerLevel',scores)
+  };
   var payload={
     email:profile.email,
     prenom:profile.prenom||'',
@@ -4254,15 +4268,20 @@ function sendReportEmail(){
     profileEmoji:best.emoji,
     profileTagline:best.tagline,
     dimensions:dims,
+    dimExplanations:dimExpls,
     strengths:best.strengths||[],
     watchPoints:best.watchPoints||[],
     tips:best.tips||[],
     desc:best.desc||'',
     analysis:{home:an.home,humans:an.humans,animals:an.animals,intel:an.intel,bond:an.bond},
     activities:best.activities||[],
+    activityWhys:actWhys,
     rewards:best.rewards||[],
+    rewardWhys:rewWhys,
     mistakes:best.mistakes||[],
+    mistakeWhys:errWhys,
     compat:{home:co.home||'',kids:co.kids||'',otherPets:co.otherPets||'',ownerLevel:co.ownerLevel||''},
+    compatSubs:compatSubs,
     summary:summaryPara
   };
   fetch('/api/send-report',{

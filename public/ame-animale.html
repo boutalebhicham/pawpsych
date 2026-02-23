@@ -4258,11 +4258,14 @@ function sendReportEmail(){
     otherPets:getCompatSub('otherPets',scores),
     ownerLevel:getCompatSub('ownerLevel',scores)
   };
+  var ageNoteData=buildAgeNote(profile.age,animal,best);
+  var breedNoteData=buildBreedNote(profile.race,best,animal);
   var payload={
     email:profile.email,
     prenom:profile.prenom||'',
     animalName:profile.nom||'',
     animalType:animal,
+    race:profile.race||'',
     profileType:best.type,
     profileTitle:best.title,
     profileEmoji:best.emoji,
@@ -4282,6 +4285,8 @@ function sendReportEmail(){
     mistakeWhys:errWhys,
     compat:{home:co.home||'',kids:co.kids||'',otherPets:co.otherPets||'',ownerLevel:co.ownerLevel||''},
     compatSubs:compatSubs,
+    ageNote:ageNoteData?{badge:ageNoteData.badge,text:ageNoteData.text}:null,
+    breedNote:breedNoteData||null,
     summary:summaryPara
   };
   fetch('/api/send-report',{

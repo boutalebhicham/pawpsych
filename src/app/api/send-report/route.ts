@@ -6,39 +6,58 @@ function getResend() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// RAW PDF GENERATOR — zero deps, multi-page, professional report
+//  RAW PDF GENERATOR — zero deps, pro multi-page report
 // ═══════════════════════════════════════════════════════════════════
 
-function enc(str: string): string {
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/\(/g, '\\(')
-    .replace(/\)/g, '\\)')
-    .replace(/é/g, '\\351').replace(/è/g, '\\350').replace(/ê/g, '\\352').replace(/ë/g, '\\353')
-    .replace(/à/g, '\\340').replace(/â/g, '\\342').replace(/ä/g, '\\344')
-    .replace(/ù/g, '\\371').replace(/û/g, '\\373').replace(/ü/g, '\\374')
-    .replace(/ô/g, '\\364').replace(/î/g, '\\356').replace(/ï/g, '\\357')
-    .replace(/ç/g, '\\347').replace(/œ/g, 'oe').replace(/æ/g, 'ae')
-    .replace(/Â/g, '\\302').replace(/É/g, '\\311').replace(/È/g, '\\310')
-    .replace(/Ê/g, '\\312').replace(/Ô/g, '\\324').replace(/Î/g, '\\316')
-    .replace(/À/g, '\\300')
-    .replace(/—/g, ' - ').replace(/–/g, '-').replace(/'/g, "'").replace(/'/g, "'")
-    .replace(/«/g, '"').replace(/»/g, '"').replace(/…/g, '...')
-    .replace(/\u00a0/g, ' ');
+// Helvetica character widths (per 1000 em units)
+const HW: Record<string, number> = {
+  ' ':278,'!':278,'"':355,'#':556,'$':556,'%':889,'&':667,"'":191,
+  '(':333,')':333,'*':389,'+':584,',':278,'-':333,'.':278,'/':278,
+  '0':556,'1':556,'2':556,'3':556,'4':556,'5':556,'6':556,'7':556,'8':556,'9':556,
+  ':':278,';':278,'<':584,'=':584,'>':584,'?':556,'@':1015,
+  'A':667,'B':667,'C':722,'D':722,'E':667,'F':611,'G':778,'H':722,'I':278,
+  'J':500,'K':667,'L':556,'M':833,'N':722,'O':778,'P':667,'Q':778,'R':722,'S':667,
+  'T':611,'U':722,'V':667,'W':944,'X':667,'Y':667,'Z':611,
+  'a':556,'b':556,'c':500,'d':556,'e':556,'f':278,'g':556,'h':556,'i':222,
+  'j':222,'k':500,'l':222,'m':833,'n':556,'o':556,'p':556,'q':556,'r':333,'s':500,'t':278,
+  'u':556,'v':500,'w':722,'x':500,'y':500,'z':500,
+};
+
+/** Accurate text width in points using Helvetica metrics */
+function tw(str: string, size: number, bold = false): number {
+  let w = 0;
+  for (const ch of str) {
+    // Strip combining accents to get base char width
+    const base = ch.normalize('NFD').charAt(0);
+    const cw = HW[base] ?? 556;
+    w += cw;
+  }
+  if (bold) w *= 1.058;
+  return (w / 1000) * size;
 }
 
-// Visual character count of an encoded string (handles \351 etc as 1 char)
-function vLen(encoded: string): number {
-  return encoded.replace(/\\[0-9]{3}/g, 'X').replace(/\\\\/g, 'X').replace(/\\[\(\)]/g, 'X').length;
+function enc(s: string): string {
+  return s
+    .replace(/\\/g, '\\\\').replace(/\(/g, '\\(').replace(/\)/g, '\\)')
+    .replace(/é/g,'\\351').replace(/è/g,'\\350').replace(/ê/g,'\\352').replace(/ë/g,'\\353')
+    .replace(/à/g,'\\340').replace(/â/g,'\\342').replace(/ä/g,'\\344')
+    .replace(/ù/g,'\\371').replace(/û/g,'\\373').replace(/ü/g,'\\374')
+    .replace(/ô/g,'\\364').replace(/î/g,'\\356').replace(/ï/g,'\\357')
+    .replace(/ç/g,'\\347').replace(/œ/g,'oe').replace(/æ/g,'ae')
+    .replace(/Â/g,'\\302').replace(/É/g,'\\311').replace(/È/g,'\\310')
+    .replace(/Ê/g,'\\312').replace(/Ô/g,'\\324').replace(/Î/g,'\\316').replace(/À/g,'\\300')
+    .replace(/—/g,' - ').replace(/–/g,'-').replace(/\u2019/g,"'").replace(/\u2018/g,"'")
+    .replace(/\u00ab/g,'"').replace(/\u00bb/g,'"').replace(/\u2026/g,'...')
+    .replace(/\u00a0/g,' ');
 }
 
-function wrap(text: string, max: number): string[] {
+function wrap(text: string, maxPt: number, fontSize: number, bold = false): string[] {
   const words = text.split(' ');
   const lines: string[] = [];
   let cur = '';
   for (const w of words) {
     const test = cur ? cur + ' ' + w : w;
-    if (vLen(enc(test)) > max && cur.length > 0) {
+    if (tw(test, fontSize, bold) > maxPt && cur) {
       lines.push(cur);
       cur = w;
     } else {
@@ -49,341 +68,267 @@ function wrap(text: string, max: number): string[] {
   return lines;
 }
 
-// Approximate text width in points (Helvetica metrics)
-function tw(str: string, size: number, bold = false): number {
-  const encoded = enc(str);
-  const chars = vLen(encoded);
-  const avg = bold ? 0.56 : 0.52;
-  return chars * avg * size;
-}
-
 const DIM_COLORS: Record<string, string> = {
-  SOC: '0.231 0.510 0.965 rg',
-  ENG: '0.961 0.620 0.043 rg',
-  ATT: '0.937 0.267 0.267 rg',
-  SEN: '0.545 0.361 0.965 rg',
+  SOC: '0.231 0.510 0.965 rg', ENG: '0.961 0.620 0.043 rg',
+  ATT: '0.937 0.267 0.267 rg', SEN: '0.545 0.361 0.965 rg',
   INT: '0.063 0.725 0.506 rg',
 };
 const DIM_LABELS: Record<string, string> = {
-  SOC: 'Sociabilite', ENG: 'Energie', ATT: 'Attachement', SEN: 'Sensibilite', INT: 'Intelligence',
+  SOC:'Sociabilite', ENG:'Energie', ATT:'Attachement', SEN:'Sensibilite', INT:'Intelligence',
 };
 
 interface ReportData {
-  prenom: string;
-  animalName: string;
-  animalType: string;
-  profileType: string;
-  profileTitle: string;
-  profileTagline: string;
-  profileEmoji: string;
+  prenom: string; animalName: string; animalType: string; race?: string;
+  profileType: string; profileTitle: string; profileTagline: string; profileEmoji: string;
   dimensions: Record<string, number>;
   dimExplanations?: Record<string, string>;
-  strengths: string[];
-  watchPoints: string[];
-  tips: string[];
-  desc: string;
+  strengths: string[]; watchPoints: string[]; tips: string[]; desc: string;
   analysis?: { home: string; humans: string; animals: string; intel: string; bond: string };
-  activities?: string[];
-  activityWhys?: string[];
-  rewards?: string[];
-  rewardWhys?: string[];
-  mistakes?: string[];
-  mistakeWhys?: string[];
+  activities?: string[]; activityWhys?: string[];
+  rewards?: string[];  rewardWhys?: string[];
+  mistakes?: string[]; mistakeWhys?: string[];
   compat?: { home: string; kids: string; otherPets: string; ownerLevel: string };
   compatSubs?: { home: string; kids: string; otherPets: string; ownerLevel: string };
+  ageNote?: { badge: string; text: string } | null;
+  breedNote?: string | null;
   summary?: string;
 }
 
-// ── PDF Page Builder ──
-class PdfDoc {
-  private pages: string[][] = [];
-  private cur: string[] = [];
+// ── PDF Document Builder ──
+class P {
+  private pgs: string[][] = [];
+  private c: string[] = [];
   y = 0;
-  private W = 595;
-  private H = 842;
-  private MT = 60;
-  private MB = 55;
-  private ML = 55;
-  private MR = 55;
+  private W = 595; private H = 842;
+  private ML = 60; private MR = 60; private MT = 65; private MB = 55;
   private CW: number;
-  private pageN = 0;
+  private pN = 0;
 
-  constructor() {
-    this.CW = this.W - this.ML - this.MR;
+  constructor() { this.CW = this.W - this.ML - this.MR; }
+
+  get l() { return this.ML; }
+  get r() { return this.W - this.MR; }
+  get w() { return this.CW; }
+  get cx() { return this.W / 2; }
+
+  // ── Pages ──
+  dark() {
+    if (this.c.length) this.pgs.push(this.c);
+    this.c = []; this.pN++; this.y = this.H - this.MT;
+    this.c.push('0.067 0.067 0.067 rg');
+    this.c.push(`0 0 ${this.W} ${this.H} re f`);
   }
 
-  get left() { return this.ML; }
-  get right() { return this.W - this.MR; }
-  get width() { return this.CW; }
-  get center() { return this.W / 2; }
-
-  // ── Page management ──
-  newPage(dark = false) {
-    if (this.cur.length > 0) this.pages.push(this.cur);
-    this.cur = [];
-    this.pageN++;
-    this.y = this.H - this.MT;
-    if (dark) {
-      this.cur.push('0.067 0.067 0.067 rg');
-      this.cur.push(`0 0 ${this.W} ${this.H} re f`);
-    }
-  }
-
-  contentPage(secNum?: number, secTitle?: string) {
-    this.newPage();
-    // Top line
-    this.rect(0, this.H - 42, this.W, 0.5, '0.88 0.88 0.86 rg');
-    // Brand top-left
-    this.txt('Ame Animale', this.ML, this.H - 32, 'F2', 7.5, '0.55 0.55 0.55');
-    // Page number top-right
-    this.txtR(String(this.pageN), this.right, this.H - 32, 'F1', 7.5, '0.55 0.55 0.55');
+  page(sn?: number, st?: string) {
+    if (this.c.length) this.pgs.push(this.c);
+    this.c = []; this.pN++; this.y = this.H - this.MT;
+    // Header bar
+    this.c.push('0.965 0.961 0.953 rg');
+    this.c.push(`0 ${this.H - 44} ${this.W} 44 re f`);
+    this._t('Ame Animale', this.ML, this.H - 28, 'F2', 8, '0.45 0.45 0.45');
+    this._tR(String(this.pN), this.r, this.H - 28, 'F1', 8, '0.45 0.45 0.45');
     this.y = this.H - this.MT - 10;
 
-    if (secNum !== undefined && secTitle) {
-      // Section header
-      this.txt(`SECTION 0${secNum}`, this.ML, this.y, 'F1', 8, '0.55 0.55 0.55');
-      this.y -= 18;
-      // Title with left accent bar
-      this.rect(this.ML - 2, this.y - 4, 3, 22, '0.067 0.067 0.067 rg');
-      this.txt(secTitle.toUpperCase(), this.ML + 10, this.y, 'F2', 18, '0.067 0.067 0.067');
-      this.y -= 14;
-      // Underline
-      this.rect(this.ML, this.y, this.CW, 1, '0.067 0.067 0.067 rg');
+    if (sn !== undefined && st) {
+      this._t(`SECTION 0${sn}`, this.l, this.y + 2, 'F1', 7, '0.50 0.50 0.50');
       this.y -= 22;
+      this._t(st.toUpperCase(), this.l, this.y, 'F2', 17, '0.067 0.067 0.067');
+      this.y -= 8;
+      this.R(this.l, this.y, this.w, 1.5, '0.067 0.067 0.067 rg');
+      this.y -= 25;
     }
   }
 
-  checkSpace(need: number) {
-    if (this.y - need < this.MB) {
-      // New continuation page
-      this.newPage();
-      this.rect(0, this.H - 42, this.W, 0.5, '0.88 0.88 0.86 rg');
-      this.txt('Ame Animale', this.ML, this.H - 32, 'F2', 7.5, '0.55 0.55 0.55');
-      this.txtR(String(this.pageN), this.right, this.H - 32, 'F1', 7.5, '0.55 0.55 0.55');
-      this.y = this.H - this.MT - 10;
+  cont() {
+    if (this.c.length) this.pgs.push(this.c);
+    this.c = []; this.pN++;
+    this.c.push('0.965 0.961 0.953 rg');
+    this.c.push(`0 ${this.H - 44} ${this.W} 44 re f`);
+    this._t('Ame Animale', this.ML, this.H - 28, 'F2', 8, '0.45 0.45 0.45');
+    this._tR(String(this.pN), this.r, this.H - 28, 'F1', 8, '0.45 0.45 0.45');
+    this.y = this.H - this.MT - 10;
+  }
+
+  need(h: number) { if (this.y - h < this.MB) this.cont(); }
+
+  // ── Primitives ──
+  R(x: number, y: number, w: number, h: number, col: string) {
+    this.c.push(col); this.c.push(`${x} ${y} ${w} ${h} re f`);
+  }
+
+  _t(s: string, x: number, y: number, f: string, sz: number, col: string) {
+    this.c.push(`BT /${f} ${sz} Tf ${col} rg ${x} ${y} Td (${enc(s)}) Tj ET`);
+  }
+
+  _tR(s: string, rx: number, y: number, f: string, sz: number, col: string) {
+    this._t(s, rx - tw(s, sz, f === 'F2'), y, f, sz, col);
+  }
+
+  _tC(s: string, y: number, f: string, sz: number, col: string) {
+    this._t(s, this.cx - tw(s, sz, f === 'F2') / 2, y, f, sz, col);
+  }
+
+  // ── Components ──
+  sub(title: string) {
+    this.need(30);
+    this.R(this.l, this.y - 3, this.w, 22, '0.965 0.961 0.953 rg');
+    this._t(title, this.l + 10, this.y + 1, 'F2', 10.5, '0.13 0.13 0.13');
+    this.y -= 30;
+  }
+
+  par(text: string, indent = 0, sz = 9.5, col = '0.27 0.27 0.27', font = 'F1') {
+    const lines = wrap(text, this.w - indent, sz, font === 'F2');
+    for (const ln of lines) {
+      this.need(14);
+      this._t(ln, this.l + indent, this.y, font, sz, col);
+      this.y -= 14;
     }
   }
 
-  // ── Drawing primitives ──
-  rect(x: number, y: number, w: number, h: number, color: string) {
-    this.cur.push(color);
-    this.cur.push(`${x} ${y} ${w} ${h} re f`);
-  }
-
-  txt(str: string, x: number, y: number, font: string, size: number, color: string) {
-    this.cur.push('BT');
-    this.cur.push(`/${font} ${size} Tf`);
-    this.cur.push(`${color} rg`);
-    this.cur.push(`${x} ${y} Td`);
-    this.cur.push(`(${enc(str)}) Tj`);
-    this.cur.push('ET');
-  }
-
-  txtR(str: string, rx: number, y: number, font: string, size: number, color: string) {
-    const w = tw(str, size, font === 'F2');
-    this.txt(str, rx - w, y, font, size, color);
-  }
-
-  txtC(str: string, y: number, font: string, size: number, color: string) {
-    const w = tw(str, size, font === 'F2');
-    this.txt(str, this.center - w / 2, y, font, size, color);
-  }
-
-  // ── High-level components ──
-  subTitle(title: string) {
-    this.checkSpace(28);
-    this.rect(this.left, this.y + 2, this.CW, 20, '0.965 0.961 0.953 rg');
-    this.txt(title, this.left + 8, this.y + 5, 'F2', 11, '0.13 0.13 0.13');
-    this.y -= 28;
-  }
-
-  para(text: string, indent = 0, fontSize = 9.5, color = '0.27 0.27 0.27') {
-    const maxChars = Math.floor((this.CW - indent) / (fontSize * 0.5));
-    const lines = wrap(text, maxChars);
-    for (const line of lines) {
-      this.checkSpace(13);
-      this.txt(line, this.left + indent, this.y, 'F1', fontSize, color);
+  parI(text: string, indent = 0, sz = 9, col = '0.42 0.42 0.42') {
+    const lines = wrap(text, this.w - indent, sz);
+    for (const ln of lines) {
+      this.need(13);
+      this._t(ln, this.l + indent, this.y, 'F3', sz, col);
       this.y -= 13;
     }
   }
 
-  paraItalic(text: string, indent = 0, fontSize = 9.5, color = '0.40 0.40 0.40') {
-    const maxChars = Math.floor((this.CW - indent) / (fontSize * 0.5));
-    const lines = wrap(text, maxChars);
-    for (const line of lines) {
-      this.checkSpace(13);
-      this.txt(line, this.left + indent, this.y, 'F3', fontSize, color);
-      this.y -= 13;
-    }
-  }
-
-  bullet(label: string, text: string, labelColor = '0.27 0.27 0.27') {
-    const maxChars = Math.floor((this.CW - 24) / (9.5 * 0.5));
-    const lines = wrap(text, maxChars);
+  bul(label: string, text: string, lCol = '0.27 0.27 0.27') {
+    const lines = wrap(text, this.w - 22, 9.5);
     for (let i = 0; i < lines.length; i++) {
-      this.checkSpace(14);
-      if (i === 0) {
-        this.txt(label, this.left + 6, this.y, 'F2', 9.5, labelColor);
-      }
-      this.txt(lines[i], this.left + 24, this.y, 'F1', 9.5, '0.27 0.27 0.27');
-      this.y -= 14;
+      this.need(15);
+      if (i === 0) this._t(label, this.l + 4, this.y, 'F2', 10, lCol);
+      this._t(lines[i], this.l + 22, this.y, 'F1', 9.5, '0.27 0.27 0.27');
+      this.y -= 15;
     }
   }
 
-  adviceItem(name: string, explanation: string, accentColor: string) {
-    this.checkSpace(20);
-    // Item name with arrow
-    const nameLines = wrap(name, Math.floor(this.CW / (10 * 0.5)));
-    for (let i = 0; i < nameLines.length; i++) {
-      this.checkSpace(14);
-      if (i === 0) {
-        this.rect(this.left, this.y - 1, 3, 12, accentColor);
-      }
-      this.txt(nameLines[i], this.left + 12, this.y, 'F2', 10, '0.13 0.13 0.13');
+  advice(name: string, why: string, accent: string) {
+    this.need(22);
+    // Accent bar + name
+    this.R(this.l, this.y - 1, 3, 13, accent);
+    const nLines = wrap(name, this.w - 16, 10, true);
+    for (const ln of nLines) {
+      this.need(14);
+      this._t(ln, this.l + 14, this.y, 'F2', 10, '0.13 0.13 0.13');
       this.y -= 14;
     }
-    // Explanation
-    if (explanation) {
+    if (why) {
       this.y -= 2;
-      this.paraItalic(explanation, 12, 8.5, '0.42 0.42 0.42');
+      this.parI(why, 14, 8.2, '0.45 0.45 0.45');
     }
-    this.y -= 8;
+    this.y -= 10;
   }
 
-  spacer(h: number) { this.y -= h; }
+  sp(h: number) { this.y -= h; }
 
-  footer() {
-    this.rect(this.left, this.MB - 5, this.CW, 0.5, '0.90 0.90 0.88 rg');
-    this.txtC('Ame Animale  -  ameanimale.fr', this.MB - 15, 'F1', 7, '0.60 0.60 0.60');
+  foot() {
+    this.R(this.l, this.MB - 8, this.w, 0.5, '0.90 0.90 0.88 rg');
+    this._tC('Ame Animale  -  ameanimale.fr', this.MB - 20, 'F1', 7, '0.55 0.55 0.55');
   }
 
-  // ── Build final PDF binary ──
+  // ── Build PDF binary ──
   build(): Buffer {
-    if (this.cur.length > 0) this.pages.push(this.cur);
+    if (this.c.length) this.pgs.push(this.c);
+    const objs: string[] = []; const offs: number[] = [];
+    let n = 0;
+    const add = (c: string) => { n++; objs.push(`${n} 0 obj\n${c}\nendobj\n`); return n; };
 
-    const objects: string[] = [];
-    const offsets: number[] = [];
-    let objN = 0;
-    function addObj(c: string): number {
-      objN++;
-      objects.push(`${objN} 0 obj\n${c}\nendobj\n`);
-      return objN;
+    add('<< /Type /Catalog /Pages 2 0 R >>');
+    add('placeholder');
+    add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+    add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+    add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>');
+
+    const fr = '<< /F1 3 0 R /F2 4 0 R /F3 5 0 R >>';
+    const pNums: number[] = [];
+    for (const pg of this.pgs) {
+      const s = pg.join('\n');
+      const sO = add(`<< /Length ${s.length} >>\nstream\n${s}\nendstream`);
+      pNums.push(add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.W} ${this.H}] /Contents ${sO} 0 R /Resources << /Font ${fr} >> >>`));
     }
-
-    // 1=Catalog, 2=Pages(placeholder), 3-5=Fonts
-    addObj('<< /Type /Catalog /Pages 2 0 R >>');
-    addObj('placeholder');
-    addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
-    addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
-    addObj('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding >>');
-
-    const fontRes = '<< /F1 3 0 R /F2 4 0 R /F3 5 0 R >>';
-    const pageObjNums: number[] = [];
-
-    for (const page of this.pages) {
-      const stream = page.join('\n');
-      const sObj = addObj(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
-      const pObj = addObj(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${this.W} ${this.H}] /Contents ${sObj} 0 R /Resources << /Font ${fontRes} >> >>`);
-      pageObjNums.push(pObj);
-    }
-
-    const kids = pageObjNums.map(n => `${n} 0 R`).join(' ');
-    objects[1] = `2 0 obj\n<< /Type /Pages /Kids [${kids}] /Count ${this.pages.length} >>\nendobj\n`;
+    objs[1] = `2 0 obj\n<< /Type /Pages /Kids [${pNums.map(x=>`${x} 0 R`).join(' ')}] /Count ${this.pgs.length} >>\nendobj\n`;
 
     let pdf = '%PDF-1.4\n%\xE2\xE3\xCF\xD3\n';
-    for (let i = 0; i < objects.length; i++) {
-      offsets[i] = pdf.length;
-      pdf += objects[i];
-    }
-    const xrefOff = pdf.length;
-    pdf += 'xref\n';
-    pdf += `0 ${objN + 1}\n`;
-    pdf += '0000000000 65535 f \n';
-    for (let i = 0; i < objN; i++) {
-      pdf += String(offsets[i]).padStart(10, '0') + ' 00000 n \n';
-    }
-    pdf += 'trailer\n';
-    pdf += `<< /Size ${objN + 1} /Root 1 0 R >>\n`;
-    pdf += 'startxref\n';
-    pdf += `${xrefOff}\n`;
-    pdf += '%%EOF\n';
-
+    for (let i = 0; i < objs.length; i++) { offs[i] = pdf.length; pdf += objs[i]; }
+    const xo = pdf.length;
+    pdf += `xref\n0 ${n+1}\n0000000000 65535 f \n`;
+    for (let i = 0; i < n; i++) pdf += String(offs[i]).padStart(10,'0')+' 00000 n \n';
+    pdf += `trailer\n<< /Size ${n+1} /Root 1 0 R >>\nstartxref\n${xo}\n%%EOF\n`;
     return Buffer.from(pdf, 'binary');
   }
 }
 
-// ── Generate the complete report PDF ──
-function generatePdfBuffer(data: ReportData): Buffer {
-  const name = data.animalName || 'Votre animal';
-  const doc = new PdfDoc();
-  const dims = ['SOC', 'ENG', 'ATT', 'SEN', 'INT'];
-  const dateStr = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+// ── Build the complete PDF ──
+function generatePdfBuffer(d: ReportData): Buffer {
+  const name = d.animalName || 'Votre animal';
+  const p = new P();
+  const dims = ['SOC','ENG','ATT','SEN','INT'];
+  const date = new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
 
-  // ════════════════════════════════════════════════════════════════
-  // PAGE 1 — COUVERTURE
-  // ════════════════════════════════════════════════════════════════
-  doc.newPage(true);
+  const hasContext = !!(d.ageNote || d.breedNote);
+  const secOffset = hasContext ? 1 : 0;
 
-  // Top decorative line
-  doc.rect(55, 795, 485, 1.5, '0.20 0.20 0.20 rg');
+  // ──────────────────────────────────────────────────
+  //  PAGE 1 — COUVERTURE
+  // ──────────────────────────────────────────────────
+  p.dark();
 
-  // Brand
-  doc.txtC('AME ANIMALE', 710, 'F2', 11, '0.45 0.45 0.45');
-  // Sub-brand
-  doc.txtC('Rapport de personnalite', 694, 'F3', 9, '0.38 0.38 0.38');
+  // Subtle top line
+  p.R(60, 800, 475, 1, '0.18 0.18 0.18 rg');
 
-  // Separator
-  doc.rect(267, 678, 60, 0.5, '0.30 0.30 0.30 rg');
+  // Brand — centered
+  p._tC('AME ANIMALE', 720, 'F2', 11, '0.42 0.42 0.42');
+  p._tC('Rapport de personnalite', 704, 'F3', 9, '0.35 0.35 0.35');
+
+  // Small separator
+  p.R(277, 690, 40, 0.5, '0.28 0.28 0.28 rg');
 
   // Profile type
-  doc.txtC((data.profileType || '').toUpperCase(), 648, 'F2', 9, '0.50 0.50 0.50');
+  p._tC((d.profileType||'').toUpperCase(), 660, 'F2', 9, '0.48 0.48 0.48');
 
-  // Profile title - large, centered
-  const titleLines = wrap(data.profileTitle || 'Profil', 26);
-  let ty = 610;
-  for (const line of titleLines) {
-    doc.txtC(line, ty, 'F2', 30, '1 1 1');
-    ty -= 40;
-  }
+  // Title lines
+  const tLines = wrap(d.profileTitle||'Profil', 380, 30, true);
+  let ty = 618;
+  for (const ln of tLines) { p._tC(ln, ty, 'F2', 30, '1 1 1'); ty -= 40; }
 
-  // Tagline italic
-  const tagLines = wrap(data.profileTagline || '', 55);
-  ty -= 5;
-  for (const line of tagLines) {
-    doc.txtC(line, ty, 'F3', 11, '0.58 0.58 0.58');
-    ty -= 16;
-  }
+  // Tagline
+  const tagLines = wrap(d.profileTagline||'', 400, 11);
+  ty -= 8;
+  for (const ln of tagLines) { p._tC(ln, ty, 'F3', 11, '0.55 0.55 0.55'); ty -= 16; }
 
   // Separator
-  ty -= 15;
-  doc.rect(267, ty, 60, 0.5, '0.25 0.25 0.25 rg');
-  ty -= 30;
+  ty -= 20;
+  p.R(277, ty, 40, 0.5, '0.22 0.22 0.22 rg');
+  ty -= 35;
 
   // Animal info
-  doc.txtC(`Rapport de ${name}`, ty, 'F1', 12, '0.65 0.65 0.65');
+  p._tC(`Rapport de ${name}`, ty, 'F1', 12, '0.60 0.60 0.60');
   ty -= 22;
-  if (data.prenom) {
-    doc.txtC(`Prepare pour ${data.prenom}`, ty, 'F3', 10, '0.45 0.45 0.45');
-    ty -= 20;
+  if (d.prenom) {
+    p._tC(`Prepare pour ${d.prenom}`, ty, 'F3', 10, '0.42 0.42 0.42');
+    ty -= 22;
   }
-  doc.txtC(dateStr, ty - 5, 'F1', 9, '0.38 0.38 0.38');
+  p._tC(date, ty, 'F1', 9, '0.35 0.35 0.35');
 
   // Bottom
-  doc.rect(55, 70, 485, 1.5, '0.20 0.20 0.20 rg');
-  doc.txtC('ameanimale.fr', 52, 'F2', 9, '0.32 0.32 0.32');
+  p.R(60, 65, 475, 1, '0.18 0.18 0.18 rg');
+  p._tC('ameanimale.fr', 48, 'F2', 9, '0.30 0.30 0.30');
 
-  // ════════════════════════════════════════════════════════════════
-  // PAGE 2 — SOMMAIRE
-  // ════════════════════════════════════════════════════════════════
-  doc.contentPage();
+  // ──────────────────────────────────────────────────
+  //  PAGE 2 — SOMMAIRE
+  // ──────────────────────────────────────────────────
+  p.page();
 
-  doc.txt('SOMMAIRE', doc.left, doc.y, 'F2', 22, '0.067 0.067 0.067');
-  doc.y -= 10;
-  doc.rect(doc.left, doc.y, 60, 2, '0.067 0.067 0.067 rg');
-  doc.y -= 35;
+  p._t('SOMMAIRE', p.l, p.y, 'F2', 22, '0.067 0.067 0.067');
+  p.y -= 10;
+  p.R(p.l, p.y, 50, 2.5, '0.067 0.067 0.067 rg');
+  p.y -= 40;
 
-  const tocItems = [
+  const toc = [
     'Dimensions comportementales',
+    ...(hasContext ? ['Contexte de lecture'] : []),
     'Analyse comportementale',
     'Points forts & Points de vigilance',
     'Conseils personnalises',
@@ -391,250 +336,236 @@ function generatePdfBuffer(data: ReportData): Buffer {
     'Synthese',
   ];
 
-  for (let i = 0; i < tocItems.length; i++) {
-    const num = `0${i + 1}`;
-    // Number
-    doc.txt(num, doc.left + 5, doc.y, 'F2', 14, '0.75 0.75 0.75');
+  for (let i = 0; i < toc.length; i++) {
+    const num = String(i + 1).padStart(2, '0');
+    // Number in large light gray
+    p._t(num, p.l, p.y, 'F2', 16, '0.82 0.82 0.80');
     // Label
-    doc.txt(tocItems[i], doc.left + 40, doc.y, 'F2', 13, '0.13 0.13 0.13');
-    doc.y -= 12;
-    // Separator line
-    doc.rect(doc.left, doc.y, doc.width, 0.5, '0.92 0.92 0.90 rg');
-    doc.y -= 22;
+    p._t(toc[i], p.l + 42, p.y + 1, 'F2', 12, '0.13 0.13 0.13');
+    p.y -= 14;
+    // Thin line
+    p.R(p.l, p.y, p.w, 0.5, '0.92 0.92 0.90 rg');
+    p.y -= 24;
   }
 
-  doc.footer();
+  p.foot();
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 01 — DIMENSIONS COMPORTEMENTALES
-  // ════════════════════════════════════════════════════════════════
-  doc.contentPage(1, 'Dimensions comportementales');
+  // ──────────────────────────────────────────────────
+  //  SECTION 01 — DIMENSIONS
+  // ──────────────────────────────────────────────────
+  p.page(1, 'Dimensions comportementales');
 
   // Profile summary box
-  doc.rect(doc.left, doc.y - 40, doc.width, 50, '0.965 0.961 0.953 rg');
-  doc.txt((data.profileType || '').toUpperCase(), doc.left + 12, doc.y - 5, 'F2', 8, '0.50 0.50 0.50');
-  doc.txt(data.profileTitle || '', doc.left + 12, doc.y - 20, 'F2', 15, '0.067 0.067 0.067');
-  doc.txt(data.profileTagline || '', doc.left + 12, doc.y - 35, 'F3', 9, '0.42 0.42 0.42');
-  doc.y -= 60;
+  p.R(p.l, p.y - 48, p.w, 58, '0.965 0.961 0.953 rg');
+  p._t((d.profileType||'').toUpperCase(), p.l + 14, p.y - 4, 'F1', 7.5, '0.50 0.50 0.50');
+  p._t(d.profileTitle||'', p.l + 14, p.y - 20, 'F2', 15, '0.067 0.067 0.067');
+  p._t(d.profileTagline||'', p.l + 14, p.y - 38, 'F3', 9.5, '0.40 0.40 0.40');
+  p.y -= 68;
 
   // Description
-  doc.spacer(5);
-  doc.para(data.desc || '');
-  doc.spacer(15);
+  p.sp(5);
+  p.par(d.desc||'');
+  p.sp(18);
 
-  // Dimension bars with explanations
+  // Dimension bars + explanations
   for (const k of dims) {
-    const pct = data.dimensions?.[k] || 50;
-    const label = DIM_LABELS[k] || k;
-    const color = DIM_COLORS[k];
-    const explanation = data.dimExplanations?.[k] || '';
+    const pct = d.dimensions?.[k] || 50;
+    const label = DIM_LABELS[k]||k;
+    const expl = d.dimExplanations?.[k]||'';
 
-    doc.checkSpace(60);
+    p.need(70);
 
-    // Label + percentage on same line
-    doc.txt(label, doc.left, doc.y, 'F2', 10.5, '0.20 0.20 0.20');
-    doc.txtR(`${pct}%`, doc.right, doc.y, 'F2', 10.5, '0.20 0.20 0.20');
-    doc.y -= 14;
+    // Label + percentage
+    p._t(label, p.l, p.y, 'F2', 11, '0.13 0.13 0.13');
+    p._tR(`${pct}%`, p.r, p.y, 'F2', 11, '0.13 0.13 0.13');
+    p.y -= 15;
 
-    // Bar background
-    const barW = doc.width;
-    doc.rect(doc.left, doc.y, barW, 7, '0.93 0.93 0.93 rg');
-    // Bar fill
-    const fillW = Math.max(4, (pct / 100) * barW);
-    doc.rect(doc.left, doc.y, fillW, 7, color);
-    doc.y -= 14;
+    // Bar
+    p.R(p.l, p.y, p.w, 8, '0.93 0.93 0.93 rg');
+    p.R(p.l, p.y, Math.max(4, (pct/100)*p.w), 8, DIM_COLORS[k]||'0.5 0.5 0.5 rg');
+    p.y -= 16;
 
-    // Explanation text (smaller, gray)
-    if (explanation) {
-      doc.paraItalic(explanation, 4, 8.2, '0.45 0.45 0.45');
-    }
-    doc.spacer(10);
+    // Explanation
+    if (expl) { p.parI(expl, 0, 8.2, '0.45 0.45 0.45'); }
+    p.sp(14);
   }
 
-  doc.footer();
+  p.foot();
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 02 — ANALYSE COMPORTEMENTALE
-  // ════════════════════════════════════════════════════════════════
-  if (data.analysis) {
-    doc.contentPage(2, 'Analyse comportementale');
+  // ──────────────────────────────────────────────────
+  //  SECTION 02 — CONTEXTE DE LECTURE (si dispo)
+  // ──────────────────────────────────────────────────
+  if (hasContext) {
+    p.page(2, 'Contexte de lecture');
 
-    const sections = [
-      { label: 'A la maison', text: data.analysis.home },
-      { label: 'Avec les humains', text: data.analysis.humans },
-      { label: 'Avec les autres animaux', text: data.analysis.animals },
-      { label: 'Intelligence & apprentissage', text: data.analysis.intel },
-      { label: 'Lien emotionnel', text: data.analysis.bond },
+    if (d.ageNote) {
+      p.sub(`Lecture selon l'age  -  ${d.ageNote.badge}`);
+      p.sp(2);
+      p.par(d.ageNote.text, 6);
+      p.sp(20);
+    }
+
+    if (d.breedNote) {
+      p.sub(`Contexte de race  -  ${d.race || ''}`);
+      p.sp(2);
+      p.par(d.breedNote, 6);
+      p.sp(10);
+    }
+
+    p.foot();
+  }
+
+  // ──────────────────────────────────────────────────
+  //  SECTION — ANALYSE COMPORTEMENTALE
+  // ──────────────────────────────────────────────────
+  if (d.analysis) {
+    p.page(2 + secOffset, 'Analyse comportementale');
+
+    const secs = [
+      { t: 'A la maison', txt: d.analysis.home },
+      { t: 'Avec les humains', txt: d.analysis.humans },
+      { t: 'Avec les autres animaux', txt: d.analysis.animals },
+      { t: 'Intelligence & apprentissage', txt: d.analysis.intel },
+      { t: 'Lien emotionnel', txt: d.analysis.bond },
     ];
 
-    for (const sec of sections) {
-      if (!sec.text) continue;
-      doc.subTitle(sec.label);
-      doc.para(sec.text, 6);
-      doc.spacer(12);
+    for (const s of secs) {
+      if (!s.txt) continue;
+      p.sub(s.t);
+      p.par(s.txt, 8);
+      p.sp(14);
     }
 
-    doc.footer();
+    p.foot();
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 03 — POINTS FORTS & POINTS DE VIGILANCE
-  // ════════════════════════════════════════════════════════════════
-  doc.contentPage(3, 'Points forts & Points de vigilance');
+  // ──────────────────────────────────────────────────
+  //  SECTION — POINTS FORTS & VIGILANCE
+  // ──────────────────────────────────────────────────
+  p.page(3 + secOffset, 'Points forts & Points de vigilance');
 
-  if (data.strengths?.length) {
-    doc.subTitle('Ce qui le definit positivement');
-    doc.spacer(3);
-    for (const s of data.strengths) {
-      doc.bullet('+', s, '0.063 0.725 0.506');
-    }
-    doc.spacer(15);
+  if (d.strengths?.length) {
+    p.sub('Ce qui le definit positivement');
+    p.sp(4);
+    for (const s of d.strengths) p.bul('+', s, '0.063 0.725 0.506');
+    p.sp(18);
   }
 
-  if (data.watchPoints?.length) {
-    doc.subTitle('Ce qui demande votre attention');
-    doc.spacer(3);
-    for (const w of data.watchPoints) {
-      doc.bullet('!', w, '0.937 0.267 0.267');
-    }
+  if (d.watchPoints?.length) {
+    p.sub('Ce qui demande votre attention');
+    p.sp(4);
+    for (const w of d.watchPoints) p.bul('!', w, '0.937 0.267 0.267');
   }
 
-  doc.footer();
+  p.foot();
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 04 — CONSEILS PERSONNALISES
-  // ════════════════════════════════════════════════════════════════
-  doc.contentPage(4, 'Conseils personnalises');
+  // ──────────────────────────────────────────────────
+  //  SECTION — CONSEILS PERSONNALISES
+  // ──────────────────────────────────────────────────
+  p.page(4 + secOffset, 'Conseils personnalises');
 
-  if (data.activities?.length) {
-    doc.subTitle('Activites recommandees');
-    doc.spacer(3);
-    for (let i = 0; i < data.activities.length; i++) {
-      doc.adviceItem(
-        data.activities[i],
-        data.activityWhys?.[i] || '',
-        '0.231 0.510 0.965 rg'
-      );
-    }
-    doc.spacer(10);
+  if (d.activities?.length) {
+    p.sub('Activites recommandees');
+    p.sp(4);
+    for (let i = 0; i < d.activities.length; i++)
+      p.advice(d.activities[i], d.activityWhys?.[i]||'', '0.231 0.510 0.965 rg');
+    p.sp(12);
   }
 
-  if (data.rewards?.length) {
-    doc.subTitle('Meilleures recompenses');
-    doc.spacer(3);
-    for (let i = 0; i < data.rewards.length; i++) {
-      doc.adviceItem(
-        data.rewards[i],
-        data.rewardWhys?.[i] || '',
-        '0.961 0.620 0.043 rg'
-      );
-    }
-    doc.spacer(10);
+  if (d.rewards?.length) {
+    p.sub('Meilleures recompenses');
+    p.sp(4);
+    for (let i = 0; i < d.rewards.length; i++)
+      p.advice(d.rewards[i], d.rewardWhys?.[i]||'', '0.961 0.620 0.043 rg');
+    p.sp(12);
   }
 
-  if (data.mistakes?.length) {
-    doc.subTitle('Erreurs a eviter');
-    doc.spacer(3);
-    for (let i = 0; i < data.mistakes.length; i++) {
-      doc.adviceItem(
-        data.mistakes[i],
-        data.mistakeWhys?.[i] || '',
-        '0.937 0.267 0.267 rg'
-      );
-    }
+  if (d.mistakes?.length) {
+    p.sub('Erreurs a eviter');
+    p.sp(4);
+    for (let i = 0; i < d.mistakes.length; i++)
+      p.advice(d.mistakes[i], d.mistakeWhys?.[i]||'', '0.937 0.267 0.267 rg');
   }
 
-  doc.footer();
+  p.foot();
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 05 — COMPATIBILITE
-  // ════════════════════════════════════════════════════════════════
-  if (data.compat) {
-    doc.contentPage(5, 'Compatibilite');
+  // ──────────────────────────────────────────────────
+  //  SECTION — COMPATIBILITE
+  // ──────────────────────────────────────────────────
+  if (d.compat) {
+    p.page(5 + secOffset, 'Compatibilite');
 
-    const items: { label: string; val: string; sub: string }[] = [
-      { label: 'Logement ideal', val: data.compat.home, sub: data.compatSubs?.home || '' },
-      { label: 'Avec les enfants', val: data.compat.kids, sub: data.compatSubs?.kids || '' },
-      { label: 'Avec d\'autres animaux', val: data.compat.otherPets, sub: data.compatSubs?.otherPets || '' },
-      { label: 'Niveau proprietaire', val: data.compat.ownerLevel, sub: data.compatSubs?.ownerLevel || '' },
+    const items: {l:string;v:string;s:string}[] = [
+      {l:'Logement ideal', v:d.compat.home, s:d.compatSubs?.home||''},
+      {l:'Avec les enfants', v:d.compat.kids, s:d.compatSubs?.kids||''},
+      {l:'Avec d\'autres animaux', v:d.compat.otherPets, s:d.compatSubs?.otherPets||''},
+      {l:'Niveau proprietaire', v:d.compat.ownerLevel, s:d.compatSubs?.ownerLevel||''},
     ];
 
-    for (const item of items) {
-      if (!item.val) continue;
-      doc.checkSpace(55);
+    for (const it of items) {
+      if (!it.v) continue;
+      p.need(60);
 
-      // Card background
-      doc.rect(doc.left, doc.y - 38, doc.width, 48, '0.965 0.961 0.953 rg');
-      // Label (small, uppercase)
-      doc.txt(item.label.toUpperCase(), doc.left + 12, doc.y - 2, 'F1', 7.5, '0.50 0.50 0.50');
-      // Value (bold)
-      doc.txt(item.val, doc.left + 12, doc.y - 16, 'F2', 12, '0.10 0.10 0.10');
-      doc.y -= 42;
+      // Card
+      p.R(p.l, p.y - 30, p.w, 40, '0.965 0.961 0.953 rg');
+      p._t(it.l.toUpperCase(), p.l + 14, p.y - 4, 'F1', 7.5, '0.48 0.48 0.48');
+      p._t(it.v, p.l + 14, p.y - 20, 'F2', 12, '0.067 0.067 0.067');
+      p.y -= 38;
 
-      // Sub-explanation below the card
-      if (item.sub) {
-        doc.spacer(2);
-        doc.paraItalic(item.sub, 12, 8.2, '0.45 0.45 0.45');
+      // Sub-explanation
+      if (it.s) {
+        p.sp(4);
+        p.parI(it.s, 14, 8.2, '0.45 0.45 0.45');
       }
-      doc.spacer(12);
+      p.sp(16);
     }
 
-    doc.footer();
+    p.foot();
   }
 
-  // ════════════════════════════════════════════════════════════════
-  // SECTION 06 — SYNTHESE (page sombre)
-  // ════════════════════════════════════════════════════════════════
-  if (data.summary) {
-    doc.newPage(true);
+  // ──────────────────────────────────────────────────
+  //  SYNTHESE (page sombre)
+  // ──────────────────────────────────────────────────
+  if (d.summary) {
+    p.dark();
 
-    // Top line
-    doc.rect(55, 795, 485, 1.5, '0.20 0.20 0.20 rg');
+    p.R(60, 800, 475, 1, '0.18 0.18 0.18 rg');
 
-    doc.txtC('SECTION 06', 740, 'F1', 7.5, '0.35 0.35 0.35');
-    doc.txtC('SYNTHESE', 710, 'F2', 18, '0.55 0.55 0.55');
-    doc.rect(267, 698, 60, 0.5, '0.30 0.30 0.30 rg');
+    p._tC(`SECTION 0${6 + secOffset}`, 740, 'F1', 7.5, '0.35 0.35 0.35');
+    p._tC('SYNTHESE', 715, 'F2', 18, '0.50 0.50 0.50');
+    p.R(277, 703, 40, 0.5, '0.28 0.28 0.28 rg');
 
-    // Profile title
-    doc.txtC(data.profileTitle || '', 660, 'F2', 22, '1 1 1');
+    // Title
+    p._tC(d.profileTitle||'', 670, 'F2', 20, '1 1 1');
 
     // Summary text
-    const summaryLines = wrap(data.summary, 75);
-    let sy = 620;
-    for (const line of summaryLines) {
-      doc.txtC(line, sy, 'F1', 10, '0.70 0.70 0.70');
+    const sLines = wrap(d.summary, 400, 10);
+    let sy = 635;
+    for (const ln of sLines) {
+      p._tC(ln, sy, 'F1', 10, '0.68 0.68 0.68');
       sy -= 16;
     }
 
-    // Bottom
-    doc.rect(55, 70, 485, 1.5, '0.20 0.20 0.20 rg');
-    doc.txtC('Ame Animale  -  ameanimale.fr', 52, 'F1', 8, '0.30 0.30 0.30');
+    p.R(60, 65, 475, 1, '0.18 0.18 0.18 rg');
+    p._tC('Ame Animale  -  ameanimale.fr', 48, 'F1', 8, '0.28 0.28 0.28');
   }
 
-  return doc.build();
+  return p.build();
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// EMAIL HTML (unchanged)
+//  EMAIL HTML
 // ═══════════════════════════════════════════════════════════════════
-function buildEmailHTML(data: ReportData): string {
-  const name = data.animalName || (data.animalType === 'chien' ? 'Votre chien' : 'Votre chat');
-  const greeting = data.prenom ? `Bonjour ${data.prenom},` : 'Bonjour,';
-
-  const dimRows = ['SOC', 'ENG', 'ATT', 'SEN', 'INT']
-    .map((k) => {
-      const pct = data.dimensions?.[k] || 50;
-      const colors: Record<string, string> = { SOC: '#3b82f6', ENG: '#f59e0b', ATT: '#ef4444', SEN: '#8b5cf6', INT: '#10b981' };
-      const labels: Record<string, string> = { SOC: 'Sociabilit\u00e9', ENG: '\u00c9nergie', ATT: 'Attachement', SEN: 'Sensibilit\u00e9', INT: 'Intelligence' };
-      return `<tr>
-        <td style="padding:6px 12px 6px 0;font-size:13px;font-weight:600;color:#555;width:110px;">${labels[k]}</td>
-        <td style="padding:6px 0;"><div style="background:#f0f0f0;border-radius:10px;height:18px;width:100%;overflow:hidden;"><div style="background:${colors[k]};height:18px;border-radius:10px;width:${pct}%;"></div></div></td>
-        <td style="padding:6px 0 6px 10px;font-size:13px;font-weight:700;color:#333;width:40px;text-align:right;">${pct}%</td>
-      </tr>`;
-    }).join('');
-
-  const list = (items: string[], prefix: string) =>
-    items.map((i) => `<li style="padding:4px 0;color:#333;">${prefix} ${i}</li>`).join('');
+function buildEmailHTML(d: ReportData): string {
+  const name = d.animalName || (d.animalType === 'chien' ? 'Votre chien' : 'Votre chat');
+  const greeting = d.prenom ? `Bonjour ${d.prenom},` : 'Bonjour,';
+  const dimRows = ['SOC','ENG','ATT','SEN','INT'].map(k => {
+    const pct = d.dimensions?.[k]||50;
+    const c: Record<string,string> = {SOC:'#3b82f6',ENG:'#f59e0b',ATT:'#ef4444',SEN:'#8b5cf6',INT:'#10b981'};
+    const l: Record<string,string> = {SOC:'Sociabilit\u00e9',ENG:'\u00c9nergie',ATT:'Attachement',SEN:'Sensibilit\u00e9',INT:'Intelligence'};
+    return `<tr><td style="padding:6px 12px 6px 0;font-size:13px;font-weight:600;color:#555;width:110px;">${l[k]}</td><td style="padding:6px 0;"><div style="background:#f0f0f0;border-radius:10px;height:18px;width:100%;overflow:hidden;"><div style="background:${c[k]};height:18px;border-radius:10px;width:${pct}%;"></div></div></td><td style="padding:6px 0 6px 10px;font-size:13px;font-weight:700;color:#333;width:40px;text-align:right;">${pct}%</td></tr>`;
+  }).join('');
+  const list = (items: string[], pre: string) => items.map(i => `<li style="padding:4px 0;color:#333;">${pre} ${i}</li>`).join('');
 
   return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"></head>
 <body style="margin:0;padding:0;background:#f8f7f3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
@@ -647,22 +578,22 @@ function buildEmailHTML(data: ReportData): string {
     ${greeting}<br>Voici le rapport complet de <strong>${name}</strong>. Le PDF est en pi\u00e8ce jointe.
   </div>
   <div style="padding:32px 24px;text-align:center;border-bottom:1px solid #eee;">
-    <div style="font-size:48px;margin-bottom:8px;">${data.profileEmoji || ''}</div>
+    <div style="font-size:48px;margin-bottom:8px;">${d.profileEmoji||''}</div>
     <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:6px;">${name} est</div>
-    <div style="font-size:28px;font-weight:900;color:#111;margin-bottom:6px;">${data.profileTitle}</div>
-    <div style="font-size:14px;color:#666;font-style:italic;">${data.profileTagline}</div>
+    <div style="font-size:28px;font-weight:900;color:#111;margin-bottom:6px;">${d.profileTitle}</div>
+    <div style="font-size:14px;color:#666;font-style:italic;">${d.profileTagline}</div>
   </div>
   <div style="padding:24px;border-bottom:1px solid #eee;">
     <div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Analyse</div>
-    <div style="font-size:14px;color:#444;line-height:1.7;">${data.desc}</div>
+    <div style="font-size:14px;color:#444;line-height:1.7;">${d.desc}</div>
   </div>
   <div style="padding:24px;border-bottom:1px solid #eee;">
     <div style="font-size:16px;font-weight:800;color:#111;margin-bottom:16px;">Dimensions</div>
     <table style="width:100%;border-collapse:collapse;">${dimRows}</table>
   </div>
-  ${data.strengths?.length ? `<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points forts</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(data.strengths, '&#10003;')}</ul></div>` : ''}
-  ${data.watchPoints?.length ? `<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points de vigilance</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(data.watchPoints, '&#9888;')}</ul></div>` : ''}
-  ${data.tips?.length ? `<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Conseils</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(data.tips, '&#10148;')}</ul></div>` : ''}
+  ${d.strengths?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points forts</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.strengths,'&#10003;')}</ul></div>`:''}
+  ${d.watchPoints?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points de vigilance</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.watchPoints,'&#9888;')}</ul></div>`:''}
+  ${d.tips?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Conseils</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.tips,'&#10148;')}</ul></div>`:''}
   <div style="background:#f8f7f3;padding:24px;text-align:center;">
     <div style="font-size:13px;color:#888;">\u00c2me Animale - <a href="https://ameanimale.fr" style="color:#888;">ameanimale.fr</a></div>
     <div style="font-size:10px;color:#bbb;margin-top:12px;">Vous recevez cet email suite \u00e0 votre achat. Contact : contact@ameanimale.fr</div>
@@ -671,7 +602,7 @@ function buildEmailHTML(data: ReportData): string {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// API ROUTE
+//  API ROUTE
 // ═══════════════════════════════════════════════════════════════════
 export const dynamic = 'force-dynamic';
 
@@ -679,13 +610,8 @@ export async function POST(req: NextRequest) {
   try {
     const data: ReportData = await req.json();
     const { email } = data;
-
-    if (!email) {
-      return NextResponse.json({ error: 'Email requis' }, { status: 400 });
-    }
-    if (!process.env.RESEND_API_KEY) {
-      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
-    }
+    if (!email) return NextResponse.json({ error: 'Email requis' }, { status: 400 });
+    if (!process.env.RESEND_API_KEY) return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
 
     const html = buildEmailHTML(data);
     const animalName = data.animalName || 'votre animal';
@@ -694,13 +620,13 @@ export async function POST(req: NextRequest) {
     let pdfError: string | null = null;
     try {
       pdfBuffer = generatePdfBuffer(data);
-      console.log('[send-report] PDF generated:', pdfBuffer.length, 'bytes,', 'pages:', Math.max(6, 7));
+      console.log('[send-report] PDF OK:', pdfBuffer.length, 'bytes');
     } catch (e: unknown) {
-      pdfError = e instanceof Error ? e.message + '\n' + e.stack : String(e);
+      pdfError = e instanceof Error ? e.message+'\n'+e.stack : String(e);
       console.error('[send-report] PDF FAILED:', pdfError);
     }
 
-    const safeName = (animalName || 'animal').replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-') || 'animal';
+    const safeName = (animalName||'animal').replace(/[^a-zA-Z0-9\s-]/g,'').replace(/\s+/g,'-')||'animal';
 
     const { error } = await getResend().emails.send({
       from: '\u00c2me Animale <contact@ameanimale.fr>',
@@ -708,19 +634,16 @@ export async function POST(req: NextRequest) {
       subject: `Rapport de ${animalName} - \u00c2me Animale`,
       html,
       headers: { 'X-Entity-Ref-ID': `rapport-${Date.now()}` },
-      ...(pdfBuffer ? {
-        attachments: [{ filename: `rapport-${safeName}.pdf`, content: pdfBuffer }],
-      } : {}),
+      ...(pdfBuffer ? { attachments: [{ filename: `rapport-${safeName}.pdf`, content: pdfBuffer }] } : {}),
     });
 
     if (error) {
       console.error('[send-report] Resend error:', JSON.stringify(error));
       return NextResponse.json({ error: 'Erreur envoi email', details: error, pdfError }, { status: 500 });
     }
-
     return NextResponse.json({ ok: true, pdfAttached: !!pdfBuffer, pdfError });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message + '\n' + err.stack : String(err);
+    const msg = err instanceof Error ? err.message+'\n'+err.stack : String(err);
     console.error('[send-report] Error:', msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }

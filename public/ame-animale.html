@@ -808,7 +808,7 @@ hr.sep{border:none;border-top:1px solid var(--border);}
 .r-context-badge.age-adulte{background:#d4edda;color:#1a5c2a;}
 .r-context-badge.age-senior{background:#f8d7da;color:#721c24;}
 /* ─── RESULTS BODY ─── */
-.r-desc{font-size:17px;color:var(--text2);line-height:1.75;margin-bottom:40px;border-left:3px solid rgba(0,0,0,0.07);padding-left:20px;}
+.r-desc{font-size:17px;color:var(--text2);line-height:1.75;margin-bottom:14px;border-left:3px solid rgba(0,0,0,0.07);padding-left:20px;}
 .r-section-title{font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin:0 0 18px;}
 .r-dims{display:flex;flex-direction:column;gap:16px;margin-bottom:48px;}
 .r-dim-row{display:flex;align-items:center;gap:12px;}
@@ -4525,7 +4525,7 @@ function showResults(){
     +'</div>';
 
   document.getElementById('rbody').innerHTML=
-    '<div class="r-desc">'+best.desc+'</div>'
+    '<div class="r-desc">'+(best.desc.split('. ')[0])+'.</div>'
     +'<div class="r-lock-gate"><div class="r-lock-content">'
 
     +'<div class="r-section-title">Les 5 dimensions comportementales <span style="font-weight:400;font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — cliquez sur une dimension pour l\'expliquer</span></div>'

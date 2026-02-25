@@ -1998,7 +1998,7 @@ chien:[
    opts:[
      {t:"Très protecteur — aboie, s'interpose, surveille",e:"🛡️",v:{ATT:2,SOC:-1}},
      {t:"Protège son espace sans agressivité",e:"🏠",v:{ATT:1}},
-     {t:"Peu territorial — partage facilement",e:"🌈",v:{SOC:2,ATT:-1}},
+     {t:"Peu territorial — partage facilement",e:"🌈",v:{ATT:-1}},
      {t:"Aucune notion de territoire",e:"🌀",v:{SOC:1}}
    ]},
 
@@ -2028,7 +2028,7 @@ chien:[
    opts:[
      {t:"Aboie excessivement (stimuli, solitude, excitation)",e:"📢",v:{SEN:1,ENG:1}},
      {t:"Tire en laisse de manière incontrôlable",e:"🔗",v:{ENG:2}},
-     {t:"Saute sur les gens systématiquement",e:"🙃",v:{SOC:2,ENG:1}},
+     {t:"Saute sur les gens systématiquement",e:"🙃",v:{ENG:1}},
      {t:"Mâche des objets ou détruit",e:"🪑",v:{ENG:2,SEN:1}},
      {t:"Fugue ou tentatives d'évasion",e:"🏃",v:{ENG:3,ATT:-2}},
      {t:"Aucun comportement problématique notable",e:"✅",v:{SEN:-1}}
@@ -2072,7 +2072,7 @@ chien:[
    s:"Son niveau d'activité spontanée intérieure.",
    poleL:{e:'🛋️',t:'Dort ou se repose — très calme'},
    poleR:{e:'🌀',t:'Toujours en mouvement, cherche à jouer'},
-   vMin:{ENG:-3}, vMax:{ENG:4,SEN:1}},
+   vMin:{ENG:-3}, vMax:{ENG:4}},
 
   // 23
   {type:'radio',dim:'Sensibilité',
@@ -2187,9 +2187,9 @@ chat:[
    opts:[
      {t:"Frotte sa tête sur les meubles",e:"🪑",v:{SEN:1}},
      {t:"Griffe les surfaces",e:"✂️",v:{ENG:1}},
-     {t:"Surveille les fenêtres",e:"🪟",v:{SOC:-1}},
-     {t:"Chasse les autres animaux",e:"⚔️",v:{ENG:2,SOC:-2}},
-     {t:"Marque avec son odeur",e:"👃",v:{SEN:2}}
+     {t:"Surveille les fenêtres",e:"🪟",v:{SEN:1}},
+     {t:"Chasse les autres animaux",e:"⚔️",v:{ENG:2}},
+     {t:"Marque avec son odeur",e:"👃",v:{SEN:1}}
    ]},
   /* 4 */
   {type:'slider',dim:'Énergie',
@@ -2222,8 +2222,8 @@ chat:[
    opts:[
      {t:"Accueille les visiteurs avec enthousiasme",e:"🎉",v:{SOC:4,ATT:2}},
      {t:"S'approche prudemment après quelques minutes",e:"🐱",v:{SOC:2,ATT:1}},
-     {t:"Se cache et revient plus tard",e:"🙈",v:{SOC:-1,SEN:2}},
-     {t:"Reste caché toute la visite",e:"🚪",v:{SOC:-4,SEN:3}}
+     {t:"Se cache et revient plus tard",e:"🙈",v:{SEN:2}},
+     {t:"Reste caché toute la visite",e:"🚪",v:{SEN:3}}
    ]},
   /* 8 */
   {type:'multi',dim:'Sensibilité',
@@ -2303,7 +2303,7 @@ chat:[
    q:"Quelles activités intéressent votre chat ?",
    s:"Sélectionnez tout ce qu'il apprécie.",
    opts:[
-     {t:"Regarder par la fenêtre",e:"🪟",v:{SOC:-1}},
+     {t:"Regarder par la fenêtre",e:"🪟",v:{SEN:1}},
      {t:"Grimper en hauteur",e:"🧗",v:{ENG:2}},
      {t:"Jouets interactifs (baguette, laser)",e:"🎣",v:{ENG:2}},
      {t:"Se faire brosser ou soigner",e:"💆",v:{ATT:2,SEN:-1}},
@@ -2338,10 +2338,10 @@ chat:[
    q:"Comment votre chat se comporte-t-il avec la nourriture ?",
    s:"Sélectionnez tout ce qui correspond.",
    opts:[
-     {t:"Mange uniquement sa marque habituelle",e:"🍽️",v:{SEN:2,ATT:1}},
+     {t:"Mange uniquement sa marque habituelle",e:"🍽️",v:{SEN:2}},
      {t:"Mange rapidement et réclame plus",e:"🍗",v:{ENG:2}},
-     {t:"Grignote toute la journée (free feeding)",e:"🌿",v:{ENG:-1,ATT:-1}},
-     {t:"Mange n'importe quoi avec enthousiasme",e:"😋",v:{SOC:1}},
+     {t:"Grignote toute la journée (free feeding)",e:"🌿",v:{ENG:-1}},
+     {t:"Mange n'importe quoi avec enthousiasme",e:"😋",v:{ENG:1}},
      {t:"Cache de la nourriture pour plus tard",e:"💾",v:{INT:2}}
    ]},
   /* 21 */
@@ -2424,9 +2424,9 @@ chat:[
    opts:[
      {t:"Joie et excitation (trilles, bonds)",e:"😹",v:{ENG:2,SOC:1}},
      {t:"Frustration ou impatience",e:"😤",v:{SEN:2,ENG:1}},
-     {t:"Jalousie face à d'autres animaux",e:"😒",v:{ATT:2,SOC:-1}},
+     {t:"Jalousie face à d'autres animaux",e:"😒",v:{ATT:2}},
      {t:"Empathie quand vous êtes triste",e:"💙",v:{ATT:3,SEN:2}},
-     {t:"Peur ou anxiété visible",e:"😰",v:{SEN:3,SOC:-1}}
+     {t:"Peur ou anxiété visible",e:"😰",v:{SEN:3}}
    ]},
   /* 30 */
   {type:'radio',dim:'Personnalité globale',

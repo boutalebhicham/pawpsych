@@ -3609,7 +3609,7 @@ function getDimInfo(key,pct){
     else if(pct<75) desc=n+' est intelligent et curieux ('+pct+'%). Il comprend rapidement et aime être stimulé. Les jeux de réflexion, l\'obéissance avancée et les activités variées nourrissent son besoin intellectuel. Proposez-lui des défis régulièrement — il les relèvera avec plaisir.';
     else desc=n+' est exceptionnellement intelligent ('+pct+'%). Cette intelligence est une richesse immense — à condition de la canaliser. Sans défi mental quotidien, elle se retourne contre vous. Nourrissez-la avec des puzzles complexes, l\'apprentissage avancé et des activités qui l\'engagent pleinement.';
   }
-  return '<strong>'+title+'</strong>'+desc;
+  return '<strong>'+title+'</strong>'+gTxt(desc);
 }
 
 function toggleDimInfo(key){
@@ -3652,7 +3652,7 @@ function buildWhyText(scores,best){
   } else {
     whyErrs='Ces erreurs iraient à contre-courant du profil naturel de '+n+' et nuiraient à la relation de confiance que vous construisez ensemble au fil du temps.';
   }
-  return{acts:whyActs,rews:whyRews,errs:whyErrs};
+  return{acts:gTxt(whyActs),rews:gTxt(whyRews),errs:gTxt(whyErrs)};
 }
 
 // ── COMPAT SUB-TEXT ──
@@ -3717,6 +3717,19 @@ function buildRadar(scores){
   return svg;
 }
 
+// ── GENDER TEXT HELPER ──
+function gTxt(t){
+  if(profile.sexe!=='femelle') return t;
+  return t
+    .replace(/lui-même/g,'elle-même').replace(/Lui-même/g,'Elle-même')
+    .replace(/s'il\b/g,'si elle').replace(/S'il\b/g,'Si elle')
+    .replace(/\bIl\b/g,'Elle').replace(/\bil\b/g,'elle')
+    .replace(/\bavec lui\b/g,'avec elle').replace(/\bchez lui\b/g,'chez elle')
+    .replace(/\bpour lui\b/g,'pour elle').replace(/\bcontre lui\b/g,'contre elle')
+    .replace(/\bcomme lui\b/g,'comme elle').replace(/\bde lui\b/g,"d'elle")
+    .replace(/\bDe lui\b/g,"D'elle");
+}
+
 // ── BEHAVIORAL ANALYSIS ──
 function buildAnalysisText(scores,nom,animalType){
   var n=(nom&&nom.length>0)?nom:(animalType==='chien'?'votre chien':'votre chat');
@@ -3765,7 +3778,7 @@ function buildAnalysisText(scores,nom,animalType){
   } else {
     bond=n+' exprime son attachement avec équilibre — présent et sincère, sans excès. Une relation apaisante et réciproque se construit naturellement avec lui.';
   }
-  return{home:home,humans:humans,animals:animals,intel:intel,bond:bond};
+  return{home:gTxt(home),humans:gTxt(humans),animals:gTxt(animals),intel:gTxt(intel),bond:gTxt(bond)};
 }
 
 // ── SHARE ──
@@ -3885,8 +3898,8 @@ function generatePDF(){
   });
 
   // Strengths & watchpoints
-  var strList=(best.strengths||[]).map(function(s){return'<li style="margin-bottom:6px;">'+s+'</li>';}).join('');
-  var wptList=(best.watchPoints||[]).map(function(w){return'<li style="margin-bottom:6px;">'+w+'</li>';}).join('');
+  var strList=(best.strengths||[]).map(function(s){return'<li style="margin-bottom:6px;">'+gTxt(s)+'</li>';}).join('');
+  var wptList=(best.watchPoints||[]).map(function(w){return'<li style="margin-bottom:6px;">'+gTxt(w)+'</li>';}).join('');
 
   // Advice with individual explanations
   var actWhyList=ACT_WHY[animal+'-'+best.type]||[];
@@ -3921,10 +3934,10 @@ function generatePDF(){
   });
 
   // Summary
-  var summaryPara=nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
+  var summaryPara=gTxt(nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
     +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(domDim)+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
-    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
+    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.');
 
   // ── Build full PDF HTML ──
   var html='<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">'
@@ -4093,8 +4106,8 @@ function generatePDF(){
   function buildAdviceGroup(emoji,title,items,whyArr,whyPara){
     var h='<div class="advice-group"><div class="advice-title">'+emoji+' '+title+'</div>';
     (items||[]).forEach(function(a,i){
-      var expl=whyArr[i]||'';
-      h+='<div class="advice-item"><div class="advice-name">→ '+a+'</div>';
+      var expl=gTxt(whyArr[i]||'');
+      h+='<div class="advice-item"><div class="advice-name">→ '+gTxt(a)+'</div>';
       if(expl) h+='<div class="advice-expl">'+expl+'</div>';
       h+='</div>';
     });
@@ -4301,10 +4314,10 @@ function sendReportEmail(){
   var domDim=dimKeys.reduce(function(a,b){return dims[b]>dims[a]?b:a;});
   var nomStr=profile.nom?profile.nom:(animal==='chien'?'Votre chien':'Votre chat');
   var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
-  var summaryPara=nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
+  var summaryPara=gTxt(nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
     +'Sa dimension dominante est la '+(({SOC:'sociabilité',ENG:'énergie',ATT:'attachement',SEN:'sensibilité',INT:'intelligence'})[domDim]||'')+' ('+dims[domDim]+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
-    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
+    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.');
   var dimExpls={};
   dimKeys.forEach(function(k){
     var raw=getDimInfo(k,dims[k]);
@@ -4333,17 +4346,17 @@ function sendReportEmail(){
     profileTagline:best.tagline,
     dimensions:dims,
     dimExplanations:dimExpls,
-    strengths:best.strengths||[],
-    watchPoints:best.watchPoints||[],
-    tips:best.tips||[],
-    desc:best.desc||'',
+    strengths:(best.strengths||[]).map(gTxt),
+    watchPoints:(best.watchPoints||[]).map(gTxt),
+    tips:(best.tips||[]).map(gTxt),
+    desc:gTxt(best.desc||''),
     analysis:{home:an.home,humans:an.humans,animals:an.animals,intel:an.intel,bond:an.bond},
-    activities:best.activities||[],
-    activityWhys:actWhys,
-    rewards:best.rewards||[],
-    rewardWhys:rewWhys,
-    mistakes:best.mistakes||[],
-    mistakeWhys:errWhys,
+    activities:(best.activities||[]).map(gTxt),
+    activityWhys:(actWhys||[]).map(gTxt),
+    rewards:(best.rewards||[]).map(gTxt),
+    rewardWhys:(rewWhys||[]).map(gTxt),
+    mistakes:(best.mistakes||[]).map(gTxt),
+    mistakeWhys:(errWhys||[]).map(gTxt),
     compat:{home:co.home||'',kids:co.kids||'',otherPets:co.otherPets||'',ownerLevel:co.ownerLevel||''},
     compatSubs:compatSubs,
     ageNote:ageNoteData?{badge:ageNoteData.badge,text:ageNoteData.text}:null,
@@ -4454,35 +4467,35 @@ function showResults(){
     +'<div class="r-analysis-card"><div class="r-analysis-icon">💝</div><div class="r-analysis-title">Lien émotionnel</div><div class="r-analysis-text">'+an.bond+'</div></div>';
 
   // Strengths & watchpoints
-  var strHTML=(best.strengths||[]).map(function(s){return'<li>'+s+'</li>';}).join('');
-  var wptHTML=(best.watchPoints||[]).map(function(w){return'<li>'+w+'</li>';}).join('');
+  var strHTML=(best.strengths||[]).map(function(s){return'<li>'+gTxt(s)+'</li>';}).join('');
+  var wptHTML=(best.watchPoints||[]).map(function(w){return'<li>'+gTxt(w)+'</li>';}).join('');
 
   // Advice with "pourquoi" paragraph
   var why=buildWhyText(scores,best);
   var actWhyList=ACT_WHY[animal+'-'+best.type]||[];
   var actHTML=(best.activities||[]).map(function(a,i){
     var id='a'+i;
-    var expl=actWhyList[i]||'';
+    var expl=gTxt(actWhyList[i]||'');
     return '<div class="r-act-item" id="act-item-'+id+'" onclick="toggleActInfo(\''+id+'\')">'
-      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+a+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
+      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+gTxt(a)+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
       +(expl?'<div class="r-act-expl" id="act-expl-'+id+'">'+expl+'</div>':'')
       +'</div>';
   }).join('');
   var rewWhyList=REW_WHY[animal+'-'+best.type]||[];
   var rewHTML=(best.rewards||[]).map(function(r,i){
     var id='r'+i;
-    var expl=rewWhyList[i]||'';
+    var expl=gTxt(rewWhyList[i]||'');
     return '<div class="r-act-item" id="act-item-'+id+'" onclick="toggleActInfo(\''+id+'\')">'
-      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+r+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
+      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+gTxt(r)+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
       +(expl?'<div class="r-act-expl" id="act-expl-'+id+'">'+expl+'</div>':'')
       +'</div>';
   }).join('');
   var errWhyList=ERR_WHY[animal+'-'+best.type]||[];
   var errHTML=(best.mistakes||[]).map(function(m,i){
     var id='e'+i;
-    var expl=errWhyList[i]||'';
+    var expl=gTxt(errWhyList[i]||'');
     return '<div class="r-act-item" id="act-item-'+id+'" onclick="toggleActInfo(\''+id+'\')">'
-      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+m+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
+      +'<div class="r-act-row"><span class="r-act-icon">→</span><span class="r-act-name">'+gTxt(m)+'</span>'+(expl?'<span class="r-act-chevron">›</span>':'')+'</div>'
       +(expl?'<div class="r-act-expl" id="act-expl-'+id+'">'+expl+'</div>':'')
       +'</div>';
   }).join('');
@@ -4500,12 +4513,12 @@ function showResults(){
   var nom2=profile.nom?profile.nom:(animal==='chien'?'votre chien':'votre chat');
   var animalLabel=animal==='chien'?'chien':'chat';
   var domDim=dimKeys.reduce(function(a,b){return pct(b)>pct(a)?b:a;});
-  var summaryPara=
+  var summaryPara=gTxt(
     nomStr+' présente le profil "'+best.type+'" — '+best.tagline.toLowerCase()+'. '
     +'Sa dimension dominante est la '+dimNames[domDim].toLowerCase()+' ('+pct(domDim)+'%), ce qui façonne profondément sa façon de vivre, d\'interagir et de ressentir le monde. '
     +best.desc+' '
     +'Pour lui offrir le meilleur, '+(an.home.split('.')[0].toLowerCase()+'. ')
-    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.';
+    +'Ce rapport vous donne les clés pour comprendre '+nom2+' en profondeur — et construire avec lui une relation à la hauteur de qui il est vraiment.');
 
   // Build rbody
   var lockCard='<div class="r-lock-card">'
@@ -4525,7 +4538,7 @@ function showResults(){
     +'</div>';
 
   document.getElementById('rbody').innerHTML=
-    '<div class="r-desc">'+(best.desc.split('. ')[0])+'.</div>'
+    '<div class="r-desc">'+gTxt(best.desc.split('. ')[0])+'.</div>'
     +'<div class="r-lock-gate"><div class="r-lock-content">'
 
     +'<div class="r-section-title">Les 5 dimensions comportementales <span style="font-weight:400;font-size:10px;color:var(--text3);text-transform:none;letter-spacing:0"> — cliquez sur une dimension pour l\'expliquer</span></div>'

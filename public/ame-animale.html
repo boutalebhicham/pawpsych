@@ -1863,7 +1863,7 @@ chien:[
      {t:"Saute, aboie, tourne en rond — explosion de joie",e:"🎉",v:{ATT:3,ENG:2}},
      {t:"Vient vous accueillir calmement, queue frétillante",e:"🐾",v:{ATT:2,ENG:0}},
      {t:"Lève la tête puis se rendort",e:"😴",v:{ATT:0,ENG:-2}},
-     {t:"Vous observe depuis son coin sans bouger",e:"👁️",v:{ATT:-1,INT:1}}
+     {t:"Vous observe depuis son coin sans bouger",e:"👁️",v:{ATT:-1}}
    ]},
 
   // 3
@@ -1883,7 +1883,7 @@ chien:[
      {t:"Aboie pour prévenir, puis accepte",e:"📢",v:{SOC:0,ATT:1}},
      {t:"Se cache ou s'éloigne discrètement",e:"🙈",v:{SOC:-2,SEN:2}},
      {t:"Grogne ou s'interpose pour défendre",e:"⚔️",v:{SOC:-1,ATT:2}},
-     {t:"Observe à distance avant d'approcher",e:"🕵️",v:{SOC:0,INT:2}},
+     {t:"Observe à distance avant d'approcher",e:"🕵️",v:{SOC:0}},
      {t:"Accepte les caresses sans enthousiasme particulier",e:"🤝",v:{SOC:1,ENG:-1}}
    ]},
 
@@ -1944,7 +1944,7 @@ chien:[
    s:"Sa réponse aux ordres connus dans des situations normales.",
    poleL:{e:'🦅',t:'Totalement autonome — fait ce qu\'il veut'},
    poleR:{e:'🎯',t:'Parfaitement obéissant — toujours à l\'écoute'},
-   vMin:{INT:-1,ATT:-2}, vMax:{INT:2,ATT:2}},
+   vMin:{ATT:-2}, vMax:{ATT:2}},
 
   // 11
   {type:'multi',dim:'Intelligence',
@@ -1986,7 +1986,7 @@ chien:[
      {t:"Vous lèche le visage ou les mains",e:"😘",v:{ATT:2,SOC:1}},
      {t:"Pose sa tête sur vos genoux ou s'allonge contre vous",e:"🥰",v:{ATT:2,SEN:1}},
      {t:"Vous suit de pièce en pièce",e:"🏃",v:{ATT:3,SEN:1}},
-     {t:"Apporte des jouets ou objets",e:"🎁",v:{ATT:1,INT:1}},
+     {t:"Apporte des jouets ou objets",e:"🎁",v:{ATT:1}},
      {t:"Cherche le contact physique constant",e:"🤗",v:{ATT:3,SEN:2}},
      {t:"Peu de démonstrations affectives visibles",e:"😐",v:{ATT:-2}}
    ]},
@@ -1999,7 +1999,7 @@ chien:[
      {t:"Très protecteur — aboie, s'interpose, surveille",e:"🛡️",v:{ATT:2,SOC:-1}},
      {t:"Protège son espace sans agressivité",e:"🏠",v:{ATT:1}},
      {t:"Peu territorial — partage facilement",e:"🌈",v:{SOC:2,ATT:-1}},
-     {t:"Aucune notion de territoire",e:"🌀",v:{SOC:1,INT:-1}}
+     {t:"Aucune notion de territoire",e:"🌀",v:{SOC:1}}
    ]},
 
   // 16
@@ -2008,7 +2008,7 @@ chien:[
    s:"Face à des nouveaux endroits, objets ou situations.",
    poleL:{e:'😐',t:'Indifférent — la nouveauté ne l\'intéresse pas'},
    poleR:{e:'🔍',t:'Frénétique — explore tout immédiatement'},
-   vMin:{INT:-2,ENG:-1}, vMax:{INT:3,ENG:2}},
+   vMin:{INT:-1,ENG:-1}, vMax:{INT:1,ENG:2}},
 
   // 17
   {type:'radio',dim:'Jeu',
@@ -2018,7 +2018,7 @@ chien:[
      {t:"Passionné — ne veut jamais s'arrêter",e:"🎯",v:{ENG:3,SOC:1}},
      {t:"Enthousiaste mais sait s'arrêter",e:"😊",v:{ENG:2,ATT:1}},
      {t:"Joue un moment puis se lasse vite",e:"🌊",v:{ENG:0}},
-     {t:"Peu intéressé par le jeu en général",e:"😴",v:{ENG:-2,INT:-1}}
+     {t:"Peu intéressé par le jeu en général",e:"😴",v:{ENG:-2}}
    ]},
 
   // 18
@@ -2027,11 +2027,11 @@ chien:[
    s:"Sans jugement — ces informations affinent le profil.",
    opts:[
      {t:"Aboie excessivement (stimuli, solitude, excitation)",e:"📢",v:{SEN:1,ENG:1}},
-     {t:"Tire en laisse de manière incontrôlable",e:"🔗",v:{ENG:2,INT:-1}},
+     {t:"Tire en laisse de manière incontrôlable",e:"🔗",v:{ENG:2}},
      {t:"Saute sur les gens systématiquement",e:"🙃",v:{SOC:2,ENG:1}},
      {t:"Mâche des objets ou détruit",e:"🪑",v:{ENG:2,SEN:1}},
      {t:"Fugue ou tentatives d'évasion",e:"🏃",v:{ENG:3,ATT:-2}},
-     {t:"Aucun comportement problématique notable",e:"✅",v:{INT:1,SEN:-1}}
+     {t:"Aucun comportement problématique notable",e:"✅",v:{SEN:-1}}
    ]},
 
   // 19
@@ -2040,16 +2040,16 @@ chien:[
    s:"Déménagement, nouveaux horaires, visiteurs, voyages.",
    poleL:{e:'💔',t:'Très rigide — tout changement le perturbe'},
    poleR:{e:'🌊',t:'Très flexible — s\'adapte à tout sans effort'},
-   vMin:{SEN:2,ATT:1}, vMax:{SEN:-2,INT:2}},
+   vMin:{SEN:2,ATT:1}, vMax:{SEN:-2}},
 
   // 20
   {type:'radio',dim:'Hiérarchie',
    q:"Comment réagit-il quand vous lui dites non fermement ?",
    s:"Sa réponse à l'autorité dans des situations normales.",
    opts:[
-     {t:"S'arrête immédiatement et obéit",e:"😇",v:{ATT:2,INT:1}},
+     {t:"S'arrête immédiatement et obéit",e:"😇",v:{ATT:2}},
      {t:"Insiste un peu puis accepte",e:"⚖️",v:{ATT:1,ENG:1}},
-     {t:"Teste les limites régulièrement",e:"😏",v:{INT:1,ATT:-1}},
+     {t:"Teste les limites régulièrement",e:"😏",v:{ATT:-1}},
      {t:"Ignore ou continue malgré tout",e:"👑",v:{ATT:-2,ENG:2}}
    ]},
 
@@ -2058,12 +2058,12 @@ chien:[
    q:"Comment votre chien communique-t-il principalement avec vous ?",
    s:"Ses vrais modes d'expression au quotidien.",
    opts:[
-     {t:"Aboiements variés selon ses besoins",e:"📢",v:{SOC:1,INT:1}},
+     {t:"Aboiements variés selon ses besoins",e:"📢",v:{SOC:1}},
      {t:"Gémissements ou couinements expressifs",e:"🎵",v:{SEN:2,ATT:1}},
      {t:"Contact physique — colle, pousse, pose la patte",e:"🤝",v:{ATT:2,SEN:1}},
-     {t:"Regard insistant et expressif",e:"👁️",v:{INT:2,ATT:1}},
-     {t:"Apporte des objets pour attirer l'attention",e:"🎁",v:{INT:2,SOC:1}},
-     {t:"Peu expressif — difficile à lire",e:"🤫",v:{INT:-1,SOC:-1}}
+     {t:"Regard insistant et expressif",e:"👁️",v:{ATT:2}},
+     {t:"Apporte des objets pour attirer l'attention",e:"🎁",v:{SOC:2}},
+     {t:"Peu expressif — difficile à lire",e:"🤫",v:{SOC:-2}}
    ]},
 
   // 22
@@ -2079,8 +2079,8 @@ chien:[
    q:"Votre chien reflète-t-il votre état émotionnel ?",
    s:"Sa capacité à percevoir et réagir à votre humeur.",
    opts:[
-     {t:"Oui, toujours — il sent immédiatement si quelque chose ne va pas",e:"💝",v:{SEN:3,INT:2,ATT:2}},
-     {t:"Souvent — il perçoit les grands changements",e:"💫",v:{SEN:2,INT:1}},
+     {t:"Oui, toujours — il sent immédiatement si quelque chose ne va pas",e:"💝",v:{SEN:3,ATT:2}},
+     {t:"Souvent — il perçoit les grands changements",e:"💫",v:{SEN:2}},
      {t:"Parfois — surtout les émotions fortes",e:"🌤️",v:{SEN:1}},
      {t:"Peu ou pas — semble indifférent à votre humeur",e:"😐",v:{SEN:-2,ATT:-1}}
    ]},
@@ -2103,7 +2103,7 @@ chien:[
    s:"Face à un jouet bloqué, une porte fermée, un obstacle inattendu.",
    poleL:{e:'😕',t:'Abandonne vite — attend votre aide'},
    poleR:{e:'🧠',t:'Cherche et trouve toujours une solution'},
-   vMin:{INT:-3}, vMax:{INT:4,ENG:1}},
+   vMin:{INT:-5}, vMax:{INT:6,ENG:1}},
 
   // 26
   {type:'radio',dim:'Alimentation',
@@ -2122,11 +2122,11 @@ chien:[
    s:"Ce qu'il choisit spontanément quand il est libre.",
    opts:[
      {t:"Dormir et se reposer",e:"😴",v:{ENG:-2}},
-     {t:"Jouer avec des jouets seul",e:"🎾",v:{ENG:2,INT:1}},
+     {t:"Jouer avec des jouets seul",e:"🎾",v:{ENG:2}},
      {t:"Vous suivre et rester près de vous",e:"🐾",v:{ATT:3}},
-     {t:"Explorer et renifler dehors",e:"🌿",v:{ENG:2,INT:2}},
+     {t:"Explorer et renifler dehors",e:"🌿",v:{ENG:2}},
      {t:"Jouer avec d'autres chiens",e:"🐕",v:{SOC:3,ENG:2}},
-     {t:"Observer par la fenêtre",e:"🪟",v:{INT:1,ENG:-1}}
+     {t:"Observer par la fenêtre",e:"🪟",v:{ENG:-1}}
    ]},
 
   // 28
@@ -2157,7 +2157,7 @@ chien:[
      {t:"Joueur et espiègle",e:"🎉",v:{ENG:2,SOC:1}},
      {t:"Calme et posé",e:"🧘",v:{ENG:-2,SEN:-1}},
      {t:"Protecteur et vigilant",e:"🛡️",v:{ATT:2,SOC:-1}},
-     {t:"Curieux et aventurier",e:"🗺️",v:{INT:2,ENG:2}},
+     {t:"Curieux et aventurier",e:"🗺️",v:{ENG:2}},
      {t:"Sensible et émotif",e:"💝",v:{SEN:3,ATT:2}}
    ]}
 ],
@@ -2187,7 +2187,7 @@ chat:[
    opts:[
      {t:"Frotte sa tête sur les meubles",e:"🪑",v:{SEN:1}},
      {t:"Griffe les surfaces",e:"✂️",v:{ENG:1}},
-     {t:"Surveille les fenêtres",e:"🪟",v:{INT:1,SOC:-1}},
+     {t:"Surveille les fenêtres",e:"🪟",v:{SOC:-1}},
      {t:"Chasse les autres animaux",e:"⚔️",v:{ENG:2,SOC:-2}},
      {t:"Marque avec son odeur",e:"👃",v:{SEN:2}}
    ]},
@@ -2203,10 +2203,10 @@ chat:[
    q:"À quelle fréquence votre chat chasse-t-il (jouets, insectes, etc.) ?",
    s:"Pensez aux séquences de chasse.",
    opts:[
-     {t:"Chasse intensément plusieurs fois par jour",e:"🎯",v:{ENG:4,INT:2}},
-     {t:"Chasse occasionnellement si stimulé",e:"🐾",v:{ENG:2,INT:1}},
-     {t:"S'intéresse peu à la chasse",e:"😴",v:{ENG:-1,INT:0}},
-     {t:"Ignore complètement les proies",e:"🙄",v:{ENG:-3,INT:-1}}
+     {t:"Chasse intensément plusieurs fois par jour",e:"🎯",v:{ENG:4}},
+     {t:"Chasse occasionnellement si stimulé",e:"🐾",v:{ENG:2}},
+     {t:"S'intéresse peu à la chasse",e:"😴",v:{ENG:-1}},
+     {t:"Ignore complètement les proies",e:"🙄",v:{ENG:-3}}
    ]},
   /* 6 */
   {type:'slider',dim:'Curiosité',
@@ -2214,7 +2214,7 @@ chat:[
    s:"Pensez à son comportement face aux nouveaux objets.",
    poleL:{e:'🙈',t:'Craintif — se cache face à la nouveauté'},
    poleR:{e:'🔍',t:'Explorateur — inspecte tout immédiatement'},
-   vMin:{INT:-3,SEN:3},vMax:{INT:4,SEN:-1}},
+   vMin:{INT:-1,SEN:3},vMax:{INT:1,SEN:-1}},
   /* 7 */
   {type:'radio',dim:'Sociabilité',
    q:"Comment votre chat réagit-il face aux visiteurs ?",
@@ -2233,7 +2233,7 @@ chat:[
      {t:"Sons forts (aspirateur, tonnerre)",e:"🔊",v:{SEN:2}},
      {t:"Changements de routine",e:"🔄",v:{SEN:2,ATT:1}},
      {t:"Nouvelles personnes",e:"👤",v:{SEN:1,SOC:-1}},
-     {t:"Nouveaux objets ou meubles",e:"📦",v:{SEN:1,INT:1}},
+     {t:"Nouveaux objets ou meubles",e:"📦",v:{SEN:1}},
      {t:"Votre humeur ou stress",e:"💭",v:{SEN:3,ATT:2}}
    ]},
   /* 9 */
@@ -2248,10 +2248,10 @@ chat:[
    q:"Comment votre chat joue-t-il ?",
    s:"Choisissez la description la plus proche.",
    opts:[
-     {t:"Sessions intenses et focalisées",e:"🎯",v:{ENG:4,INT:2}},
-     {t:"Joue mais se lasse vite",e:"🎪",v:{ENG:2,INT:1}},
-     {t:"Préfère observer plutôt que jouer",e:"👀",v:{ENG:-1,INT:2}},
-     {t:"Montre peu d'intérêt pour le jeu",e:"💤",v:{ENG:-3,INT:-1}}
+     {t:"Sessions intenses et focalisées",e:"🎯",v:{ENG:4}},
+     {t:"Joue mais se lasse vite",e:"🎪",v:{ENG:2}},
+     {t:"Préfère observer plutôt que jouer",e:"👀",v:{ENG:-1}},
+     {t:"Montre peu d'intérêt pour le jeu",e:"💤",v:{ENG:-3}}
    ]},
   /* 11 */
   {type:'slider',dim:'Vocalisation',
@@ -2268,7 +2268,7 @@ chat:[
      {t:"Dort avec vous dans le lit",e:"🛏️",v:{ATT:3}},
      {t:"Court et joue (syndrome 5-à-7)",e:"🌙",v:{ENG:3}},
      {t:"Reste calme et dort dans son coin",e:"💤",v:{ENG:-1,ATT:-1}},
-     {t:"Surveille la maison",e:"🔍",v:{INT:2,SOC:-1}},
+     {t:"Surveille la maison",e:"🔍",v:{SOC:-1}},
      {t:"Vocalise la nuit",e:"😾",v:{SOC:1,ATT:1}}
    ]},
   /* 13 */
@@ -2277,9 +2277,9 @@ chat:[
    s:"Pensez à ses réactions comportementales.",
    opts:[
      {t:"Panique et se cache longtemps",e:"😱",v:{SEN:4,SOC:-2}},
-     {t:"Stressé mais récupère vite",e:"😰",v:{SEN:2,INT:1}},
-     {t:"Légèrement perturbé, s'adapte",e:"😐",v:{SEN:1,INT:2}},
-     {t:"Reste calme et s'adapte facilement",e:"😎",v:{SEN:-2,INT:3}}
+     {t:"Stressé mais récupère vite",e:"😰",v:{SEN:2}},
+     {t:"Légèrement perturbé, s'adapte",e:"😐",v:{SEN:1}},
+     {t:"Reste calme et s'adapte facilement",e:"😎",v:{SEN:-2}}
    ]},
   /* 14 */
   {type:'slider',dim:'Intelligence',
@@ -2287,7 +2287,7 @@ chat:[
    s:"Ouvrir des portes, trouver une cachette, contourner un obstacle…",
    poleL:{e:'🎲',t:'Non — agit par instinct uniquement'},
    poleR:{e:'🧩',t:'Oui — très débrouillard et stratégique'},
-   vMin:{INT:-3,ENG:-1},vMax:{INT:4,ENG:2}},
+   vMin:{INT:-5,ENG:-1},vMax:{INT:6,ENG:2}},
   /* 15 */
   {type:'radio',dim:'Contact physique',
    q:"Votre chat aime-t-il être tenu dans les bras ?",
@@ -2303,11 +2303,11 @@ chat:[
    q:"Quelles activités intéressent votre chat ?",
    s:"Sélectionnez tout ce qu'il apprécie.",
    opts:[
-     {t:"Regarder par la fenêtre",e:"🪟",v:{INT:1,SOC:-1}},
-     {t:"Grimper en hauteur",e:"🧗",v:{ENG:2,INT:1}},
-     {t:"Jouets interactifs (baguette, laser)",e:"🎣",v:{ENG:2,INT:2}},
+     {t:"Regarder par la fenêtre",e:"🪟",v:{SOC:-1}},
+     {t:"Grimper en hauteur",e:"🧗",v:{ENG:2}},
+     {t:"Jouets interactifs (baguette, laser)",e:"🎣",v:{ENG:2}},
      {t:"Se faire brosser ou soigner",e:"💆",v:{ATT:2,SEN:-1}},
-     {t:"Explorer de nouveaux espaces",e:"🗺️",v:{INT:2,ENG:1}}
+     {t:"Explorer de nouveaux espaces",e:"🗺️",v:{ENG:2}}
    ]},
   /* 17 */
   {type:'slider',dim:'Sociabilité avec autres chats',
@@ -2332,7 +2332,7 @@ chat:[
    s:"Pensez à ses réactions de dégoût ou de fascination.",
    poleL:{e:'😐',t:'Peu réactif — ignore la plupart des stimuli'},
    poleR:{e:'🌡️',t:'Hypersensible — réagit fortement à tout'},
-   vMin:{SEN:-2,INT:-1},vMax:{SEN:4,INT:1}},
+   vMin:{SEN:-2},vMax:{SEN:4}},
   /* 20 */
   {type:'multi',dim:'Comportement alimentaire',
    q:"Comment votre chat se comporte-t-il avec la nourriture ?",
@@ -2341,7 +2341,7 @@ chat:[
      {t:"Mange uniquement sa marque habituelle",e:"🍽️",v:{SEN:2,ATT:1}},
      {t:"Mange rapidement et réclame plus",e:"🍗",v:{ENG:2}},
      {t:"Grignote toute la journée (free feeding)",e:"🌿",v:{ENG:-1,ATT:-1}},
-     {t:"Mange n'importe quoi avec enthousiasme",e:"😋",v:{INT:1,SOC:1}},
+     {t:"Mange n'importe quoi avec enthousiasme",e:"😋",v:{SOC:1}},
      {t:"Cache de la nourriture pour plus tard",e:"💾",v:{INT:2}}
    ]},
   /* 21 */
@@ -2367,7 +2367,7 @@ chat:[
    s:"Sélectionnez tout ce qui correspond.",
    opts:[
      {t:"Toujours près de vous ou sur vous",e:"🫂",v:{ATT:3}},
-     {t:"En hauteur (étagères, dessus d'armoire)",e:"⛰️",v:{ENG:1,INT:1}},
+     {t:"En hauteur (étagères, dessus d'armoire)",e:"⛰️",v:{ENG:1}},
      {t:"Dans des endroits chauds et confinés",e:"🫙",v:{SEN:2}},
      {t:"Étale partout selon l'humeur",e:"🌈",v:{ENG:1,ATT:-1}},
      {t:"Toujours au même endroit habituel",e:"📍",v:{SEN:1,ATT:1}}
@@ -2394,8 +2394,8 @@ chat:[
    q:"Si votre chat a accès à l'extérieur, que fait-il ?",
    s:"Sélectionnez tout ce qui correspond (ou \"N/A\" si chat d'intérieur).",
    opts:[
-     {t:"Chasse activement des proies",e:"🐦",v:{ENG:3,INT:2}},
-     {t:"Explore le territoire longuement",e:"🗺️",v:{ENG:2,INT:2}},
+     {t:"Chasse activement des proies",e:"🐦",v:{ENG:3}},
+     {t:"Explore le territoire longuement",e:"🗺️",v:{ENG:2}},
      {t:"Reste proche de la maison",e:"🏡",v:{ATT:1,SOC:0}},
      {t:"Interagit avec les voisins",e:"👋",v:{SOC:2}},
      {t:"Chat d'intérieur uniquement",e:"🏠",v:{ATT:1}}
@@ -2434,9 +2434,9 @@ chat:[
    s:"Choisissez celle qui correspond le mieux.",
    opts:[
      {t:"Câlin et affectueux",e:"🥰",v:{ATT:4,SOC:2}},
-     {t:"Joueur et espiègle",e:"🎭",v:{ENG:3,INT:2}},
+     {t:"Joueur et espiègle",e:"🎭",v:{ENG:3}},
      {t:"Mystérieux et indépendant",e:"🌙",v:{ATT:-2,SOC:-2}},
-     {t:"Observateur et sage",e:"🦉",v:{INT:3,SEN:1}}
+     {t:"Observateur et sage",e:"🦉",v:{SEN:2}}
    ]}
 ]
 };

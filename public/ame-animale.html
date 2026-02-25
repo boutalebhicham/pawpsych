@@ -3416,10 +3416,12 @@ function renderQuestion(){
 function updateLikertVal(q,pos,DOTS,valDiv){
   var t=pos/(DOTS-1);
   var lbl,hint;
-  if(t<0.2){lbl=q.poleL.e;hint=q.poleL.t;}
-  else if(t<0.4){lbl='↙';hint='Plutôt : '+q.poleL.t.split('—')[0].trim();}
-  else if(t<0.6){lbl='⚖️';hint='Entre les deux';}
-  else if(t<0.8){lbl='↗';hint='Plutôt : '+q.poleR.t.split('—')[0].trim();}
+  if(t<0.08){lbl=q.poleL.e;hint=q.poleL.t;}
+  else if(t<0.25){lbl='↙';hint='Nettement : '+q.poleL.t.split('—')[0].trim();}
+  else if(t<0.42){lbl='↙';hint='Plutôt : '+q.poleL.t.split('—')[0].trim();}
+  else if(t<0.58){lbl='⚖️';hint='Entre les deux';}
+  else if(t<0.75){lbl='↗';hint='Plutôt : '+q.poleR.t.split('—')[0].trim();}
+  else if(t<0.92){lbl='↗';hint='Nettement : '+q.poleR.t.split('—')[0].trim();}
   else{lbl=q.poleR.e;hint=q.poleR.t;}
   valDiv.innerHTML='<div class="q-likert-val-lbl">'+lbl+'</div><div class="q-likert-val-hint">'+hint+'</div>';
 }

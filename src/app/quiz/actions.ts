@@ -1,7 +1,7 @@
 "use server";
 
 import { generatePetPersonalityProfile, type GeneratePetPersonalityProfileInput } from "@/ai/flows/generate-pet-personality-profile-flow";
-import { db } from "@/lib/firebase-admin";
+import { getDb } from "@/lib/firebase-admin";
 import { Resend } from "resend";
 import { render } from "@react-email/components";
 import { createElement } from "react";
@@ -18,6 +18,7 @@ export async function handleQuizSubmission(input: QuizSubmissionInput) {
   const profile = await generatePetPersonalityProfile(aiInput);
 
   // 2. Save to Firestore
+  const db = getDb();
   const doc = await db.collection("completions").add({
     email,
     petName: input.petName,

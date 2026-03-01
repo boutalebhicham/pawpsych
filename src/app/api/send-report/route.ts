@@ -663,57 +663,21 @@ function generatePdfBuffer(d: ReportData): Buffer {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-//  EMAIL HTML
+//  REACT EMAIL RENDERING
 // ═══════════════════════════════════════════════════════════════════
-function buildEmailHTML(d: ReportData): string {
-  const name = d.animalName || (d.animalType === 'chien' ? 'Votre chien' : 'Votre chat');
-  const greeting = d.prenom ? `Bonjour ${d.prenom},` : 'Bonjour,';
-  const dimRows = ['SOC','ENG','ATT','SEN','INT'].map(k => {
-    const pct = d.dimensions?.[k]||50;
-    const c: Record<string,string> = {SOC:'#3b82f6',ENG:'#f59e0b',ATT:'#ef4444',SEN:'#8b5cf6',INT:'#10b981'};
-    const l: Record<string,string> = {SOC:'Sociabilit\u00e9',ENG:'\u00c9nergie',ATT:'Attachement',SEN:'Sensibilit\u00e9',INT:'Intelligence'};
-    return `<tr><td style="padding:6px 12px 6px 0;font-size:13px;font-weight:600;color:#555;width:110px;">${l[k]}</td><td style="padding:6px 0;"><div style="background:#f0f0f0;border-radius:10px;height:18px;width:100%;overflow:hidden;"><div style="background:${c[k]};height:18px;border-radius:10px;width:${pct}%;"></div></div></td><td style="padding:6px 0 6px 10px;font-size:13px;font-weight:700;color:#333;width:40px;text-align:right;">${pct}%</td></tr>`;
-  }).join('');
-  const list = (items: string[], pre: string) => items.map(i => `<li style="padding:4px 0;color:#333;">${pre} ${i}</li>`).join('');
-
-  return `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;background:#f8f7f3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
-<div style="max-width:600px;margin:0 auto;background:#fff;">
-  <div style="background:#111;padding:32px 24px;text-align:center;">
-    <div style="font-size:20px;font-weight:900;color:#fff;">\u00c2me Animale</div>
-    <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:4px;">Rapport de personnalit\u00e9</div>
-  </div>
-  <div style="padding:24px 24px 16px;font-size:14px;color:#444;line-height:1.7;">
-    ${greeting}<br>Voici le rapport complet de <strong>${name}</strong>. Le PDF est en pi\u00e8ce jointe.
-  </div>
-  <div style="padding:32px 24px;text-align:center;border-bottom:1px solid #eee;">
-    <div style="font-size:48px;margin-bottom:8px;">${d.profileEmoji||''}</div>
-    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:6px;">${name} est</div>
-    <div style="font-size:28px;font-weight:900;color:#111;margin-bottom:6px;">${d.profileTitle}</div>
-    <div style="font-size:14px;color:#666;font-style:italic;">${d.profileTagline}</div>
-  </div>
-  <div style="padding:24px;border-bottom:1px solid #eee;">
-    <div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Analyse</div>
-    <div style="font-size:14px;color:#444;line-height:1.7;">${d.desc}</div>
-  </div>
-  <div style="padding:24px;border-bottom:1px solid #eee;">
-    <div style="font-size:16px;font-weight:800;color:#111;margin-bottom:16px;">Dimensions</div>
-    <table style="width:100%;border-collapse:collapse;">${dimRows}</table>
-  </div>
-  ${d.strengths?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points forts</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.strengths,'&#10003;')}</ul></div>`:''}
-  ${d.watchPoints?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Points de vigilance</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.watchPoints,'&#9888;')}</ul></div>`:''}
-  ${d.tips?.length?`<div style="padding:24px;border-bottom:1px solid #eee;"><div style="font-size:16px;font-weight:800;color:#111;margin-bottom:12px;">Conseils</div><ul style="margin:0;padding:0 0 0 4px;list-style:none;font-size:14px;line-height:1.7;">${list(d.tips,'&#10148;')}</ul></div>`:''}
-  <div style="background:#f8f7f3;padding:24px;text-align:center;">
-    <div style="font-size:13px;color:#888;">\u00c2me Animale - <a href="https://ameanimale.fr" style="color:#888;">ameanimale.fr</a></div>
-    <div style="font-size:10px;color:#bbb;margin-top:12px;">Vous recevez cet email suite \u00e0 votre achat. Contact : contact@ameanimale.fr</div>
-  </div>
-</div></body></html>`;
-}
+import { render } from '@react-email/components';
+import { createElement } from 'react';
+import PaymentConfirmationEmail from '@/emails/payment-confirmation';
+import ReportDeliveryEmail from '@/emails/report-delivery';
+import WelcomeTipsEmail from '@/emails/welcome-tips';
 
 // ═══════════════════════════════════════════════════════════════════
 //  API ROUTE
 // ═══════════════════════════════════════════════════════════════════
 export const dynamic = 'force-dynamic';
+export const maxDuration = 30;
+
+const FROM = 'Âme Animale <contact@ameanimale.fr>';
 
 export async function POST(req: NextRequest) {
   try {
@@ -722,37 +686,127 @@ export async function POST(req: NextRequest) {
     if (!email) return NextResponse.json({ error: 'Email requis' }, { status: 400 });
     if (!process.env.RESEND_API_KEY) return NextResponse.json({ error: 'Email service not configured' }, { status: 500 });
 
-    const html = buildEmailHTML(data);
+    const resend = getResend();
     const animalName = data.animalName || 'votre animal';
+    const safeName = (animalName || 'animal').replace(/[^a-zA-Z0-9\s-]/g, '').replace(/\s+/g, '-') || 'animal';
+    const ts = Date.now();
 
+    // ── 1. Confirmation de paiement (envoi immédiat) ──
+    const confirmationHtml = await render(
+      createElement(PaymentConfirmationEmail, {
+        prenom: data.prenom || '',
+        animalName,
+        animalType: data.animalType || 'chien',
+        profileEmoji: data.profileEmoji || '🐾',
+      })
+    );
+
+    const confirmationPromise = resend.emails.send({
+      from: FROM,
+      to: [email],
+      subject: `Commande confirmée — ${animalName}`,
+      html: confirmationHtml,
+      headers: { 'X-Entity-Ref-ID': `confirmation-${ts}` },
+    });
+
+    // ── 2. Rapport avec PDF (génération + envoi) ──
     let pdfBuffer: Buffer | null = null;
     let pdfError: string | null = null;
     try {
       pdfBuffer = generatePdfBuffer(data);
       console.log('[send-report] PDF OK:', pdfBuffer.length, 'bytes');
     } catch (e: unknown) {
-      pdfError = e instanceof Error ? e.message+'\n'+e.stack : String(e);
+      pdfError = e instanceof Error ? e.message + '\n' + e.stack : String(e);
       console.error('[send-report] PDF FAILED:', pdfError);
     }
 
-    const safeName = (animalName||'animal').replace(/[^a-zA-Z0-9\s-]/g,'').replace(/\s+/g,'-')||'animal';
+    const reportHtml = await render(
+      createElement(ReportDeliveryEmail, {
+        prenom: data.prenom || '',
+        animalName,
+        animalType: data.animalType || 'chien',
+        profileTitle: data.profileTitle || '',
+        profileTagline: data.profileTagline || '',
+        profileEmoji: data.profileEmoji || '🐾',
+        desc: data.desc || '',
+        dimensions: data.dimensions || {},
+        strengths: data.strengths || [],
+        watchPoints: data.watchPoints || [],
+      })
+    );
 
-    const { error } = await getResend().emails.send({
-      from: '\u00c2me Animale <contact@ameanimale.fr>',
+    const reportPromise = resend.emails.send({
+      from: FROM,
       to: [email],
-      subject: `Rapport de ${animalName} - \u00c2me Animale`,
-      html,
-      headers: { 'X-Entity-Ref-ID': `rapport-${Date.now()}` },
-      ...(pdfBuffer ? { attachments: [{ filename: `rapport-${safeName}.pdf`, content: pdfBuffer }] } : {}),
+      subject: `Rapport de ${animalName} — Âme Animale`,
+      html: reportHtml,
+      headers: { 'X-Entity-Ref-ID': `rapport-${ts}` },
+      ...(pdfBuffer
+        ? { attachments: [{ filename: `rapport-${safeName}.pdf`, content: pdfBuffer }] }
+        : {}),
     });
 
-    if (error) {
-      console.error('[send-report] Resend error:', JSON.stringify(error));
-      return NextResponse.json({ error: 'Erreur envoi email', details: error, pdfError }, { status: 500 });
+    // ── 3. Email bienvenue / tips ──
+    const tipsHtml = await render(
+      createElement(WelcomeTipsEmail, {
+        prenom: data.prenom || '',
+        animalName,
+        animalType: data.animalType || 'chien',
+        profileTitle: data.profileTitle || '',
+        profileEmoji: data.profileEmoji || '🐾',
+        tips: data.tips || [],
+        activities: data.activities || [],
+        strengths: data.strengths || [],
+      })
+    );
+
+    const tipsPromise = resend.emails.send({
+      from: FROM,
+      to: [email],
+      subject: `Les clés pour comprendre ${animalName}`,
+      html: tipsHtml,
+      headers: { 'X-Entity-Ref-ID': `tips-${ts}` },
+    });
+
+    // ── Envoi parallèle des 3 emails ──
+    const [confirmationResult, reportResult, tipsResult] = await Promise.allSettled([
+      confirmationPromise,
+      reportPromise,
+      tipsPromise,
+    ]);
+
+    const errors: string[] = [];
+    if (confirmationResult.status === 'rejected') errors.push(`confirmation: ${confirmationResult.reason}`);
+    if (reportResult.status === 'rejected') errors.push(`rapport: ${reportResult.reason}`);
+    if (tipsResult.status === 'rejected') errors.push(`tips: ${tipsResult.reason}`);
+
+    if (confirmationResult.status === 'fulfilled' && confirmationResult.value.error)
+      errors.push(`confirmation: ${JSON.stringify(confirmationResult.value.error)}`);
+    if (reportResult.status === 'fulfilled' && reportResult.value.error)
+      errors.push(`rapport: ${JSON.stringify(reportResult.value.error)}`);
+    if (tipsResult.status === 'fulfilled' && tipsResult.value.error)
+      errors.push(`tips: ${JSON.stringify(tipsResult.value.error)}`);
+
+    if (errors.length === 3) {
+      console.error('[send-report] All emails failed:', errors);
+      return NextResponse.json({ error: 'Tous les emails ont échoué', details: errors, pdfError }, { status: 500 });
     }
-    return NextResponse.json({ ok: true, pdfAttached: !!pdfBuffer, pdfError });
+
+    if (errors.length > 0) {
+      console.warn('[send-report] Some emails failed:', errors);
+    }
+
+    console.log(`[send-report] Emails sent: ${3 - errors.length}/3`);
+
+    return NextResponse.json({
+      ok: true,
+      emailsSent: 3 - errors.length,
+      pdfAttached: !!pdfBuffer,
+      pdfError,
+      ...(errors.length > 0 ? { partialErrors: errors } : {}),
+    });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message+'\n'+err.stack : String(err);
+    const msg = err instanceof Error ? err.message + '\n' + err.stack : String(err);
     console.error('[send-report] Error:', msg);
     return NextResponse.json({ error: msg }, { status: 500 });
   }

@@ -21,10 +21,11 @@ import { useToast } from "@/hooks/use-toast";
 import { handleQuizSubmission } from "./actions";
 
 const formSchema = z.object({
-  petName: z.string().min(2, "Pet's name must be at least 2 characters."),
-  petType: z.enum(["dog", "cat"], { required_error: "Please select a pet type." }),
+  email: z.string().email("Veuillez entrer un email valide."),
+  petName: z.string().min(2, "Le nom doit contenir au moins 2 caractères."),
+  petType: z.enum(["dog", "cat"], { required_error: "Veuillez sélectionner un type." }),
   answers: z.record(z.string()).refine(val => Object.keys(val).length === quizQuestions.length, {
-    message: "Please answer all questions.",
+    message: "Veuillez répondre à toutes les questions.",
   }),
 });
 
@@ -41,6 +42,7 @@ export function QuizForm() {
   const form = useForm<QuizFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      email: "",
       petName: "",
       petType: undefined,
       answers: {},
@@ -48,7 +50,7 @@ export function QuizForm() {
   });
 
   const handleNext = async () => {
-    const fieldsToValidate: (keyof QuizFormValues)[] = currentStep === 0 ? ["petName", "petType"] : [];
+    const fieldsToValidate: (keyof QuizFormValues)[] = currentStep === 0 ? ["email", "petName", "petType"] : [];
     if (currentStep > 0) {
       // No specific field to validate for answers on each step as we check at the end.
       // We just need to ensure an option is selected.
@@ -74,7 +76,7 @@ export function QuizForm() {
 
   const onSubmit = async (data: QuizFormValues) => {
     setIsSubmitting(true);
-    const { petName, petType, answers } = data;
+    const { email, petName, petType, answers } = data;
 
     const quizResponses = quizQuestions.map(q => ({
       question: q.question,
@@ -82,15 +84,14 @@ export function QuizForm() {
     }));
 
     try {
-      const result = await handleQuizSubmission({ petName, petType, quizResponses });
-      const stringifiedResult = encodeURIComponent(JSON.stringify(result));
-      router.push(`/results?profile=${stringifiedResult}`);
+      const { id } = await handleQuizSubmission({ email, petName, petType, quizResponses });
+      router.push(`/results/${id}`);
     } catch (error) {
       console.error(error);
       toast({
         variant: "destructive",
-        title: "Oh no! Something went wrong.",
-        description: "We couldn't generate the personality profile. Please try again.",
+        title: "Oups, une erreur est survenue.",
+        description: "Impossible de générer le profil. Veuillez réessayer.",
       });
       setIsSubmitting(false);
     }
@@ -116,15 +117,28 @@ export function QuizForm() {
               >
                 {currentStep === 0 && (
                   <div className="space-y-6">
-                    <CardTitle className="font-headline text-2xl">First, tell us about your pet</CardTitle>
+                    <CardTitle className="font-headline text-2xl">Parlez-nous de votre animal</CardTitle>
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Votre email (pour recevoir les résultats)</FormLabel>
+                          <FormControl>
+                            <Input type="email" placeholder="exemple@email.com" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormField
                       control={form.control}
                       name="petName"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>What's your pet's name?</FormLabel>
+                          <FormLabel>Comment s'appelle votre animal ?</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. Buddy" {...field} />
+                            <Input placeholder="ex: Buddy" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -135,7 +149,7 @@ export function QuizForm() {
                       name="petType"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
-                          <FormLabel>Is your pet a dog or a cat?</FormLabel>
+                          <FormLabel>C'est un chien ou un chat ?</FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -144,11 +158,11 @@ export function QuizForm() {
                             >
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl><RadioGroupItem value="dog" /></FormControl>
-                                <FormLabel className="font-normal">Dog</FormLabel>
+                                <FormLabel className="font-normal">Chien</FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl><RadioGroupItem value="cat" /></FormControl>
-                                <FormLabel className="font-normal">Cat</FormLabel>
+                                <FormLabel className="font-normal">Chat</FormLabel>
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
@@ -190,18 +204,18 @@ export function QuizForm() {
             <div className="flex justify-between items-center pt-4">
               {currentStep > 0 && (
                 <Button type="button" variant="outline" onClick={handlePrev} disabled={isSubmitting}>
-                  Previous
+                  Précédent
                 </Button>
               )}
               <div className="flex-grow"></div>
               {currentStep < totalSteps - 1 && (
                 <Button type="button" onClick={handleNext} disabled={isSubmitting}>
-                  Next
+                  Suivant
                 </Button>
               )}
               {currentStep === totalSteps - 1 && (
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Generating Profile...</> : "See Results"}
+                  {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Génération en cours...</> : "Voir les résultats"}
                 </Button>
               )}
             </div>

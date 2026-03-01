@@ -57,9 +57,9 @@ async function sendResultEmail(
 
   const resend = new Resend(apiKey);
   await resend.emails.send({
-    from: "Âme Animale <contact@ameanimale.fr>",
+    from: "\u00c2me Animale <contact@ameanimale.fr>",
     to: [email],
-    subject: `Les résultats de ${petName} sont prêts !`,
+    subject: `Les r\u00e9sultats de ${petName} sont pr\u00eats !`,
     html,
   });
 }

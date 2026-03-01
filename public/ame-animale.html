@@ -3562,6 +3562,27 @@ function submitCapture(){
     localStorage.setItem('aa_email',email);
   }catch(e){}
   if(capReviewTimer){clearInterval(capReviewTimer);capReviewTimer=null;}
+  // Save completion to Firestore + send results email
+  try{
+    var scores=computeScores();
+    var ns=normalizeScores(scores,animal);
+    var profs=PROFILES[animal];
+    var best=profs[0];
+    profs.forEach(function(p){if(p.score(ns)>best.score(ns)) best=p;});
+    fetch('/api/save-completion',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        email:email,
+        prenom:prenom,
+        animalName:profile.nom||'',
+        animalType:animal,
+        profileTitle:bTitle(best),
+        profileTagline:best.tagline?gTxt(best.tagline):'',
+        dimensions:ns
+      })
+    }).catch(function(e){console.error('save-completion error',e);});
+  }catch(e){console.error('save-completion error',e);}
   showResults();
 }
 

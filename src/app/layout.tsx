@@ -7,8 +7,8 @@ import { Toaster } from "@/components/ui/toaster"
 import FirebaseAnalytics from '@/components/firebase-analytics';
 
 export const metadata: Metadata = {
-    title: 'PawPsych - Pet Personality Test',
-    description: 'Discover the unique personality of your dog or cat with our fun, AI-powered quiz.',
+    title: 'Âme Animale - Test de personnalité pour votre animal',
+    description: 'Découvrez la personnalité unique de votre chien ou chat avec notre quiz approfondi.',
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" suppressHydrationWarning>
+        <html lang="fr" suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

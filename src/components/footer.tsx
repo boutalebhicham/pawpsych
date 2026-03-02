@@ -1,9 +1,8 @@
-
 export function Footer() {
   return (
     <footer className="py-6 px-4 sm:px-6 lg:px-8 border-t mt-8">
       <div className="container mx-auto text-center text-muted-foreground">
-        <p>&copy; 2026 PawPsych. All rights reserved.</p>
+        <p>&copy; 2026 Âme Animale. Tous droits réservés.</p>
       </div>
     </footer>
   );

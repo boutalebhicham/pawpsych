@@ -7,7 +7,7 @@ runConfig:
   maxInstances: 1
 env:
   - variable: NEXT_PUBLIC_BASE_URL
-    secret: NEXT_PUBLIC_BASE_URL
+          value: https://ame-animale--ameanimale-4b20a.europe-west4.hosted.app
   - variable: STRIPE_SECRET_KEY
     secret: STRIPE_SECRET_KEY
   - variable: RESEND_API_KEY
